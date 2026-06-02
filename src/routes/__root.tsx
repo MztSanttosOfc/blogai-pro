@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "BlogAI Pro ajuda blogueiros do Blogger a criar, otimizar, publicar e monetizar artigos com inteligência artificial.",
       },
       { name: "author", content: "BlogAI Pro" },
-      { property: "og:title", content: "BlogAI Pro — Conteúdo de blog com IA" },
+      { property: "og:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
       {
         property: "og:description",
         content: "Gere artigos otimizados para SEO em minutos e publique no Blogger.",
@@ -94,6 +94,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@BlogAIPro" },
+      { name: "twitter:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
+      { name: "description", content: "BlogAI Pro is a SaaS application that automates blog creation, optimization, and publishing for Blogger users." },
+      { property: "og:description", content: "BlogAI Pro is a SaaS application that automates blog creation, optimization, and publishing for Blogger users." },
+      { name: "twitter:description", content: "BlogAI Pro is a SaaS application that automates blog creation, optimization, and publishing for Blogger users." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0ee8039b-b79c-4804-877a-24fd759efd9b/id-preview-f089d33d--0dae3068-b99c-4b0b-b98f-4a360ed5f653.lovable.app-1780371391555.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0ee8039b-b79c-4804-877a-24fd759efd9b/id-preview-f089d33d--0dae3068-b99c-4b0b-b98f-4a360ed5f653.lovable.app-1780371391555.png" },
     ],
     links: [
       {
