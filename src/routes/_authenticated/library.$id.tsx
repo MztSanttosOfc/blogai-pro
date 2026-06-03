@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Markdown } from "@/components/Markdown";
 import { RichTextEditor } from "@/components/RichTextEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { publishArticleToBlogger, getBloggerStatus } from "@/lib/blogger.functions";
 
 export const Route = createFileRoute("/_authenticated/library/$id")({
   component: ArticleDetailPage,
@@ -61,6 +63,9 @@ function ArticleDetailPage() {
   const [tagInput, setTagInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const publishFn = useServerFn(publishArticleToBlogger);
+  const bloggerStatusFn = useServerFn(getBloggerStatus);
 
   useEffect(() => {
     if (article) {
@@ -140,8 +145,37 @@ function ArticleDetailPage() {
     toast.success("Alterações salvas com sucesso!");
   };
 
-  const handlePublishToBlogger = () => {
-    toast.info("Integração com Blogger em breve! Estamos finalizando esta funcionalidade.");
+  const handlePublishToBlogger = async () => {
+    if (editing) {
+      toast.info("Salve as alterações antes de publicar.");
+      return;
+    }
+    setPublishing(true);
+    try {
+      const status = await bloggerStatusFn();
+      if (!status.connected) {
+        toast.error("Conecte sua conta do Blogger primeiro.");
+        navigate({ to: "/connections" });
+        return;
+      }
+      if (!status.selectedBlogId) {
+        toast.error("Selecione um blog de destino na página de conexões.");
+        navigate({ to: "/connections" });
+        return;
+      }
+      const res = await publishFn({ data: { articleId: id } });
+      await queryClient.invalidateQueries({ queryKey: ["article", id] });
+      await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      toast.success("Artigo publicado no Blogger!", {
+        action: res.url
+          ? { label: "Abrir", onClick: () => window.open(res.url, "_blank") }
+          : undefined,
+      });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao publicar no Blogger.");
+    } finally {
+      setPublishing(false);
+    }
   };
 
   const handleCopy = () => {
@@ -181,8 +215,18 @@ function ArticleDetailPage() {
               <Pencil className="h-4 w-4" /> Editar
             </Button>
           )}
-          <Button variant="hero" size="sm" onClick={handlePublishToBlogger}>
-            <Send className="h-4 w-4" /> Publicar no Blogger
+          <Button
+            variant="hero"
+            size="sm"
+            onClick={handlePublishToBlogger}
+            disabled={publishing}
+          >
+            {publishing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}{" "}
+            Publicar no Blogger
           </Button>
         </div>
       </div>

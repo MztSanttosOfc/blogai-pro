@@ -1,8 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Library, Copy, Trash2, Eye, Search, FileText } from "lucide-react";
+import { Library, Copy, Trash2, Eye, Search, FileText, Send, Loader2 } from "lucide-react";
+import { publishArticleToBlogger, getBloggerStatus } from "@/lib/blogger.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,8 +29,12 @@ export const Route = createFileRoute("/_authenticated/library")({
 function LibraryPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
+  const publishFn = useServerFn(publishArticleToBlogger);
+  const bloggerStatusFn = useServerFn(getBloggerStatus);
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ["articles", user?.id],
@@ -72,6 +78,34 @@ function LibraryPage() {
     await queryClient.invalidateQueries({ queryKey: ["articles"] });
     toast.success("Artigo excluído.");
   };
+
+  const handlePublish = async (articleId: string) => {
+    setPublishingId(articleId);
+    try {
+      const status = await bloggerStatusFn();
+      if (!status.connected || !status.selectedBlogId) {
+        toast.error(
+          status.connected
+            ? "Selecione um blog de destino na página de conexões."
+            : "Conecte sua conta do Blogger primeiro.",
+        );
+        navigate({ to: "/connections" });
+        return;
+      }
+      const res = await publishFn({ data: { articleId } });
+      await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      toast.success("Artigo publicado no Blogger!", {
+        action: res.url
+          ? { label: "Abrir", onClick: () => window.open(res.url, "_blank") }
+          : undefined,
+      });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao publicar no Blogger.");
+    } finally {
+      setPublishingId(null);
+    }
+  };
+
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -130,6 +164,19 @@ function LibraryPage() {
                   <Link to="/library/$id" params={{ id: a.id }}>
                     <Eye className="h-4 w-4" /> Ver
                   </Link>
+                </Button>
+                <Button
+                  variant="hero"
+                  size="sm"
+                  onClick={() => handlePublish(a.id)}
+                  disabled={publishingId === a.id}
+                >
+                  {publishingId === a.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                  Publicar
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => handleDuplicate(a)} aria-label="Duplicar">
                   <Copy className="h-4 w-4" />

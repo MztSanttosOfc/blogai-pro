@@ -6,6 +6,7 @@ import {
   CreditCard,
   LogOut,
   Coins,
+  Globe,
 } from "lucide-react";
 import {
   Sidebar,
@@ -28,6 +29,7 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Gerar Artigo", url: "/generate", icon: Sparkles },
   { title: "Biblioteca", url: "/library", icon: Library },
+  { title: "Blogger", url: "/connections", icon: Globe },
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
 ];
 

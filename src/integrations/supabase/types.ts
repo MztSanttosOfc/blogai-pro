@@ -16,6 +16,8 @@ export type Database = {
     Tables: {
       articles: {
         Row: {
+          blogger_post_id: string | null
+          blogger_post_url: string | null
           content: string
           created_at: string
           faq: Json
@@ -33,6 +35,8 @@ export type Database = {
           word_count: number
         }
         Insert: {
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
           content?: string
           created_at?: string
           faq?: Json
@@ -50,6 +54,8 @@ export type Database = {
           word_count?: number
         }
         Update: {
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
           content?: string
           created_at?: string
           faq?: Json
@@ -65,6 +71,45 @@ export type Database = {
           updated_at?: string
           user_id?: string
           word_count?: number
+        }
+        Relationships: []
+      }
+      blogger_connections: {
+        Row: {
+          access_token: string
+          created_at: string
+          google_email: string | null
+          id: string
+          refresh_token: string | null
+          selected_blog_id: string | null
+          selected_blog_name: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          google_email?: string | null
+          id?: string
+          refresh_token?: string | null
+          selected_blog_id?: string | null
+          selected_blog_name?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          google_email?: string | null
+          id?: string
+          refresh_token?: string | null
+          selected_blog_id?: string | null
+          selected_blog_name?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

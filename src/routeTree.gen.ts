@@ -17,7 +17,9 @@ import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
+import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -58,30 +60,46 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedConnectionsRoute =
+  AuthenticatedConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedLibraryIdRoute = AuthenticatedLibraryIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AuthenticatedLibraryRoute,
 } as any)
+const AuthenticatedBloggerCallbackRoute =
+  AuthenticatedBloggerCallbackRouteImport.update({
+    id: '/blogger/callback',
+    path: '/blogger/callback',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/pricing': typeof AuthenticatedPricingRoute
+  '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/pricing': typeof AuthenticatedPricingRoute
+  '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
 }
 export interface FileRoutesById {
@@ -90,10 +108,12 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
+  '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
 }
 export interface FileRouteTypes {
@@ -102,20 +122,24 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/connections'
     | '/dashboard'
     | '/generate'
     | '/library'
     | '/pricing'
+    | '/blogger/callback'
     | '/library/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
+    | '/connections'
     | '/dashboard'
     | '/generate'
     | '/library'
     | '/pricing'
+    | '/blogger/callback'
     | '/library/$id'
   id:
     | '__root__'
@@ -123,10 +147,12 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/connections'
     | '/_authenticated/dashboard'
     | '/_authenticated/generate'
     | '/_authenticated/library'
     | '/_authenticated/pricing'
+    | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
   fileRoutesById: FileRoutesById
 }
@@ -195,12 +221,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/connections': {
+      id: '/_authenticated/connections'
+      path: '/connections'
+      fullPath: '/connections'
+      preLoaderRoute: typeof AuthenticatedConnectionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/library/$id': {
       id: '/_authenticated/library/$id'
       path: '/$id'
       fullPath: '/library/$id'
       preLoaderRoute: typeof AuthenticatedLibraryIdRouteImport
       parentRoute: typeof AuthenticatedLibraryRoute
+    }
+    '/_authenticated/blogger/callback': {
+      id: '/_authenticated/blogger/callback'
+      path: '/blogger/callback'
+      fullPath: '/blogger/callback'
+      preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
@@ -217,17 +257,21 @@ const AuthenticatedLibraryRouteWithChildren =
   AuthenticatedLibraryRoute._addFileChildren(AuthenticatedLibraryRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
+  AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
+  AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
