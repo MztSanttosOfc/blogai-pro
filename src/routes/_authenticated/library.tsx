@@ -79,6 +79,34 @@ function LibraryPage() {
     toast.success("Artigo excluído.");
   };
 
+  const handlePublish = async (articleId: string) => {
+    setPublishingId(articleId);
+    try {
+      const status = await bloggerStatusFn();
+      if (!status.connected || !status.selectedBlogId) {
+        toast.error(
+          status.connected
+            ? "Selecione um blog de destino na página de conexões."
+            : "Conecte sua conta do Blogger primeiro.",
+        );
+        navigate({ to: "/connections" });
+        return;
+      }
+      const res = await publishFn({ data: { articleId } });
+      await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      toast.success("Artigo publicado no Blogger!", {
+        action: res.url
+          ? { label: "Abrir", onClick: () => window.open(res.url, "_blank") }
+          : undefined,
+      });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao publicar no Blogger.");
+    } finally {
+      setPublishingId(null);
+    }
+  };
+
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
