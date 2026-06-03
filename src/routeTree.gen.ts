@@ -19,6 +19,7 @@ import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
+import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -70,6 +71,12 @@ const AuthenticatedLibraryIdRoute = AuthenticatedLibraryIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedLibraryRoute,
 } as any)
+const AuthenticatedBloggerCallbackRoute =
+  AuthenticatedBloggerCallbackRouteImport.update({
+    id: '/blogger/callback',
+    path: '/blogger/callback',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/pricing': typeof AuthenticatedPricingRoute
+  '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
 }
 export interface FileRoutesByTo {
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/pricing': typeof AuthenticatedPricingRoute
+  '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
 }
 export interface FileRoutesById {
@@ -104,6 +113,7 @@ export interface FileRoutesById {
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
+  '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
 }
 export interface FileRouteTypes {
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/generate'
     | '/library'
     | '/pricing'
+    | '/blogger/callback'
     | '/library/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/generate'
     | '/library'
     | '/pricing'
+    | '/blogger/callback'
     | '/library/$id'
   id:
     | '__root__'
@@ -140,6 +152,7 @@ export interface FileRouteTypes {
     | '/_authenticated/generate'
     | '/_authenticated/library'
     | '/_authenticated/pricing'
+    | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
   fileRoutesById: FileRoutesById
 }
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLibraryIdRouteImport
       parentRoute: typeof AuthenticatedLibraryRoute
     }
+    '/_authenticated/blogger/callback': {
+      id: '/_authenticated/blogger/callback'
+      path: '/blogger/callback'
+      fullPath: '/blogger/callback'
+      preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -242,6 +262,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
+  AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -250,6 +271,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
+  AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
