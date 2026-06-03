@@ -29,8 +29,12 @@ export const Route = createFileRoute("/_authenticated/library")({
 function LibraryPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
+  const publishFn = useServerFn(publishArticleToBlogger);
+  const bloggerStatusFn = useServerFn(getBloggerStatus);
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ["articles", user?.id],
