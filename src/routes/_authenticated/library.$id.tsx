@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Markdown } from "@/components/Markdown";
 import { RichTextEditor } from "@/components/RichTextEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { publishArticleToBlogger, getBloggerStatus } from "@/lib/blogger.functions";
 
 export const Route = createFileRoute("/_authenticated/library/$id")({
   component: ArticleDetailPage,
@@ -61,6 +63,9 @@ function ArticleDetailPage() {
   const [tagInput, setTagInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const publishFn = useServerFn(publishArticleToBlogger);
+  const bloggerStatusFn = useServerFn(getBloggerStatus);
 
   useEffect(() => {
     if (article) {
