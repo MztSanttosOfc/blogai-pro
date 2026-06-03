@@ -215,8 +215,18 @@ function ArticleDetailPage() {
               <Pencil className="h-4 w-4" /> Editar
             </Button>
           )}
-          <Button variant="hero" size="sm" onClick={handlePublishToBlogger}>
-            <Send className="h-4 w-4" /> Publicar no Blogger
+          <Button
+            variant="hero"
+            size="sm"
+            onClick={handlePublishToBlogger}
+            disabled={publishing}
+          >
+            {publishing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}{" "}
+            Publicar no Blogger
           </Button>
         </div>
       </div>
