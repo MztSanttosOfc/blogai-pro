@@ -145,8 +145,37 @@ function ArticleDetailPage() {
     toast.success("Alterações salvas com sucesso!");
   };
 
-  const handlePublishToBlogger = () => {
-    toast.info("Integração com Blogger em breve! Estamos finalizando esta funcionalidade.");
+  const handlePublishToBlogger = async () => {
+    if (editing) {
+      toast.info("Salve as alterações antes de publicar.");
+      return;
+    }
+    setPublishing(true);
+    try {
+      const status = await bloggerStatusFn();
+      if (!status.connected) {
+        toast.error("Conecte sua conta do Blogger primeiro.");
+        navigate({ to: "/connections" });
+        return;
+      }
+      if (!status.selectedBlogId) {
+        toast.error("Selecione um blog de destino na página de conexões.");
+        navigate({ to: "/connections" });
+        return;
+      }
+      const res = await publishFn({ data: { articleId: id } });
+      await queryClient.invalidateQueries({ queryKey: ["article", id] });
+      await queryClient.invalidateQueries({ queryKey: ["articles"] });
+      toast.success("Artigo publicado no Blogger!", {
+        action: res.url
+          ? { label: "Abrir", onClick: () => window.open(res.url, "_blank") }
+          : undefined,
+      });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao publicar no Blogger.");
+    } finally {
+      setPublishing(false);
+    }
   };
 
   const handleCopy = () => {
