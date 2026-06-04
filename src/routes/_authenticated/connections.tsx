@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Globe, Loader2, CheckCircle2, LinkIcon, Unlink, ExternalLink } from "lucide-react";
+import { Globe, Loader2, CheckCircle2, LinkIcon, Unlink, ExternalLink, Settings2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -110,7 +110,23 @@ function ConnectionsPage() {
         <div className="flex justify-center py-20">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
+      ) : status && !status.configured ? (
+        <Card className="flex flex-col items-center gap-4 p-10 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10">
+            <Settings2 className="h-7 w-7 text-amber-500" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold">Integração ainda não configurada</h2>
+            <p className="max-w-md text-sm text-muted-foreground">
+              A publicação no Blogger usa a API oficial do Google e exige credenciais OAuth
+              (Client ID e Client Secret) configuradas no servidor. Assim que elas forem
+              adicionadas, o botão de conectar ficará disponível aqui.
+            </p>
+          </div>
+          <Badge variant="secondary">Aguardando credenciais do Google</Badge>
+        </Card>
       ) : !connected ? (
+
         <Card className="flex flex-col items-center gap-4 p-10 text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
             <Globe className="h-7 w-7 text-primary" />

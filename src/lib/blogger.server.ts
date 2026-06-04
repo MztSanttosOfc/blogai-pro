@@ -26,6 +26,11 @@ function getClientCreds() {
   return { clientId, clientSecret };
 }
 
+/** Whether the Google OAuth credentials needed for the Blogger API are present. */
+export function isBloggerConfigured(): boolean {
+  return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+}
+
 /** Build the Google OAuth consent URL for Blogger access. */
 export function buildAuthUrl(redirectUri: string, state: string): string {
   const { clientId } = getClientCreds();
