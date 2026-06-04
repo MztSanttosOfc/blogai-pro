@@ -79,6 +79,8 @@ export const generateArticle = createServerFn({ method: "POST" })
           { role: "user", content: userPrompt },
         ],
         response_format: { type: "json_object" },
+        max_tokens: 16000,
+        temperature: 0.7,
       }),
     });
 
@@ -93,15 +95,15 @@ export const generateArticle = createServerFn({ method: "POST" })
     }
 
     const completion = await response.json();
-    const raw = completion?.choices?.[0]?.message?.content ?? "{}";
+    const choice = completion?.choices?.[0];
+    const finishReason = choice?.finish_reason ?? choice?.native_finish_reason;
+    const raw: string = choice?.message?.content ?? "";
 
-    let parsed: GeneratedArticle;
-    try {
-      const cleaned = raw.replace(/```json\s*/gi, "").replace(/```/g, "").trim();
-      parsed = JSON.parse(cleaned);
-    } catch {
-      throw new Error("Resposta da IA inválida. Tente novamente.");
+    if (!raw.trim()) {
+      throw new Error("A IA não retornou conteúdo. Tente novamente.");
     }
+
+    const parsed = parseArticleJson(raw, finishReason);
 
     const headings = Array.isArray(parsed.headings) ? parsed.headings : [];
     const faq = Array.isArray(parsed.faq) ? parsed.faq : [];
