@@ -124,6 +124,7 @@ export const connectBlogger = createServerFn({ method: "POST" })
 export const getBloggerStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const configured = isBloggerConfigured();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: conn } = await supabaseAdmin
       .from("blogger_connections")
@@ -132,6 +133,7 @@ export const getBloggerStatus = createServerFn({ method: "GET" })
       .maybeSingle();
 
     return {
+      configured,
       connected: !!conn,
       email: conn?.google_email ?? null,
       selectedBlogId: conn?.selected_blog_id ?? null,
