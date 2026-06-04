@@ -19,6 +19,58 @@ interface GeneratedArticle {
   tags: string[];
 }
 
+/**
+ * Robustly extract and parse the JSON article object returned by the AI.
+ * Handles markdown fences, surrounding prose, trailing commas, control chars,
+ * and detects truncated responses (token-limit cuts) to give a clear error.
+ */
+function parseArticleJson(raw: string, finishReason?: string): GeneratedArticle {
+  let cleaned = raw
+    .replace(/```json\s*/gi, "")
+    .replace(/```/g, "")
+    .trim();
+
+  // Isolate the JSON object even if the model added prose around it.
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start !== -1 && end !== -1 && end > start) {
+    cleaned = cleaned.slice(start, end + 1);
+  }
+
+  const tryParse = (s: string): GeneratedArticle | null => {
+    try {
+      return JSON.parse(s) as GeneratedArticle;
+    } catch {
+      return null;
+    }
+  };
+
+  let parsed = tryParse(cleaned);
+
+  if (!parsed) {
+    // Repair common issues: trailing commas and stray control characters.
+    const repaired = cleaned
+      .replace(/,\s*}/g, "}")
+      .replace(/,\s*]/g, "]")
+      .replace(/[\u0000-\u001F\u007F]/g, " ");
+    parsed = tryParse(repaired);
+  }
+
+  if (!parsed) {
+    // If the model hit the token limit, the JSON is incomplete.
+    const openBraces = (cleaned.match(/{/g) || []).length;
+    const closeBraces = (cleaned.match(/}/g) || []).length;
+    if (finishReason === "length" || openBraces !== closeBraces) {
+      throw new Error(
+        "O artigo ficou muito longo e foi cortado. Tente gerar com menos palavras.",
+      );
+    }
+    throw new Error("Resposta da IA inválida. Tente novamente.");
+  }
+
+  return parsed;
+}
+
 export const generateArticle = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateInput.parse(input))
@@ -79,6 +131,8 @@ export const generateArticle = createServerFn({ method: "POST" })
           { role: "user", content: userPrompt },
         ],
         response_format: { type: "json_object" },
+        max_tokens: 16000,
+        temperature: 0.7,
       }),
     });
 
@@ -93,15 +147,15 @@ export const generateArticle = createServerFn({ method: "POST" })
     }
 
     const completion = await response.json();
-    const raw = completion?.choices?.[0]?.message?.content ?? "{}";
+    const choice = completion?.choices?.[0];
+    const finishReason = choice?.finish_reason ?? choice?.native_finish_reason;
+    const raw: string = choice?.message?.content ?? "";
 
-    let parsed: GeneratedArticle;
-    try {
-      const cleaned = raw.replace(/```json\s*/gi, "").replace(/```/g, "").trim();
-      parsed = JSON.parse(cleaned);
-    } catch {
-      throw new Error("Resposta da IA inválida. Tente novamente.");
+    if (!raw.trim()) {
+      throw new Error("A IA não retornou conteúdo. Tente novamente.");
     }
+
+    const parsed = parseArticleJson(raw, finishReason);
 
     const headings = Array.isArray(parsed.headings) ? parsed.headings : [];
     const faq = Array.isArray(parsed.faq) ? parsed.faq : [];
