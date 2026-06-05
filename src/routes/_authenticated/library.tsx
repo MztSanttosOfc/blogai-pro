@@ -23,11 +23,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/library")({
-  component: LibraryPage,
+  component: LibraryRoutePage,
 });
 
-function LibraryPage() {
+function LibraryRoutePage() {
   const matches = useMatches();
+
+  if (matches.some((match) => match.routeId === "/_authenticated/library/$id")) {
+    return <Outlet />;
+  }
+
+  return <LibraryPage />;
+}
+
+function LibraryPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -36,12 +45,6 @@ function LibraryPage() {
   const [publishingId, setPublishingId] = useState<string | null>(null);
   const publishFn = useServerFn(publishArticleToBlogger);
   const bloggerStatusFn = useServerFn(getBloggerStatus);
-
-  const isDetailRoute = matches.some((match) => match.routeId === "/_authenticated/library/$id");
-
-  if (isDetailRoute) {
-    return <Outlet />;
-  }
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ["articles", user?.id],
