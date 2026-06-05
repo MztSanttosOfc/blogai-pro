@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatches, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -27,6 +27,7 @@ export const Route = createFileRoute("/_authenticated/library")({
 });
 
 function LibraryPage() {
+  const matches = useMatches();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -35,6 +36,12 @@ function LibraryPage() {
   const [publishingId, setPublishingId] = useState<string | null>(null);
   const publishFn = useServerFn(publishArticleToBlogger);
   const bloggerStatusFn = useServerFn(getBloggerStatus);
+
+  const isDetailRoute = matches.some((match) => match.routeId === "/_authenticated/library/$id");
+
+  if (isDetailRoute) {
+    return <Outlet />;
+  }
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ["articles", user?.id],
