@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatches, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -23,8 +23,18 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/library")({
-  component: LibraryPage,
+  component: LibraryRoutePage,
 });
+
+function LibraryRoutePage() {
+  const matches = useMatches();
+
+  if (matches.some((match) => match.routeId === "/_authenticated/library/$id")) {
+    return <Outlet />;
+  }
+
+  return <LibraryPage />;
+}
 
 function LibraryPage() {
   const { user } = useAuth();

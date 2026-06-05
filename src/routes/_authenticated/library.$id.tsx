@@ -60,6 +60,7 @@ function ArticleDetailPage() {
   const [content, setContent] = useState("");
   const [faq, setFaq] = useState<Faq[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [status, setStatus] = useState<"draft" | "published">("draft");
   const [tagInput, setTagInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -74,6 +75,7 @@ function ArticleDetailPage() {
       setContent(article.content ?? "");
       setFaq(((article.faq as unknown as Faq[]) ?? []).map((f) => ({ ...f })));
       setTags([...((article.tags as string[]) ?? [])]);
+      setStatus(article.status ?? "draft");
     }
   }, [article]);
 
@@ -105,6 +107,7 @@ function ArticleDetailPage() {
     setContent(article.content ?? "");
     setFaq(((article.faq as unknown as Faq[]) ?? []).map((f) => ({ ...f })));
     setTags([...((article.tags as string[]) ?? [])]);
+    setStatus(article.status ?? "draft");
     setEditing(true);
   };
 
@@ -115,6 +118,7 @@ function ArticleDetailPage() {
     setContent(article.content ?? "");
     setFaq(((article.faq as unknown as Faq[]) ?? []).map((f) => ({ ...f })));
     setTags([...((article.tags as string[]) ?? [])]);
+    setStatus(article.status ?? "draft");
   };
 
   const handleSave = async () => {
@@ -132,6 +136,7 @@ function ArticleDetailPage() {
         content,
         faq: cleanFaq,
         tags: cleanTags,
+        status,
       })
       .eq("id", id);
     setSaving(false);
@@ -257,6 +262,17 @@ function ArticleDetailPage() {
                 maxLength={200}
               />
               <p className="text-right text-xs text-muted-foreground">{meta.length}/200</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as "draft" | "published")}
+                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+              >
+                <option value="draft">Rascunho</option>
+                <option value="published">Publicado</option>
+              </select>
             </div>
           </div>
         ) : (

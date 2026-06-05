@@ -19,6 +19,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
@@ -36,9 +37,15 @@ const items = [
 export function AppSidebar() {
   const navigate = useNavigate();
   const { profile, user, signOut } = useAuth();
+  const { isMobile, setOpenMobile } = useSidebar();
   const currentPath = useRouterState({ select: (s) => s.location.pathname });
 
+  const closeMobileSidebar = () => {
+    if (isMobile) setOpenMobile(false);
+  };
+
   const handleSignOut = async () => {
+    closeMobileSidebar();
     await signOut();
     navigate({ to: "/login" });
   };
@@ -61,7 +68,7 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <Link to={item.url} className="flex items-center gap-3">
+                      <Link to={item.url} className="flex items-center gap-3" onClick={closeMobileSidebar}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
@@ -90,7 +97,10 @@ export function AppSidebar() {
                   size="sm"
                   variant="hero"
                   className="mt-3 w-full"
-                  onClick={() => navigate({ to: "/pricing" })}
+                  onClick={() => {
+                    closeMobileSidebar();
+                    navigate({ to: "/pricing" });
+                  }}
                 >
                   Fazer upgrade
                 </Button>
