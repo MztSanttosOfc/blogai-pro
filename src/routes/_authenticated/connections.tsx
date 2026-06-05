@@ -139,11 +139,7 @@ function ConnectionsPage() {
             </p>
           </div>
           <Button variant="hero" onClick={handleConnect} disabled={connecting}>
-            {connecting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <LinkIcon className="h-4 w-4" />
-            )}
+            <LinkIcon className="h-4 w-4" />
             Conectar conta Google
           </Button>
         </Card>
