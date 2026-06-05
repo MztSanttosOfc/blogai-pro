@@ -38,17 +38,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = useCallback(async (userId: string) => {
+  const fetchProfile = useCallback(async (userId: string, currentUser?: User | null) => {
     const { data } = await supabase
       .from("profiles")
       .select("id, email, full_name, plan, credits")
       .eq("id", userId)
       .maybeSingle();
-    if (data) setProfile(data as Profile);
+    if (data) {
+      setProfile(data as Profile);
+      return;
+    }
+
+    const email = currentUser?.email ?? null;
+    const fullName =
+      (currentUser?.user_metadata?.full_name as string | undefined) ??
+      (email ? email.split("@")[0] : "Usuário");
+    const { data: created } = await supabase
+      .from("profiles")
+      .insert({ id: userId, email, full_name: fullName })
+      .select("id, email, full_name, plan, credits")
+      .maybeSingle();
+    if (created) setProfile(created as Profile);
   }, []);
 
   const refreshProfile = useCallback(async () => {
-    if (user) await fetchProfile(user.id);
+    if (user) await fetchProfile(user.id, user);
   }, [user, fetchProfile]);
 
   useEffect(() => {
@@ -56,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
-        setTimeout(() => fetchProfile(newSession.user.id), 0);
+        setTimeout(() => fetchProfile(newSession.user.id, newSession.user), 0);
       } else {
         setProfile(null);
       }
@@ -66,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: existing } }) => {
       setSession(existing);
       setUser(existing?.user ?? null);
-      if (existing?.user) fetchProfile(existing.user.id);
+      if (existing?.user) fetchProfile(existing.user.id, existing.user);
       setLoading(false);
     });
 
