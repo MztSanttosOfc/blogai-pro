@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useMatches, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -27,9 +27,9 @@ export const Route = createFileRoute("/_authenticated/library")({
 });
 
 function LibraryRoutePage() {
-  const matches = useMatches();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
 
-  if (matches.some((match) => match.routeId === "/_authenticated/library/$id")) {
+  if (/^\/library\/[^/]+$/.test(pathname)) {
     return <Outlet />;
   }
 
