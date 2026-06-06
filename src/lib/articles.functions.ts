@@ -278,11 +278,22 @@ export const generateArticle = createServerFn({ method: "POST" })
     const finishReason = choice?.finish_reason ?? choice?.native_finish_reason;
     const raw: string = choice?.message?.content ?? "";
 
+    console.info(
+      "[article-ai:completion]",
+      JSON.stringify({
+        model: completion?.model,
+        finishReason,
+        usage: completion?.usage,
+        contentType: typeof raw,
+        contentLength: raw.length,
+      }),
+    );
+
     if (!raw.trim()) {
       throw new Error("A IA não retornou conteúdo. Tente novamente.");
     }
 
-    const parsed = parseArticleJson(raw, finishReason);
+    const parsed = parseArticleJson(raw, finishReason, data.keyword);
 
     const headings = Array.isArray(parsed.headings) ? parsed.headings : [];
     const faq = Array.isArray(parsed.faq) ? parsed.faq : [];
