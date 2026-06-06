@@ -176,7 +176,7 @@ function LibraryPage() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="sm">
-                  <Link to="/library/$id" params={{ id: a.id }} search={{ edit: "1" }}>
+                  <Link to="/library/$id" params={{ id: a.id }} search={{ edit: true }}>
                     <Pencil className="h-4 w-4" /> Editar
                   </Link>
                 </Button>
