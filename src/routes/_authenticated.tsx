@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
+  ssr: false,
   component: AuthenticatedLayout,
 });
 

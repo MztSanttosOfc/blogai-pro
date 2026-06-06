@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Globe, Loader2, CheckCircle2, LinkIcon, Unlink, ExternalLink, Settings2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -41,6 +41,7 @@ function ConnectionsPage() {
 
   const [connecting, setConnecting] = useState(false);
   const [saving, setSaving] = useState(false);
+  const connectingRef = useRef(false);
 
   const { data: status, isLoading } = useQuery({
     queryKey: ["blogger-status"],
@@ -56,14 +57,17 @@ function ConnectionsPage() {
   });
 
   const handleConnect = async () => {
+    if (connectingRef.current) return;
+    connectingRef.current = true;
     setConnecting(true);
     try {
       const state = crypto.randomUUID();
       sessionStorage.setItem("blogger_oauth_state", state);
       const redirectUri = `${window.location.origin}/blogger/callback`;
       const { url } = await authUrlFn({ data: { redirectUri, state } });
-      window.location.href = url;
+      window.location.assign(url);
     } catch (e) {
+      connectingRef.current = false;
       setConnecting(false);
       toast.error(e instanceof Error ? e.message : "Falha ao iniciar a conexão.");
     }
