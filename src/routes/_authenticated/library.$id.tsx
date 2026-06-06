@@ -30,6 +30,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { publishArticleToBlogger, getBloggerStatus } from "@/lib/blogger.functions";
 
 export const Route = createFileRoute("/_authenticated/library/$id")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    edit: search.edit === "1" || search.edit === true,
+  }),
   component: ArticleDetailPage,
 });
 
@@ -44,6 +47,7 @@ interface Faq {
 
 function ArticleDetailPage() {
   const { id } = Route.useParams();
+  const { edit } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -76,8 +80,9 @@ function ArticleDetailPage() {
       setFaq(((article.faq as unknown as Faq[]) ?? []).map((f) => ({ ...f })));
       setTags([...((article.tags as string[]) ?? [])]);
       setStatus(article.status ?? "draft");
+      if (edit) setEditing(true);
     }
-  }, [article]);
+  }, [article, edit]);
 
   if (isLoading) {
     return (
