@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Library, Copy, Trash2, Eye, Search, FileText, Send, Loader2 } from "lucide-react";
+import { Library, Copy, Trash2, Eye, Search, FileText, Send, Loader2, Pencil } from "lucide-react";
 import { publishArticleToBlogger, getBloggerStatus } from "@/lib/blogger.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -173,6 +173,11 @@ function LibraryPage() {
                 <Button asChild variant="outline" size="sm">
                   <Link to="/library/$id" params={{ id: a.id }}>
                     <Eye className="h-4 w-4" /> Ver
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/library/$id" params={{ id: a.id }} search={{ edit: "1" }}>
+                    <Pencil className="h-4 w-4" /> Editar
                   </Link>
                 </Button>
                 <Button
