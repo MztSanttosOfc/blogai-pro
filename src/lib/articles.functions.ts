@@ -19,27 +19,140 @@ interface GeneratedArticle {
   tags: string[];
 }
 
+const ArticleResponseSchema = z.object({
+  title: z.string().trim().min(1).max(180),
+  meta_description: z.string().trim().max(260).default(""),
+  headings: z
+    .array(
+      z.object({
+        type: z.enum(["h2", "h3"]).default("h2"),
+        text: z.string().trim().min(1),
+      }),
+    )
+    .default([]),
+  content: z.string().trim().min(50),
+  faq: z
+    .array(
+      z.object({
+        question: z.string().trim().min(1),
+        answer: z.string().trim().min(1),
+      }),
+    )
+    .default([]),
+  tags: z.array(z.string().trim().min(1)).default([]),
+});
+
+function logAiParsing(stage: string, payload: unknown) {
+  console.info(`[article-ai:${stage}]`, JSON.stringify(payload, null, 2));
+}
+
+function extractJsonObject(text: string): string {
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const source = (fenced?.[1] ?? text).trim();
+  const first = source.indexOf("{");
+  if (first === -1) return source;
+
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = first; i < source.length; i += 1) {
+    const char = source[i];
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+    if (char === "\\") {
+      escaped = true;
+      continue;
+    }
+    if (char === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (inString) continue;
+    if (char === "{") depth += 1;
+    if (char === "}") depth -= 1;
+    if (depth === 0) return source.slice(first, i + 1);
+  }
+  return source.slice(first);
+}
+
+function normalizeArticlePayload(input: unknown, keywordFallback = ""): unknown {
+  const obj = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  const wrapped =
+    obj.article && typeof obj.article === "object"
+      ? (obj.article as Record<string, unknown>)
+      : obj.data && typeof obj.data === "object"
+        ? (obj.data as Record<string, unknown>)
+        : obj;
+
+  const rawHeadings = Array.isArray(wrapped.headings)
+    ? wrapped.headings
+    : Array.isArray(wrapped.outline)
+      ? wrapped.outline
+      : [];
+  const headings = rawHeadings
+    .map((heading) => {
+      if (typeof heading === "string") return { type: "h2", text: heading };
+      if (heading && typeof heading === "object") {
+        const h = heading as Record<string, unknown>;
+        const type = h.type === "h3" || h.level === 3 || h.level === "h3" ? "h3" : "h2";
+        return { type, text: String(h.text ?? h.title ?? h.heading ?? "").trim() };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  const rawContent = wrapped.content ?? wrapped.fullContent ?? wrapped.full_content ?? wrapped.articleContent;
+  const content = Array.isArray(rawContent)
+    ? rawContent.map((part) => (typeof part === "string" ? part : JSON.stringify(part))).join("\n\n")
+    : String(rawContent ?? "");
+
+  const rawFaq = Array.isArray(wrapped.faq) ? wrapped.faq : [];
+  const faq = rawFaq
+    .map((item) => {
+      if (typeof item === "string") return { question: item, answer: "" };
+      if (item && typeof item === "object") {
+        const f = item as Record<string, unknown>;
+        return {
+          question: String(f.question ?? f.pergunta ?? f.q ?? "").trim(),
+          answer: String(f.answer ?? f.resposta ?? f.a ?? "").trim(),
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  const rawTags = Array.isArray(wrapped.tags)
+    ? wrapped.tags
+    : typeof wrapped.tags === "string"
+      ? wrapped.tags.split(",")
+      : [];
+
+  return {
+    title: wrapped.title ?? wrapped.titleSEO ?? wrapped.seo_title ?? keywordFallback,
+    meta_description: wrapped.meta_description ?? wrapped.metaDescription ?? wrapped.meta ?? "",
+    headings,
+    content,
+    faq,
+    tags: rawTags.map((tag) => String(tag).trim()).filter(Boolean),
+  };
+}
+
 /**
  * Robustly extract and parse the JSON article object returned by the AI.
  * Handles markdown fences, surrounding prose, trailing commas, control chars,
  * and detects truncated responses (token-limit cuts) to give a clear error.
  */
-function parseArticleJson(raw: string, finishReason?: string): GeneratedArticle {
-  let cleaned = raw
-    .replace(/```json\s*/gi, "")
-    .replace(/```/g, "")
-    .trim();
+function parseArticleJson(raw: string, finishReason?: string, keywordFallback = ""): GeneratedArticle {
+  logAiParsing("raw", { finishReason, raw });
 
-  // Isolate the JSON object even if the model added prose around it.
-  const start = cleaned.indexOf("{");
-  const end = cleaned.lastIndexOf("}");
-  if (start !== -1 && end !== -1 && end > start) {
-    cleaned = cleaned.slice(start, end + 1);
-  }
+  let cleaned = extractJsonObject(raw);
+  logAiParsing("cleaned", { cleaned });
 
-  const tryParse = (s: string): GeneratedArticle | null => {
+  const tryParse = (s: string): unknown | null => {
     try {
-      return JSON.parse(s) as GeneratedArticle;
+      return JSON.parse(s) as unknown;
     } catch {
       return null;
     }
@@ -54,6 +167,7 @@ function parseArticleJson(raw: string, finishReason?: string): GeneratedArticle 
       .replace(/,\s*]/g, "]")
       .replace(/[\u0000-\u001F\u007F]/g, " ");
     parsed = tryParse(repaired);
+    if (parsed) cleaned = repaired;
   }
 
   if (!parsed) {
@@ -65,10 +179,23 @@ function parseArticleJson(raw: string, finishReason?: string): GeneratedArticle 
         "O artigo ficou muito longo e foi cortado. Tente gerar com menos palavras.",
       );
     }
+    logAiParsing("parse-error", { cleaned });
     throw new Error("Resposta da IA inválida. Tente novamente.");
   }
 
-  return parsed;
+  const normalized = normalizeArticlePayload(parsed, keywordFallback);
+  const validated = ArticleResponseSchema.safeParse(normalized);
+  if (!validated.success) {
+    logAiParsing("validation-error", {
+      parsed,
+      normalized,
+      issues: validated.error.issues,
+    });
+    throw new Error("Resposta da IA inválida. A estrutura do artigo veio incompleta.");
+  }
+
+  logAiParsing("validated", validated.data);
+  return validated.data;
 }
 
 export const generateArticle = createServerFn({ method: "POST" })
