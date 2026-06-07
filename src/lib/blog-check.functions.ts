@@ -127,7 +127,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       user_id: userId,
       url: data.url,
       score,
-      report,
+      report: report as unknown as Record<string, unknown>,
     });
 
     return { score, items, recommendations };
