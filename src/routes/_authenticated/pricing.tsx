@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/pricing")({
 function PricingPage() {
   const { profile } = useAuth();
   const [checkout, setCheckout] = useState<{
-    planId: "pro" | "premium";
+    planId: "pro" | "premium" | "teste";
     name: string;
     price: string;
   } | null>(null);
