@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -17,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PLANS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { HowItWorksModal } from "@/components/HowItWorksModal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
