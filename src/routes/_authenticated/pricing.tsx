@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
-import { PLANS, type PlanId } from "@/lib/constants";
+import { PLANS } from "@/lib/constants";
 import { PixCheckoutDialog } from "@/components/PixCheckoutDialog";
 
 export const Route = createFileRoute("/_authenticated/pricing")({
