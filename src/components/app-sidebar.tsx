@@ -34,6 +34,7 @@ const items = [
   { title: "Biblioteca", url: "/library", icon: Library },
   { title: "Blogger", url: "/connections", icon: Globe },
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
+  { title: "Financeiro", url: "/financeiro", icon: Wallet },
 ];
 
 const premiumItems = [
