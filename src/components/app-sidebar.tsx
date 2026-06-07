@@ -7,6 +7,8 @@ import {
   LogOut,
   Coins,
   Globe,
+  Crown,
+  ShieldCheck,
 } from "lucide-react";
 import {
   Sidebar,
@@ -32,6 +34,11 @@ const items = [
   { title: "Biblioteca", url: "/library", icon: Library },
   { title: "Blogger", url: "/connections", icon: Globe },
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
+];
+
+const premiumItems = [
+  { title: "Central de Monetização", url: "/monetizacao", icon: Crown },
+  { title: "Verificar Meu Blog", url: "/verificar-blog", icon: ShieldCheck },
 ];
 
 export function AppSidebar() {
@@ -79,6 +86,30 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Premium</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {premiumItems.map((item) => {
+                const active =
+                  currentPath === item.url || currentPath.startsWith(item.url + "/");
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={active}>
+                      <Link to={item.url} className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                        <item.icon className="h-4 w-4 text-primary" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+
 
         <SidebarGroup>
           <SidebarGroupContent>
