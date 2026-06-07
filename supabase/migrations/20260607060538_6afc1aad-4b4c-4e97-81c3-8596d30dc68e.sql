@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.activate_payment(uuid, text) FROM anon, authenticated;
