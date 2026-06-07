@@ -112,8 +112,13 @@ const STEPS = [
 ];
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [howOpen, setHowOpen] = useState(false);
+  const handleStart = () => navigate({ to: user ? "/dashboard" : "/login" });
   return (
     <div className="min-h-screen bg-background">
+      <HowItWorksModal open={howOpen} onOpenChange={setHowOpen} />
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
@@ -162,13 +167,16 @@ function LandingPage() {
               monetizar — tudo de forma automatizada, em minutos.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild variant="hero" size="lg" className="w-full sm:w-auto">
-                <Link to="/signup">
-                  Começar agora grátis <ArrowRight className="h-4 w-4" />
-                </Link>
+              <Button variant="hero" size="lg" className="w-full sm:w-auto" onClick={handleStart}>
+                Começar agora grátis <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-                <a href="#como-funciona">Ver como funciona</a>
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto"
+                onClick={() => setHowOpen(true)}
+              >
+                Ver como funciona
               </Button>
             </div>
             <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted-foreground">
