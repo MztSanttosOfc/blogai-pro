@@ -9,6 +9,7 @@ import {
   Globe,
   Crown,
   ShieldCheck,
+  Wallet,
 } from "lucide-react";
 import {
   Sidebar,
