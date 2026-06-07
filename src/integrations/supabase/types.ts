@@ -74,6 +74,33 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_checks: {
+        Row: {
+          created_at: string
+          id: string
+          report: Json
+          score: number
+          url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          report?: Json
+          score?: number
+          url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          report?: Json
+          score?: number
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blogger_connections: {
         Row: {
           access_token: string
@@ -113,6 +140,177 @@ export type Database = {
         }
         Relationships: []
       }
+      course_progress: {
+        Row: {
+          completed: boolean
+          created_at: string
+          id: string
+          lesson_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          lesson_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          lesson_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      credit_transactions: {
+        Row: {
+          amount: number
+          balance_after: number | null
+          created_at: string
+          description: string
+          id: string
+          type: Database["public"]["Enums"]["credit_txn_type"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          type: Database["public"]["Enums"]["credit_txn_type"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          type?: Database["public"]["Enums"]["credit_txn_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_logs: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          level: string
+          payload: Json
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          level?: string
+          payload?: Json
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          level?: string
+          payload?: Json
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          external_id: string | null
+          id: string
+          metadata: Json
+          method: string
+          paid_at: string | null
+          pix_copy_paste: string | null
+          pix_qr_code: string | null
+          plan_id: string
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          metadata?: Json
+          method?: string
+          paid_at?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          plan_id: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          metadata?: Json
+          method?: string
+          paid_at?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          plan_id?: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      plans: {
+        Row: {
+          active: boolean
+          created_at: string
+          features: Json
+          id: string
+          is_unlimited: boolean
+          monthly_credits: number
+          name: string
+          price_cents: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          features?: Json
+          id: string
+          is_unlimited?: boolean
+          monthly_credits?: number
+          name: string
+          price_cents?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          features?: Json
+          id?: string
+          is_unlimited?: boolean
+          monthly_credits?: number
+          name?: string
+          price_cents?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -143,6 +341,42 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          plan_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          syncpay_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          syncpay_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          syncpay_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -152,6 +386,14 @@ export type Database = {
     }
     Enums: {
       article_status: "draft" | "published"
+      credit_txn_type:
+        | "grant"
+        | "consume"
+        | "renewal"
+        | "purchase"
+        | "adjustment"
+      payment_status: "pending" | "paid" | "failed" | "refunded" | "canceled"
+      subscription_status: "active" | "pending" | "canceled" | "expired"
       user_plan: "free" | "pro" | "premium"
     }
     CompositeTypes: {
@@ -281,6 +523,15 @@ export const Constants = {
   public: {
     Enums: {
       article_status: ["draft", "published"],
+      credit_txn_type: [
+        "grant",
+        "consume",
+        "renewal",
+        "purchase",
+        "adjustment",
+      ],
+      payment_status: ["pending", "paid", "failed", "refunded", "canceled"],
+      subscription_status: ["active", "pending", "canceled", "expired"],
       user_plan: ["free", "pro", "premium"],
     },
   },
