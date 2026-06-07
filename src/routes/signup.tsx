@@ -50,7 +50,7 @@ function SignupPage() {
       toast.error(error.includes("already") ? "Este e-mail já está cadastrado." : error);
       return;
     }
-    toast.success("Conta criada com sucesso!");
+    toast.success("Bem-vindo ao BlogAI Pro! Você recebeu 10 créditos gratuitos. 🎉");
     navigate({ to: "/dashboard" });
   };
 
