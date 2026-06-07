@@ -13,7 +13,9 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -40,11 +42,23 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedVerificarBlogRoute =
+  AuthenticatedVerificarBlogRouteImport.update({
+    id: '/verificar-blog',
+    path: '/verificar-blog',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedMonetizacaoRoute =
+  AuthenticatedMonetizacaoRouteImport.update({
+    id: '/monetizacao',
+    path: '/monetizacao',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
@@ -86,7 +100,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/pricing': typeof AuthenticatedPricingRoute
+  '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
 }
@@ -98,7 +114,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/pricing': typeof AuthenticatedPricingRoute
+  '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
 }
@@ -112,7 +130,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
+  '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
 }
@@ -126,7 +146,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/generate'
     | '/library'
+    | '/monetizacao'
     | '/pricing'
+    | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -138,7 +160,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/generate'
     | '/library'
+    | '/monetizacao'
     | '/pricing'
+    | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
   id:
@@ -151,7 +175,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/generate'
     | '/_authenticated/library'
+    | '/_authenticated/monetizacao'
     | '/_authenticated/pricing'
+    | '/_authenticated/verificar-blog'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
   fileRoutesById: FileRoutesById
@@ -193,11 +219,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/verificar-blog': {
+      id: '/_authenticated/verificar-blog'
+      path: '/verificar-blog'
+      fullPath: '/verificar-blog'
+      preLoaderRoute: typeof AuthenticatedVerificarBlogRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/pricing': {
       id: '/_authenticated/pricing'
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof AuthenticatedPricingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/monetizacao': {
+      id: '/_authenticated/monetizacao'
+      path: '/monetizacao'
+      fullPath: '/monetizacao'
+      preLoaderRoute: typeof AuthenticatedMonetizacaoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/library': {
@@ -261,7 +301,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
+  AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
+  AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
   AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
 }
 
@@ -270,7 +312,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
+  AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
+  AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
   AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
 }
 

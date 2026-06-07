@@ -127,7 +127,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       user_id: userId,
       url: data.url,
       score,
-      report,
+      report: report as unknown as import("@/integrations/supabase/types").Json,
     });
 
     return { score, items, recommendations };
