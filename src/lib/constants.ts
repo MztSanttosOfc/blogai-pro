@@ -23,7 +23,7 @@ export const LANGUAGES = [
 
 export const WORD_COUNTS = [500, 800, 1200, 1500, 2000] as const;
 
-export type PlanId = "free" | "pro" | "premium";
+export type PlanId = "free" | "pro" | "premium" | "teste";
 
 export interface Plan {
   id: PlanId;
