@@ -88,6 +88,30 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
+          <SidebarGroupLabel>Premium</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {premiumItems.map((item) => {
+                const active =
+                  currentPath === item.url || currentPath.startsWith(item.url + "/");
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={active}>
+                      <Link to={item.url} className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                        <item.icon className="h-4 w-4 text-primary" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+
+
+        <SidebarGroup>
           <SidebarGroupContent>
             <div className="mx-2 rounded-xl bg-sidebar-accent p-4">
               <div className="flex items-center gap-2 text-sidebar-accent-foreground">
