@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { createPixPayment, checkPaymentStatus } from "@/lib/payments.functions";
 import { useAuth } from "@/hooks/use-auth";
 
-type PlanId = "pro" | "premium";
+type PlanId = "pro" | "premium" | "teste";
 
 interface PixCheckoutDialogProps {
   open: boolean;

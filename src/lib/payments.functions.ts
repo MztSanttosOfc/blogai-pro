@@ -4,7 +4,7 @@ import { getRequestUrl } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const CreatePixInput = z.object({
-  planId: z.enum(["pro", "premium"]),
+  planId: z.enum(["pro", "premium", "teste"]),
   cpf: z.string().trim().regex(/^\d{11}$/, "CPF deve conter 11 dígitos."),
   phone: z.string().trim().regex(/^\d{10,11}$/, "Telefone deve conter DDD + número."),
 });

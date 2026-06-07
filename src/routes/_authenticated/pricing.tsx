@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/pricing")({
 function PricingPage() {
   const { profile } = useAuth();
   const [checkout, setCheckout] = useState<{
-    planId: "pro" | "premium";
+    planId: "pro" | "premium" | "teste";
     name: string;
     price: string;
   } | null>(null);
@@ -87,6 +87,23 @@ function PricingPage() {
             </Card>
           );
         })}
+      </div>
+
+      <div className="rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30 p-4 text-center">
+        <p className="text-sm font-medium">Validação de integração</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Gera um Pix de R$ 1,00 para testar todo o fluxo de pagamento ponta a ponta.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-3"
+          onClick={() =>
+            setCheckout({ planId: "teste", name: "Teste", price: "R$ 1,00" })
+          }
+        >
+          Testar pagamento (R$ 1,00)
+        </Button>
       </div>
 
       <PixCheckoutDialog
