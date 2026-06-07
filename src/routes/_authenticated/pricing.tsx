@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Check } from "lucide-react";
-import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { PLANS } from "@/lib/constants";
+import { PixCheckoutDialog } from "@/components/PixCheckoutDialog";
 
 export const Route = createFileRoute("/_authenticated/pricing")({
   head: () => ({
@@ -17,6 +18,11 @@ export const Route = createFileRoute("/_authenticated/pricing")({
 
 function PricingPage() {
   const { profile } = useAuth();
+  const [checkout, setCheckout] = useState<{
+    planId: "pro" | "premium";
+    name: string;
+    price: string;
+  } | null>(null);
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
@@ -30,6 +36,7 @@ function PricingPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {PLANS.map((plan) => {
           const current = profile?.plan === plan.id;
+          const isPaid = plan.id === "pro" || plan.id === "premium";
           return (
             <Card
               key={plan.id}
@@ -65,15 +72,30 @@ function PricingPage() {
               <Button
                 variant={plan.highlight ? "hero" : "outline"}
                 className="mt-6 w-full"
-                disabled={current}
-                onClick={() => toast.info("Pagamentos em breve! Em breve você poderá assinar este plano.")}
+                disabled={current || !isPaid}
+                onClick={() =>
+                  isPaid &&
+                  setCheckout({
+                    planId: plan.id as "pro" | "premium",
+                    name: plan.name,
+                    price: `${plan.price}${plan.period}`,
+                  })
+                }
               >
-                {current ? "Plano atual" : "Assinar"}
+                {current ? "Plano atual" : isPaid ? "Assinar" : "Plano gratuito"}
               </Button>
             </Card>
           );
         })}
       </div>
+
+      <PixCheckoutDialog
+        open={checkout !== null}
+        onOpenChange={(o) => !o && setCheckout(null)}
+        planId={checkout?.planId ?? null}
+        planName={checkout?.name ?? ""}
+        priceLabel={checkout?.price ?? ""}
+      />
     </div>
   );
 }

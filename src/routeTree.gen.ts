@@ -18,10 +18,12 @@ import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
+import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
+import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -69,6 +71,11 @@ const AuthenticatedGenerateRoute = AuthenticatedGenerateRouteImport.update({
   path: '/generate',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -91,6 +98,12 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiPublicWebhooksSyncpayRoute =
+  ApiPublicWebhooksSyncpayRouteImport.update({
+    id: '/api/public/webhooks/syncpay',
+    path: '/api/public/webhooks/syncpay',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -98,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
@@ -105,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -112,6 +127,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
@@ -119,6 +135,7 @@ export interface FileRoutesByTo {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -128,6 +145,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
@@ -135,6 +153,7 @@ export interface FileRoutesById {
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -144,6 +163,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/connections'
     | '/dashboard'
+    | '/financeiro'
     | '/generate'
     | '/library'
     | '/monetizacao'
@@ -151,6 +171,7 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
+    | '/api/public/webhooks/syncpay'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -158,6 +179,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/connections'
     | '/dashboard'
+    | '/financeiro'
     | '/generate'
     | '/library'
     | '/monetizacao'
@@ -165,6 +187,7 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
+    | '/api/public/webhooks/syncpay'
   id:
     | '__root__'
     | '/'
@@ -173,6 +196,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/connections'
     | '/_authenticated/dashboard'
+    | '/_authenticated/financeiro'
     | '/_authenticated/generate'
     | '/_authenticated/library'
     | '/_authenticated/monetizacao'
@@ -180,6 +204,7 @@ export interface FileRouteTypes {
     | '/_authenticated/verificar-blog'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
+    | '/api/public/webhooks/syncpay'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -187,6 +212,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -254,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGenerateRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/financeiro': {
+      id: '/_authenticated/financeiro'
+      path: '/financeiro'
+      fullPath: '/financeiro'
+      preLoaderRoute: typeof AuthenticatedFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -282,6 +315,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/webhooks/syncpay': {
+      id: '/api/public/webhooks/syncpay'
+      path: '/api/public/webhooks/syncpay'
+      fullPath: '/api/public/webhooks/syncpay'
+      preLoaderRoute: typeof ApiPublicWebhooksSyncpayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -299,6 +339,7 @@ const AuthenticatedLibraryRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
@@ -310,6 +351,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
@@ -327,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
