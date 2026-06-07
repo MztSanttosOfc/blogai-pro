@@ -88,4 +88,5 @@ export const PLAN_LABELS: Record<PlanId, string> = {
   free: "Gratuito",
   pro: "Pro",
   premium: "Premium",
+  teste: "Teste",
 };
