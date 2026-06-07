@@ -382,7 +382,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      activate_payment: {
+        Args: { p_external_id?: string; p_payment_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       article_status: "draft" | "published"
