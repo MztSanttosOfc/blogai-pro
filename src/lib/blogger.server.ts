@@ -115,8 +115,9 @@ export async function fetchUserBlogs(accessToken: string): Promise<BloggerBlog[]
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao listar blogs (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] list blogs failed", res.status, body);
+    throw new Error(`Falha ao listar blogs (${res.status}).`);
   }
   const data = (await res.json()) as { items?: BloggerBlog[] };
   return (data.items ?? []).map((b) => ({ id: b.id, name: b.name, url: b.url }));
