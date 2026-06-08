@@ -31,12 +31,17 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       throw new Error("Recurso exclusivo do plano Premium.");
     }
 
+    // SSRF guard: block internal/metadata/private targets before any fetch.
+    const target = assertPublicHttpUrl(data.url);
+    const origin = target.origin;
+
     let html = "";
     let robots = "";
     let sitemapOk = false;
     try {
-      const res = await fetch(data.url, {
+      const res = await fetch(target.toString(), {
         headers: { "User-Agent": "Mozilla/5.0 BlogAI-Pro-Checker" },
+        redirect: "error",
         signal: AbortSignal.timeout(15000),
       });
       html = (await res.text()).toLowerCase();
@@ -44,22 +49,20 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       throw new Error("Não foi possível acessar a URL informada. Verifique o endereço.");
     }
 
-    const origin = (() => {
-      try {
-        return new URL(data.url).origin;
-      } catch {
-        return data.url.replace(/\/$/, "");
-      }
-    })();
-
     try {
-      const r = await fetch(`${origin}/sitemap.xml`, { signal: AbortSignal.timeout(10000) });
+      const r = await fetch(`${origin}/sitemap.xml`, {
+        redirect: "error",
+        signal: AbortSignal.timeout(10000),
+      });
       sitemapOk = r.ok;
     } catch {
       sitemapOk = false;
     }
     try {
-      const r = await fetch(`${origin}/robots.txt`, { signal: AbortSignal.timeout(10000) });
+      const r = await fetch(`${origin}/robots.txt`, {
+        redirect: "error",
+        signal: AbortSignal.timeout(10000),
+      });
       if (r.ok) robots = (await r.text()).toLowerCase();
     } catch {
       robots = "";
