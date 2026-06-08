@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertPublicHttpUrl } from "./ssrf-guard";
 
 const Input = z.object({ url: z.string().trim().url().max(300) });
 
