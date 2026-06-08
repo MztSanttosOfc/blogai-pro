@@ -92,8 +92,9 @@ export async function refreshAccessToken(refreshToken: string): Promise<TokenRes
     }),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao renovar a sessão do Google (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] token refresh failed", res.status, body);
+    throw new Error(`Falha ao renovar a sessão do Google (${res.status}).`);
   }
   return (await res.json()) as TokenResult;
 }
