@@ -71,8 +71,9 @@ export async function exchangeCodeForTokens(
     }),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao conectar com o Google (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] token exchange failed", res.status, body);
+    throw new Error(`Falha ao conectar com o Google (${res.status}).`);
   }
   return (await res.json()) as TokenResult;
 }
@@ -91,8 +92,9 @@ export async function refreshAccessToken(refreshToken: string): Promise<TokenRes
     }),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao renovar a sessão do Google (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] token refresh failed", res.status, body);
+    throw new Error(`Falha ao renovar a sessão do Google (${res.status}).`);
   }
   return (await res.json()) as TokenResult;
 }
@@ -113,8 +115,9 @@ export async function fetchUserBlogs(accessToken: string): Promise<BloggerBlog[]
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao listar blogs (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] list blogs failed", res.status, body);
+    throw new Error(`Falha ao listar blogs (${res.status}).`);
   }
   const data = (await res.json()) as { items?: BloggerBlog[] };
   return (data.items ?? []).map((b) => ({ id: b.id, name: b.name, url: b.url }));
@@ -147,8 +150,9 @@ export async function createBloggerPost(
     }),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao publicar no Blogger (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] publish post failed", res.status, body);
+    throw new Error(`Falha ao publicar no Blogger (${res.status}).`);
   }
   const data = (await res.json()) as { id: string; url: string };
   return { id: data.id, url: data.url };

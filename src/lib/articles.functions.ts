@@ -323,9 +323,12 @@ export const generateArticle = createServerFn({ method: "POST" })
       throw new Error("Não foi possível salvar o artigo gerado.");
     }
 
-    // Decrement credit (skip for premium/unlimited)
+    // Decrement credit (skip for premium/unlimited).
+    // Uses the service-role client because clients are not allowed to update
+    // the protected `credits` column on profiles (privilege-escalation guard).
     if (!unlimited) {
-      await supabase
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin
         .from("profiles")
         .update({ credits: Math.max(0, profile.credits - 1) })
         .eq("id", userId);

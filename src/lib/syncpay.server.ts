@@ -38,7 +38,8 @@ async function getAuthToken(): Promise<string> {
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`Falha na autenticação SyncPay (${res.status}). ${text.slice(0, 200)}`);
+    console.error("[syncpay] auth failed", res.status, text.slice(0, 500));
+    throw new Error(`Falha na autenticação SyncPay (${res.status}).`);
   }
 
   const json = (await res.json()) as { access_token?: string; expires_in?: number };

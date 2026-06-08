@@ -10,13 +10,43 @@ import { createFileRoute } from "@tanstack/react-router";
  *
  * URL (production): https://blogai-pro.lovable.app/api/public/webhooks/syncpay
  */
+
+// Best-effort, in-process rate limiter (per source IP). Worker instances are
+// stateless across cold starts, so this is a mitigation, not a hard guarantee.
+const RATE_LIMIT = 30; // requests
+const RATE_WINDOW_MS = 60_000; // per minute
+const MAX_BODY_BYTES = 16_384; // reject oversized payloads
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || entry.resetAt < now) {
+    hits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_LIMIT;
+}
+
 export const Route = createFileRoute("/api/public/webhooks/syncpay")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const ip =
+          request.headers.get("cf-connecting-ip") ||
+          request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+          "unknown";
+        if (isRateLimited(ip)) {
+          return new Response("rate limited", { status: 429 });
+        }
+
         let identifier: string | null = null;
         try {
           const raw = await request.text();
+          if (raw.length > MAX_BODY_BYTES) {
+            return new Response("payload too large", { status: 413 });
+          }
           const body = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
 
           // SyncPay payloads vary; accept the most common identifier fields.
