@@ -150,8 +150,9 @@ export async function createBloggerPost(
     }),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao publicar no Blogger (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] publish post failed", res.status, body);
+    throw new Error(`Falha ao publicar no Blogger (${res.status}).`);
   }
   const data = (await res.json()) as { id: string; url: string };
   return { id: data.id, url: data.url };
