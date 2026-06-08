@@ -71,8 +71,9 @@ export async function exchangeCodeForTokens(
     }),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Falha ao conectar com o Google (${res.status}): ${body}`);
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] token exchange failed", res.status, body);
+    throw new Error(`Falha ao conectar com o Google (${res.status}).`);
   }
   return (await res.json()) as TokenResult;
 }
