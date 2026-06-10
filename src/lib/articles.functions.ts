@@ -19,183 +19,159 @@ interface GeneratedArticle {
   tags: string[];
 }
 
-const ArticleResponseSchema = z.object({
-  title: z.string().trim().min(1).max(180),
-  meta_description: z.string().trim().max(260).default(""),
-  headings: z
-    .array(
-      z.object({
-        type: z.enum(["h2", "h3"]).default("h2"),
-        text: z.string().trim().min(1),
-      }),
-    )
-    .default([]),
-  content: z.string().trim().min(50),
-  faq: z
-    .array(
-      z.object({
-        question: z.string().trim().min(1),
-        answer: z.string().trim().min(1),
-      }),
-    )
-    .default([]),
-  tags: z.array(z.string().trim().min(1)).default([]),
-});
-
-function logAiParsing(stage: string, payload: unknown) {
+function logAi(stage: string, payload: unknown) {
   console.info(`[article-ai:${stage}]`, JSON.stringify(payload, null, 2));
 }
 
-function extractJsonObject(text: string): string {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const source = (fenced?.[1] ?? text).trim();
-  const first = source.indexOf("{");
-  if (first === -1) return source;
-
-  let depth = 0;
-  let inString = false;
-  let escaped = false;
-  for (let i = first; i < source.length; i += 1) {
-    const char = source[i];
-    if (escaped) {
-      escaped = false;
+/**
+ * Derive the H2/H3 outline from the generated Markdown content.
+ * This avoids relying on the model to keep a separate headings list in sync
+ * and is impossible to get out of order with the actual article.
+ */
+function extractHeadings(markdown: string): { type: "h2" | "h3"; text: string }[] {
+  const headings: { type: "h2" | "h3"; text: string }[] = [];
+  for (const rawLine of markdown.split("\n")) {
+    const line = rawLine.trim();
+    const h3 = line.match(/^###\s+(.*)$/);
+    if (h3) {
+      headings.push({ type: "h3", text: h3[1].trim() });
       continue;
     }
-    if (char === "\\") {
-      escaped = true;
-      continue;
+    const h2 = line.match(/^##\s+(.*)$/);
+    if (h2) {
+      headings.push({ type: "h2", text: h2[1].trim() });
     }
-    if (char === '"') {
-      inString = !inString;
-      continue;
-    }
-    if (inString) continue;
-    if (char === "{") depth += 1;
-    if (char === "}") depth -= 1;
-    if (depth === 0) return source.slice(first, i + 1);
   }
-  return source.slice(first);
-}
-
-function normalizeArticlePayload(input: unknown, keywordFallback = ""): unknown {
-  const obj = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
-  const wrapped =
-    obj.article && typeof obj.article === "object"
-      ? (obj.article as Record<string, unknown>)
-      : obj.data && typeof obj.data === "object"
-        ? (obj.data as Record<string, unknown>)
-        : obj;
-
-  const rawHeadings = Array.isArray(wrapped.headings)
-    ? wrapped.headings
-    : Array.isArray(wrapped.outline)
-      ? wrapped.outline
-      : [];
-  const headings = rawHeadings
-    .map((heading) => {
-      if (typeof heading === "string") return { type: "h2", text: heading };
-      if (heading && typeof heading === "object") {
-        const h = heading as Record<string, unknown>;
-        const type = h.type === "h3" || h.level === 3 || h.level === "h3" ? "h3" : "h2";
-        return { type, text: String(h.text ?? h.title ?? h.heading ?? "").trim() };
-      }
-      return null;
-    })
-    .filter(Boolean);
-
-  const rawContent = wrapped.content ?? wrapped.fullContent ?? wrapped.full_content ?? wrapped.articleContent;
-  const content = Array.isArray(rawContent)
-    ? rawContent.map((part) => (typeof part === "string" ? part : JSON.stringify(part))).join("\n\n")
-    : String(rawContent ?? "");
-
-  const rawFaq = Array.isArray(wrapped.faq) ? wrapped.faq : [];
-  const faq = rawFaq
-    .map((item) => {
-      if (typeof item === "string") return { question: item, answer: "" };
-      if (item && typeof item === "object") {
-        const f = item as Record<string, unknown>;
-        return {
-          question: String(f.question ?? f.pergunta ?? f.q ?? "").trim(),
-          answer: String(f.answer ?? f.resposta ?? f.a ?? "").trim(),
-        };
-      }
-      return null;
-    })
-    .filter(Boolean);
-
-  const rawTags = Array.isArray(wrapped.tags)
-    ? wrapped.tags
-    : typeof wrapped.tags === "string"
-      ? wrapped.tags.split(",")
-      : [];
-
-  return {
-    title: wrapped.title ?? wrapped.titleSEO ?? wrapped.seo_title ?? keywordFallback,
-    meta_description: wrapped.meta_description ?? wrapped.metaDescription ?? wrapped.meta ?? "",
-    headings,
-    content,
-    faq,
-    tags: rawTags.map((tag) => String(tag).trim()).filter(Boolean),
-  };
+  return headings;
 }
 
 /**
- * Robustly extract and parse the JSON article object returned by the AI.
- * Handles markdown fences, surrounding prose, trailing commas, control chars,
- * and detects truncated responses (token-limit cuts) to give a clear error.
+ * Parse the FAQ block. Each item is a `P:` (pergunta) line followed by an
+ * `R:` (resposta) line. Answers may span multiple lines until the next `P:`.
  */
-function parseArticleJson(raw: string, finishReason?: string, keywordFallback = ""): GeneratedArticle {
-  logAiParsing("raw", { finishReason, raw });
+function parseFaq(block: string): { question: string; answer: string }[] {
+  const faq: { question: string; answer: string }[] = [];
+  let current: { question: string; answer: string[] } | null = null;
 
-  let cleaned = extractJsonObject(raw);
-  logAiParsing("cleaned", { cleaned });
-
-  const tryParse = (s: string): unknown | null => {
-    try {
-      return JSON.parse(s) as unknown;
-    } catch {
-      return null;
+  const flush = () => {
+    if (current && current.question.trim()) {
+      faq.push({
+        question: current.question.trim(),
+        answer: current.answer.join("\n").trim(),
+      });
     }
   };
 
-  let parsed = tryParse(cleaned);
-
-  if (!parsed) {
-    // Repair common issues: trailing commas and stray control characters.
-    const repaired = cleaned
-      .replace(/,\s*}/g, "}")
-      .replace(/,\s*]/g, "]")
-      .replace(/[\u0000-\u001F\u007F]/g, " ");
-    parsed = tryParse(repaired);
-    if (parsed) cleaned = repaired;
-  }
-
-  if (!parsed) {
-    // If the model hit the token limit, the JSON is incomplete.
-    const openBraces = (cleaned.match(/{/g) || []).length;
-    const closeBraces = (cleaned.match(/}/g) || []).length;
-    if (finishReason === "length" || openBraces !== closeBraces) {
-      throw new Error(
-        "O artigo ficou muito longo e foi cortado. Tente gerar com menos palavras.",
-      );
+  for (const rawLine of block.split("\n")) {
+    const line = rawLine.trim();
+    const q = line.match(/^(?:P|Q|Pergunta|Question)\s*[:\-]\s*(.*)$/i);
+    const a = line.match(/^(?:R|A|Resposta|Answer)\s*[:\-]\s*(.*)$/i);
+    if (q) {
+      flush();
+      current = { question: q[1].trim(), answer: [] };
+    } else if (a && current) {
+      current.answer.push(a[1].trim());
+    } else if (current && line) {
+      // continuation of the previous answer
+      current.answer.push(line);
     }
-    logAiParsing("parse-error", { cleaned });
-    throw new Error("Resposta da IA inválida. Tente novamente.");
+  }
+  flush();
+  return faq;
+}
+
+/**
+ * Definitive, escaping-free parser for the delimiter-based AI response.
+ *
+ * The model is asked to return plain text with section markers instead of a
+ * JSON object. Embedding a multi-paragraph Markdown article inside a JSON
+ * string was the root cause of recurring "Resposta da IA inválida" errors:
+ * the model frequently produced unescaped quotes/newlines, yielding invalid
+ * JSON even when the response was NOT truncated. A delimiter format removes
+ * that whole class of failures because the large content field never needs
+ * escaping.
+ */
+function parseDelimitedArticle(
+  raw: string,
+  finishReason: string | undefined,
+  keywordFallback: string,
+): GeneratedArticle {
+  logAi("raw", { finishReason, length: raw.length });
+
+  // Strip any accidental code fences the model may wrap around the response.
+  let text = raw.trim();
+  const fenced = text.match(/^```[a-zA-Z]*\s*([\s\S]*?)```$/);
+  if (fenced) text = fenced[1].trim();
+
+  const grab = (label: string): string => {
+    const re = new RegExp(`^\\s*${label}\\s*:\\s*(.*)$`, "im");
+    const m = text.match(re);
+    return m ? m[1].trim() : "";
+  };
+
+  // Split off the CONTENT section (everything after the marker).
+  const contentMarker = /(?:^|\n)\s*={2,}\s*CONTENT\s*={2,}\s*\n/i;
+  const faqMarker = /(?:^|\n)\s*={2,}\s*FAQ\s*={2,}\s*\n/i;
+
+  let header = text;
+  let content = "";
+  const contentSplit = text.split(contentMarker);
+  if (contentSplit.length >= 2) {
+    header = contentSplit[0];
+    content = contentSplit.slice(1).join("\n").trim();
   }
 
-  const normalized = normalizeArticlePayload(parsed, keywordFallback);
-  const validated = ArticleResponseSchema.safeParse(normalized);
-  if (!validated.success) {
-    logAiParsing("validation-error", {
-      parsed,
-      normalized,
-      issues: validated.error.issues,
-    });
-    throw new Error("Resposta da IA inválida. A estrutura do artigo veio incompleta.");
+  let faqBlock = "";
+  const faqSplit = header.split(faqMarker);
+  if (faqSplit.length >= 2) {
+    header = faqSplit[0];
+    faqBlock = faqSplit.slice(1).join("\n").trim();
   }
 
-  logAiParsing("validated", validated.data);
-  return validated.data;
+  const headerText = header;
+  const grabFrom = (label: string): string => {
+    const re = new RegExp(`^\\s*${label}\\s*:\\s*(.*)$`, "im");
+    const m = headerText.match(re);
+    return m ? m[1].trim() : "";
+  };
+
+  const title = (grabFrom("TITLE") || grab("TITLE") || keywordFallback).slice(0, 180);
+  const metaDescription = (grabFrom("META") || grab("META")).slice(0, 260);
+  const tagsRaw = grabFrom("TAGS") || grab("TAGS");
+  const tags = tagsRaw
+    .split(/[,;]/)
+    .map((t) => t.trim().replace(/^#/, ""))
+    .filter(Boolean)
+    .slice(0, 12);
+
+  const faq = parseFaq(faqBlock);
+  const headings = extractHeadings(content);
+
+  // Detect truncation / empty content as a clear, actionable error.
+  if (!content || content.length < 50) {
+    if (finishReason === "length") {
+      throw new Error("O artigo ficou muito longo e foi cortado. Tente gerar com menos palavras.");
+    }
+    logAi("empty-content", { headerPreview: header.slice(0, 300) });
+    throw new Error("A IA não retornou o conteúdo do artigo. Tente novamente.");
+  }
+
+  const result: GeneratedArticle = {
+    title: title || keywordFallback,
+    meta_description: metaDescription,
+    headings,
+    content,
+    faq,
+    tags,
+  };
+  logAi("parsed", {
+    title: result.title,
+    headings: result.headings.length,
+    faq: result.faq.length,
+    tags: result.tags.length,
+    contentLength: result.content.length,
+  });
+  return result;
 }
 
 export const generateArticle = createServerFn({ method: "POST" })
@@ -225,7 +201,8 @@ export const generateArticle = createServerFn({ method: "POST" })
 
     const systemPrompt =
       `Você é um redator especialista em SEO e marketing de conteúdo para blogs (Blogger). ` +
-      `Escreva sempre no idioma solicitado e responda APENAS com JSON válido, sem texto extra.`;
+      `Escreva sempre no idioma solicitado e siga EXATAMENTE o formato de saída pedido, ` +
+      `sem comentários extras, sem JSON e sem blocos de código.`;
 
     const userPrompt =
       `Crie um artigo de blog completo e otimizado para SEO.\n` +
@@ -234,34 +211,44 @@ export const generateArticle = createServerFn({ method: "POST" })
       `- Tamanho aproximado: ${data.wordCount} palavras\n` +
       `- Tom de escrita: ${data.tone}\n` +
       `- Idioma: ${data.language}\n\n` +
-      `Retorne um objeto JSON com EXATAMENTE estas chaves:\n` +
-      `{\n` +
-      `  "title": "título otimizado para SEO (máx 60 caracteres)",\n` +
-      `  "meta_description": "meta descrição persuasiva (máx 155 caracteres)",\n` +
-      `  "headings": [{"type":"h2"|"h3","text":"..."}],\n` +
-      `  "content": "artigo completo em Markdown, usando ## e ### para títulos, parágrafos e listas",\n` +
-      `  "faq": [{"question":"...","answer":"..."}],\n` +
-      `  "tags": ["tag1","tag2", ...]\n` +
-      `}\n` +
-      `O campo headings deve refletir a estrutura H2/H3 usada no content. Gere de 4 a 6 perguntas no FAQ e de 5 a 8 tags.`;
+      `Responda EXATAMENTE neste formato de texto puro (nada antes do TITLE):\n\n` +
+      `TITLE: <título otimizado para SEO, máx 60 caracteres>\n` +
+      `META: <meta descrição persuasiva, máx 155 caracteres>\n` +
+      `TAGS: <5 a 8 tags separadas por vírgula>\n` +
+      `===FAQ===\n` +
+      `P: <pergunta 1>\n` +
+      `R: <resposta 1>\n` +
+      `P: <pergunta 2>\n` +
+      `R: <resposta 2>\n` +
+      `(gere de 4 a 6 pares de pergunta/resposta)\n` +
+      `===CONTENT===\n` +
+      `<artigo completo em Markdown, usando ## para H2 e ### para H3, com parágrafos e listas>\n`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 16000,
-        temperature: 0.7,
-      }),
-    });
+    // Scale token budget with requested length so large articles are not cut.
+    const maxTokens = Math.min(24000, Math.max(4000, Math.round(data.wordCount * 6) + 2000));
+
+    let response: Response;
+    try {
+      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          max_tokens: maxTokens,
+          temperature: 0.7,
+        }),
+      });
+    } catch (err) {
+      console.error("[article-ai:network-error]", err);
+      throw new Error("Falha de conexão com o serviço de IA. Tente novamente.");
+    }
 
     if (response.status === 429) {
       throw new Error("Limite de requisições atingido. Tente novamente em alguns instantes.");
@@ -270,34 +257,29 @@ export const generateArticle = createServerFn({ method: "POST" })
       throw new Error("Créditos de IA do workspace esgotados. Adicione créditos para continuar.");
     }
     if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      console.error("[article-ai:gateway-error]", { status: response.status, errText });
       throw new Error("Falha ao gerar o artigo. Tente novamente.");
     }
 
     const completion = await response.json();
     const choice = completion?.choices?.[0];
-    const finishReason = choice?.finish_reason ?? choice?.native_finish_reason;
+    const finishReason: string | undefined = choice?.finish_reason ?? choice?.native_finish_reason;
     const raw: string = choice?.message?.content ?? "";
 
-    console.info(
-      "[article-ai:completion]",
-      JSON.stringify({
-        model: completion?.model,
-        finishReason,
-        usage: completion?.usage,
-        contentType: typeof raw,
-        contentLength: raw.length,
-      }),
-    );
+    logAi("completion", {
+      model: completion?.model,
+      finishReason,
+      usage: completion?.usage,
+      contentLength: raw.length,
+      maxTokens,
+    });
 
     if (!raw.trim()) {
       throw new Error("A IA não retornou conteúdo. Tente novamente.");
     }
 
-    const parsed = parseArticleJson(raw, finishReason, data.keyword);
-
-    const headings = Array.isArray(parsed.headings) ? parsed.headings : [];
-    const faq = Array.isArray(parsed.faq) ? parsed.faq : [];
-    const tags = Array.isArray(parsed.tags) ? parsed.tags : [];
+    const parsed = parseDelimitedArticle(raw, finishReason, data.keyword);
 
     // Persist article
     const { data: inserted, error: insertError } = await supabase
@@ -307,10 +289,10 @@ export const generateArticle = createServerFn({ method: "POST" })
         keyword: data.keyword,
         title: parsed.title || data.keyword,
         meta_description: parsed.meta_description || "",
-        headings: headings,
+        headings: parsed.headings,
         content: parsed.content || "",
-        faq: faq,
-        tags: tags,
+        faq: parsed.faq,
+        tags: parsed.tags,
         tone: data.tone,
         language: data.language,
         word_count: data.wordCount,
@@ -320,6 +302,7 @@ export const generateArticle = createServerFn({ method: "POST" })
       .single();
 
     if (insertError || !inserted) {
+      console.error("[article-ai:insert-error]", insertError);
       throw new Error("Não foi possível salvar o artigo gerado.");
     }
 
@@ -328,10 +311,14 @@ export const generateArticle = createServerFn({ method: "POST" })
     // the protected `credits` column on profiles (privilege-escalation guard).
     if (!unlimited) {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      await supabaseAdmin
+      const newCredits = Math.max(0, profile.credits - 1);
+      const { error: creditError } = await supabaseAdmin
         .from("profiles")
-        .update({ credits: Math.max(0, profile.credits - 1) })
+        .update({ credits: newCredits })
         .eq("id", userId);
+      if (creditError) {
+        console.error("[article-ai:credit-error]", creditError);
+      }
     }
 
     return { article: inserted };
