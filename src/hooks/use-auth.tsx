@@ -22,6 +22,8 @@ interface AuthContextValue {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  isAdmin: boolean;
+  role: "owner" | "admin" | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
@@ -36,7 +38,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [role, setRole] = useState<"owner" | "admin" | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchRole = useCallback(async (userId: string) => {
+    const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+    const roles = (data ?? []).map((r) => r.role);
+    setRole(roles.includes("owner") ? "owner" : roles.includes("admin") ? "admin" : null);
+  }, []);
 
   const fetchProfile = useCallback(async (userId: string, currentUser?: User | null) => {
     const { data } = await supabase
