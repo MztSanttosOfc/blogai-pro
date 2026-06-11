@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
 export interface AdminUserRow {
   id: string;
   email: string | null;
@@ -34,18 +36,10 @@ export interface AdminAuditLog {
   action: string;
   admin_email: string | null;
   target_email: string | null;
-  old_value: Record<string, unknown> | null;
-  new_value: Record<string, unknown> | null;
+  old_value: JsonValue;
+  new_value: JsonValue;
   details: string | null;
   created_at: string;
-}
-
-async function assertAdmin(supabase: ReturnType<typeof Object>, userId: string): Promise<void> {
-  // RLS-safe: is_admin is a security-definer helper.
-  const { data, error } = await (supabase as never as {
-    rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: boolean | null; error: unknown }>;
-  }).rpc("is_admin", { _user_id: userId });
-  if (error || !data) throw new Error("Acesso restrito a administradores.");
 }
 
 /** Returns the current user's role (null if a regular user). */
@@ -59,9 +53,9 @@ export const getMyRole = createServerFn({ method: "GET" })
       .eq("user_id", userId);
     const roles = (data ?? []).map((r) => r.role);
     const role = roles.includes("owner")
-      ? "owner"
+      ? ("owner" as const)
       : roles.includes("admin")
-        ? "admin"
+        ? ("admin" as const)
         : null;
     return { role, isAdmin: role !== null };
   });
