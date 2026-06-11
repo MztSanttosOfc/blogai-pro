@@ -116,7 +116,7 @@ export const adminAdjustCredits = createServerFn({ method: "POST" })
       p_user_id: data.userId,
       p_mode: data.mode,
       p_amount: data.amount,
-      p_reason: data.reason ?? null,
+      p_reason: data.reason ?? undefined,
     });
     if (error) throw new Error("Falha ao ajustar os créditos.");
     return { ok: true };
