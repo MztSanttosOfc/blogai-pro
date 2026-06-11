@@ -79,9 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
-        setTimeout(() => fetchProfile(newSession.user.id, newSession.user), 0);
+        setTimeout(() => {
+          fetchProfile(newSession.user.id, newSession.user);
+          fetchRole(newSession.user.id);
+        }, 0);
       } else {
         setProfile(null);
+        setRole(null);
       }
       setLoading(false);
     });
@@ -89,12 +93,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: existing } }) => {
       setSession(existing);
       setUser(existing?.user ?? null);
-      if (existing?.user) fetchProfile(existing.user.id, existing.user);
+      if (existing?.user) {
+        fetchProfile(existing.user.id, existing.user);
+        fetchRole(existing.user.id);
+      }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile]);
+  }, [fetchProfile, fetchRole]);
 
   const signUp = useCallback(async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
