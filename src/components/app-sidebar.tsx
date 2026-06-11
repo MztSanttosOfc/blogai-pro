@@ -10,6 +10,7 @@ import {
   Crown,
   ShieldCheck,
   Wallet,
+  Shield,
 } from "lucide-react";
 import {
   Sidebar,
