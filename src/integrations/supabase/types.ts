@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_email: string | null
+          admin_id: string | null
+          created_at: string
+          details: string | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          target_email: string | null
+          target_user_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_email?: string | null
+          admin_id?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          target_email?: string | null
+          target_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_email?: string | null
+          admin_id?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          target_email?: string | null
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
       articles: {
         Row: {
           blogger_post_id: string | null
@@ -23,6 +62,7 @@ export type Database = {
           faq: Json
           headings: Json
           id: string
+          images: Json
           keyword: string
           language: string
           meta_description: string
@@ -42,6 +82,7 @@ export type Database = {
           faq?: Json
           headings?: Json
           id?: string
+          images?: Json
           keyword: string
           language?: string
           meta_description?: string
@@ -61,6 +102,7 @@ export type Database = {
           faq?: Json
           headings?: Json
           id?: string
+          images?: Json
           keyword?: string
           language?: string
           meta_description?: string
@@ -377,6 +419,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -386,8 +449,69 @@ export type Database = {
         Args: { p_external_id?: string; p_payment_id: string }
         Returns: Json
       }
+      admin_adjust_credits: {
+        Args: {
+          p_amount: number
+          p_mode: string
+          p_reason?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_list_audit_logs: {
+        Args: { p_limit?: number }
+        Returns: {
+          action: string
+          admin_email: string | null
+          admin_id: string | null
+          created_at: string
+          details: string | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          target_email: string | null
+          target_user_id: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "admin_audit_logs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      admin_list_users: {
+        Args: never
+        Returns: {
+          created_at: string
+          credits: number
+          email: string
+          full_name: string
+          id: string
+          last_sign_in_at: string
+          plan: Database["public"]["Enums"]["user_plan"]
+          role: Database["public"]["Enums"]["app_role"]
+          subscription_status: string
+        }[]
+      }
+      admin_set_plan: {
+        Args: {
+          p_plan: Database["public"]["Enums"]["user_plan"]
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_stats: { Args: never; Returns: Json }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
+      app_role: "owner" | "admin" | "user"
       article_status: "draft" | "published"
       credit_txn_type:
         | "grant"
@@ -525,6 +649,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["owner", "admin", "user"],
       article_status: ["draft", "published"],
       credit_txn_type: [
         "grant",

@@ -191,7 +191,16 @@ export const generateArticle = createServerFn({ method: "POST" })
       throw new Error("Perfil não encontrado.");
     }
 
-    const unlimited = profile.plan === "premium";
+    // Owners/admins never consume credits, regardless of plan.
+    const { data: roleRows } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId);
+    const isAdmin = (roleRows ?? []).some(
+      (r) => r.role === "owner" || r.role === "admin",
+    );
+
+    const unlimited = isAdmin || profile.plan === "premium";
     if (!unlimited && profile.credits <= 0) {
       throw new Error("Você não tem créditos suficientes. Faça upgrade do seu plano.");
     }

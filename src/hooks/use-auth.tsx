@@ -22,6 +22,8 @@ interface AuthContextValue {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  isAdmin: boolean;
+  role: "owner" | "admin" | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
@@ -36,7 +38,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [role, setRole] = useState<"owner" | "admin" | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchRole = useCallback(async (userId: string) => {
+    const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+    const roles = (data ?? []).map((r) => r.role);
+    setRole(roles.includes("owner") ? "owner" : roles.includes("admin") ? "admin" : null);
+  }, []);
 
   const fetchProfile = useCallback(async (userId: string, currentUser?: User | null) => {
     const { data } = await supabase
@@ -70,9 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
-        setTimeout(() => fetchProfile(newSession.user.id, newSession.user), 0);
+        setTimeout(() => {
+          fetchProfile(newSession.user.id, newSession.user);
+          fetchRole(newSession.user.id);
+        }, 0);
       } else {
         setProfile(null);
+        setRole(null);
       }
       setLoading(false);
     });
@@ -80,12 +93,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: existing } }) => {
       setSession(existing);
       setUser(existing?.user ?? null);
-      if (existing?.user) fetchProfile(existing.user.id, existing.user);
+      if (existing?.user) {
+        fetchProfile(existing.user.id, existing.user);
+        fetchRole(existing.user.id);
+      }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile]);
+  }, [fetchProfile, fetchRole]);
 
   const signUp = useCallback(async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
@@ -116,11 +132,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    setRole(null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, signUp, signIn, signInWithGoogle, signOut, refreshProfile }}
+      value={{
+        user,
+        session,
+        profile,
+        isAdmin: role !== null,
+        role,
+        loading,
+        signUp,
+        signIn,
+        signInWithGoogle,
+        signOut,
+        refreshProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>

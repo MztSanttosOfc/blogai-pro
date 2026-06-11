@@ -10,6 +10,7 @@ import {
   Crown,
   ShieldCheck,
   Wallet,
+  Shield,
 } from "lucide-react";
 import {
   Sidebar,
@@ -45,7 +46,7 @@ const premiumItems = [
 
 export function AppSidebar() {
   const navigate = useNavigate();
-  const { profile, user, signOut } = useAuth();
+  const { profile, user, signOut, isAdmin } = useAuth();
   const { isMobile, setOpenMobile } = useSidebar();
   const currentPath = useRouterState({ select: (s) => s.location.pathname });
 
@@ -110,6 +111,27 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Administração</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={currentPath === "/admin" || currentPath.startsWith("/admin/")}
+                  >
+                    <Link to="/admin" className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                      <Shield className="h-4 w-4 text-primary" />
+                      <span>Administração</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
 
 
