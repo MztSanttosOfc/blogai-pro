@@ -132,11 +132,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    setRole(null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, signUp, signIn, signInWithGoogle, signOut, refreshProfile }}
+      value={{
+        user,
+        session,
+        profile,
+        isAdmin: role !== null,
+        role,
+        loading,
+        signUp,
+        signIn,
+        signInWithGoogle,
+        signOut,
+        refreshProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>
