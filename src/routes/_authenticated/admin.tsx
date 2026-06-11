@@ -50,7 +50,7 @@ import {
   adminListAuditLogs,
   type AdminUserRow,
 } from "@/lib/admin.functions";
-import { PLAN_LABELS, type PlanId } from "@/lib/constants";
+import { type PlanId } from "@/lib/constants";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Administração — BlogAI Pro" }] }),
