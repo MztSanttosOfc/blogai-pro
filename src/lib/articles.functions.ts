@@ -343,7 +343,7 @@ export const generateArticle = createServerFn({ method: "POST" })
           .from("articles")
           .update({
             content: contentWithImages,
-            images: imagesMeta,
+            images: JSON.parse(JSON.stringify(imagesMeta)),
           })
           .eq("id", inserted.id)
           .select()
