@@ -338,7 +338,7 @@ export const generateArticle = createServerFn({ method: "POST" })
         const imagesMeta = [
           ...(featured ? [featured] : []),
           ...internal,
-        ];
+        ].map((img) => ({ url: img.url, alt: img.alt, context: img.context }));
         const { data: updated, error: updateError } = await supabase
           .from("articles")
           .update({
