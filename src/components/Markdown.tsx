@@ -68,6 +68,20 @@ export function Markdown({ content }: { content: string }) {
       flushList(i);
       return;
     }
+    const imageOnly = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imageOnly) {
+      flushList(i);
+      blocks.push(
+        <img
+          key={i}
+          src={imageOnly[2]}
+          alt={imageOnly[1]}
+          loading="lazy"
+          className="my-5 w-full rounded-xl border border-border object-cover"
+        />,
+      );
+      return;
+    }
     if (line.startsWith("### ")) {
       flushList(i);
       blocks.push(
