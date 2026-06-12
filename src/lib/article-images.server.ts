@@ -43,7 +43,9 @@ async function generateImageB64(
         size,
         n: 1,
       }),
+      signal: AbortSignal.timeout(50000),
     });
+
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
