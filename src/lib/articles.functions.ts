@@ -373,5 +373,5 @@ export const generateArticle = createServerFn({ method: "POST" })
       }
     }
 
-    return { article: inserted };
+    return { article: finalArticle };
   });
