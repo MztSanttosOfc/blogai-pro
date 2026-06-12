@@ -1,8 +1,20 @@
 import { Fragment, type ReactNode } from "react";
 
 function renderInline(text: string): ReactNode[] {
-  const parts = text.split(/(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g);
+  const parts = text.split(/(!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g);
   return parts.map((part, i) => {
+    const image = part.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (image) {
+      return (
+        <img
+          key={i}
+          src={image[2]}
+          alt={image[1]}
+          loading="lazy"
+          className="my-4 w-full rounded-xl border border-border object-cover"
+        />
+      );
+    }
     const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link) {
       return (
@@ -54,6 +66,20 @@ export function Markdown({ content }: { content: string }) {
     const line = rawLine.trimEnd();
     if (!line.trim()) {
       flushList(i);
+      return;
+    }
+    const imageOnly = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imageOnly) {
+      flushList(i);
+      blocks.push(
+        <img
+          key={i}
+          src={imageOnly[2]}
+          alt={imageOnly[1]}
+          loading="lazy"
+          className="my-5 w-full rounded-xl border border-border object-cover"
+        />,
+      );
       return;
     }
     if (line.startsWith("### ")) {

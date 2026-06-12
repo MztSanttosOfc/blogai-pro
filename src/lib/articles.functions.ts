@@ -315,6 +315,49 @@ export const generateArticle = createServerFn({ method: "POST" })
       throw new Error("Não foi possível salvar o artigo gerado.");
     }
 
+    // Generate AI images (1 featured cover + up to 4 in-content images).
+    // Images are FREE — they never affect the user's credits. Failures here
+    // must not break article creation, so everything is best-effort.
+    let finalArticle = inserted;
+    try {
+      const { generateArticleImages, embedImagesInContent } = await import(
+        "./article-images.server"
+      );
+      const { featured, internal } = await generateArticleImages({
+        apiKey,
+        articleId: inserted.id,
+        title: parsed.title || data.keyword,
+        keyword: data.keyword,
+        language: data.language,
+        headings: parsed.headings,
+        internalCount: 4,
+      });
+
+      if (featured || internal.length > 0) {
+        const contentWithImages = embedImagesInContent(parsed.content, featured, internal);
+        const imagesMeta = [
+          ...(featured ? [featured] : []),
+          ...internal,
+        ].map((img) => ({ url: img.url, alt: img.alt, context: img.context }));
+        const { data: updated, error: updateError } = await supabase
+          .from("articles")
+          .update({
+            content: contentWithImages,
+            images: JSON.parse(JSON.stringify(imagesMeta)),
+          })
+          .eq("id", inserted.id)
+          .select()
+          .single();
+        if (updateError) {
+          console.error("[article-ai:image-update-error]", updateError);
+        } else if (updated) {
+          finalArticle = updated;
+        }
+      }
+    } catch (imgErr) {
+      console.error("[article-ai:image-error]", imgErr);
+    }
+
     // Decrement credit (skip for premium/unlimited).
     // Uses the service-role client because clients are not allowed to update
     // the protected `credits` column on profiles (privilege-escalation guard).
@@ -330,5 +373,5 @@ export const generateArticle = createServerFn({ method: "POST" })
       }
     }
 
-    return { article: inserted };
+    return { article: finalArticle };
   });
