@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Wallet,
   Shield,
+  FileText,
 } from "lucide-react";
 import {
   Sidebar,
@@ -34,6 +35,7 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Gerar Artigo", url: "/generate", icon: Sparkles },
   { title: "Biblioteca", url: "/library", icon: Library },
+  { title: "Páginas", url: "/paginas", icon: FileText },
   { title: "Blogger", url: "/connections", icon: Globe },
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
   { title: "Financeiro", url: "/financeiro", icon: Wallet },

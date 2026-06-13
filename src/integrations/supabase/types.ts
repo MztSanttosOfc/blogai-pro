@@ -383,6 +383,78 @@ export type Database = {
         }
         Relationships: []
       }
+      site_pages: {
+        Row: {
+          blogger_post_id: string | null
+          blogger_post_url: string | null
+          content: string
+          created_at: string
+          id: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          blog_name: string
+          contact_email: string
+          created_at: string
+          domain: string
+          niche: string
+          owner_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          blog_name?: string
+          contact_email?: string
+          created_at?: string
+          domain?: string
+          niche?: string
+          owner_name?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          blog_name?: string
+          contact_email?: string
+          created_at?: string
+          domain?: string
+          niche?: string
+          owner_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string

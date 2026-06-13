@@ -162,3 +162,91 @@ export async function createBloggerPost(
 export function markdownToHtml(markdown: string): string {
   return marked.parse(markdown, { async: false }) as string;
 }
+
+export interface PublishedPage {
+  id: string;
+  url: string;
+}
+
+/**
+ * Return a valid (refreshed if needed) Blogger access token for a user.
+ * Server-only; used by the Pages module to publish AdSense pages.
+ */
+export async function getValidBloggerToken(userId: string): Promise<string> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: conn, error } = await supabaseAdmin
+    .from("blogger_connections")
+    .select("access_token, refresh_token, token_expires_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error || !conn) {
+    throw new Error("Conta do Blogger não conectada. Conecte sua conta Google primeiro.");
+  }
+
+  const expiresAt = conn.token_expires_at ? new Date(conn.token_expires_at).getTime() : 0;
+  if (expiresAt > Date.now() + 60_000 && conn.access_token) {
+    return conn.access_token;
+  }
+  if (!conn.refresh_token) {
+    throw new Error("Sessão do Google expirada. Reconecte sua conta.");
+  }
+
+  const refreshed = await refreshAccessToken(conn.refresh_token);
+  const newExpiry = new Date(Date.now() + refreshed.expires_in * 1000).toISOString();
+  await supabaseAdmin
+    .from("blogger_connections")
+    .update({ access_token: refreshed.access_token, token_expires_at: newExpiry })
+    .eq("user_id", userId);
+  return refreshed.access_token;
+}
+
+/** Create a static Blogger Page (used for About/Contact/Privacy/Terms etc.). */
+export async function createBloggerPage(
+  accessToken: string,
+  blogId: string,
+  title: string,
+  html: string,
+): Promise<PublishedPage> {
+  const res = await fetch(`${BLOGGER_API}/blogs/${blogId}/pages`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ kind: "blogger#page", title, content: html }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] create page failed", res.status, body);
+    throw new Error(`Falha ao publicar a página no Blogger (${res.status}).`);
+  }
+  const data = (await res.json()) as { id: string; url: string };
+  return { id: data.id, url: data.url };
+}
+
+/** Update an existing static Blogger Page. */
+export async function updateBloggerPage(
+  accessToken: string,
+  blogId: string,
+  pageId: string,
+  title: string,
+  html: string,
+): Promise<PublishedPage> {
+  const res = await fetch(`${BLOGGER_API}/blogs/${blogId}/pages/${pageId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ kind: "blogger#page", id: pageId, title, content: html }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error("[blogger] update page failed", res.status, body);
+    throw new Error(`Falha ao atualizar a página no Blogger (${res.status}).`);
+  }
+  const data = (await res.json()) as { id: string; url: string };
+  return { id: data.id, url: data.url };
+}
+
