@@ -330,7 +330,7 @@ export const generateArticle = createServerFn({ method: "POST" })
         keyword: data.keyword,
         language: data.language,
         headings: parsed.headings,
-        internalCount: 4,
+        internalCount: 2,
       });
 
       if (featured || internal.length > 0) {
