@@ -1,16 +1,57 @@
 import { Fragment, type ReactNode } from "react";
 
+/** Parse the attributes of a raw <img ...> tag into a props object. */
+function parseImgTag(tag: string): { src: string; alt: string; width?: number; height?: number } | null {
+  const src = tag.match(/\bsrc\s*=\s*"([^"]*)"/i)?.[1];
+  if (!src) return null;
+  const alt = tag.match(/\balt\s*=\s*"([^"]*)"/i)?.[1] ?? "";
+  const width = tag.match(/\bwidth\s*=\s*"?(\d+)"?/i)?.[1];
+  const height = tag.match(/\bheight\s*=\s*"?(\d+)"?/i)?.[1];
+  return {
+    src: src.replace(/&amp;/g, "&"),
+    alt: alt.replace(/&amp;/g, "&").replace(/&quot;/g, '"'),
+    width: width ? Number(width) : undefined,
+    height: height ? Number(height) : undefined,
+  };
+}
+
+function ContentImage({
+  src,
+  alt,
+  width,
+  height,
+  className,
+}: {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  className: string;
+}) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+      className={className}
+      style={width && height ? { aspectRatio: `${width} / ${height}` } : undefined}
+    />
+  );
+}
+
 function renderInline(text: string): ReactNode[] {
   const parts = text.split(/(!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g);
   return parts.map((part, i) => {
     const image = part.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (image) {
       return (
-        <img
+        <ContentImage
           key={i}
           src={image[2]}
           alt={image[1]}
-          loading="lazy"
           className="my-4 w-full rounded-xl border border-border object-cover"
         />
       );
@@ -68,15 +109,33 @@ export function Markdown({ content }: { content: string }) {
       flushList(i);
       return;
     }
+    // Raw <img ...> tag emitted by the auto-image generator.
+    const htmlImg = line.trim().match(/^<img\b[^>]*?\/?>$/i);
+    if (htmlImg) {
+      const props = parseImgTag(line.trim());
+      if (props) {
+        flushList(i);
+        blocks.push(
+          <ContentImage
+            key={i}
+            src={props.src}
+            alt={props.alt}
+            width={props.width}
+            height={props.height}
+            className="my-5 w-full rounded-xl border border-border object-cover"
+          />,
+        );
+        return;
+      }
+    }
     const imageOnly = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (imageOnly) {
       flushList(i);
       blocks.push(
-        <img
+        <ContentImage
           key={i}
           src={imageOnly[2]}
           alt={imageOnly[1]}
-          loading="lazy"
           className="my-5 w-full rounded-xl border border-border object-cover"
         />,
       );
