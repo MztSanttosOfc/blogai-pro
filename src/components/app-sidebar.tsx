@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Wallet,
   Shield,
+  FileText,
 } from "lucide-react";
 import {
   Sidebar,
