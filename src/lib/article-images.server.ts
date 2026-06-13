@@ -6,6 +6,15 @@
  * both inside the app and when the article is published to Blogger). The
  * upload + signing run with the service-role admin client, bypassing RLS.
  *
+ * Performance / SEO strategy (Core Web Vitals + Blogger/Google Images):
+ *  - Featured cover rendered at 1536x1024 (3:2) — ideal for OG/Blogger headers.
+ *  - In-content images rendered at 1024x1024 (1:1) — light and responsive.
+ *  - Generated with `quality: "low"` to keep file weight small (~60-110 KB).
+ *  - Embedded as real <img> tags carrying width/height (no layout shift / CLS),
+ *    loading="lazy" and decoding="async" (no render-blocking) and responsive
+ *    inline sizing for desktop AND mobile. These attributes survive the
+ *    Markdown -> HTML conversion and reach Blogger intact.
+ *
  * This module is `.server.ts` so it never ships to the client bundle. Import
  * it only from inside server-function handlers.
  */
@@ -17,6 +26,8 @@ interface GeneratedImage {
   alt: string;
   /** "featured" or the heading the internal image illustrates. */
   context: string;
+  width: number;
+  height: number;
 }
 
 /**
@@ -45,7 +56,6 @@ async function generateImageB64(
       }),
       signal: AbortSignal.timeout(50000),
     });
-
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
@@ -96,8 +106,9 @@ async function uploadAndSign(articleId: string, name: string, b64: string): Prom
 }
 
 const stylePrompt =
-  "Professional editorial blog illustration, clean modern flat design, soft lighting, " +
-  "high quality, no text, no watermark, no logos, no letters.";
+  "Professional editorial blog illustration, clean modern and futuristic flat design, " +
+  "tech-forward aesthetic, soft cinematic lighting, vibrant but tasteful colors, " +
+  "high quality, sharp focus, no text, no watermark, no logos, no letters.";
 
 /**
  * Generate a featured cover image plus up to `internalCount` in-content images
@@ -139,7 +150,7 @@ export async function generateArticleImages(opts: {
   let featured: GeneratedImage | null = null;
   if (featuredB64) {
     const url = await uploadAndSign(articleId, "featured", featuredB64);
-    if (url) featured = { url, alt: title, context: "featured" };
+    if (url) featured = { url, alt: title, context: "featured", width: 1536, height: 1024 };
   }
 
   const internal: GeneratedImage[] = [];
@@ -147,15 +158,44 @@ export async function generateArticleImages(opts: {
     const b64 = sectionB64s[i];
     if (!b64) continue;
     const url = await uploadAndSign(articleId, `section-${i + 1}`, b64);
-    if (url) internal.push({ url, alt: sections[i], context: sections[i] });
+    if (url) internal.push({ url, alt: sections[i], context: sections[i], width: 1024, height: 1024 });
   }
 
   return { featured, internal };
 }
 
+/** Escape a string for safe use inside an HTML attribute. */
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/**
+ * Build a Core-Web-Vitals-friendly <img> tag:
+ *  - width/height attributes reserve space -> no CLS.
+ *  - loading="lazy" + decoding="async" -> no render-blocking, faster LCP.
+ *  - responsive inline style -> looks correct on desktop and mobile.
+ * Raw HTML survives the Markdown->HTML step and reaches Blogger intact.
+ */
+function imgTag(img: GeneratedImage, eager: boolean): string {
+  const alt = escapeAttr(img.alt || "");
+  const src = escapeAttr(img.url);
+  const loading = eager ? "eager" : "lazy";
+  const fetchpriority = eager ? ' fetchpriority="high"' : "";
+  return (
+    `<img src="${src}" alt="${alt}" width="${img.width}" height="${img.height}" ` +
+    `loading="${loading}" decoding="async"${fetchpriority} ` +
+    `style="width:100%;height:auto;border-radius:12px;margin:1.25rem 0;" />`
+  );
+}
+
 /**
  * Embed the generated images into the Markdown content: the featured image at
  * the very top, then each internal image right after its matching H2 heading.
+ * Images are emitted as real <img> tags (see imgTag) for best CLS/SEO results.
  */
 export function embedImagesInContent(
   content: string,
@@ -178,7 +218,7 @@ export function embedImagesInContent(
       const img = byHeading.get(key);
       if (img && !used.has(key)) {
         used.add(key);
-        out.push("", `![${img.alt}](${img.url})`, "");
+        out.push("", imgTag(img, false), "");
       }
     }
   }
@@ -190,12 +230,13 @@ export function embedImagesInContent(
   for (const img of internal) {
     const key = img.context.trim().toLowerCase();
     if (!used.has(key)) {
-      body += `\n\n![${img.alt}](${img.url})\n`;
+      body += `\n\n${imgTag(img, false)}\n`;
     }
   }
 
+  // Featured image first; eager-loaded as the LCP candidate.
   if (featured) {
-    body = `![${featured.alt}](${featured.url})\n\n${body}`;
+    body = `${imgTag(featured, true)}\n\n${body}`;
   }
 
   return body;
