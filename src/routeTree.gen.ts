@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
@@ -54,6 +55,11 @@ const AuthenticatedVerificarBlogRoute =
 const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPaginasRoute = AuthenticatedPaginasRouteImport.update({
+  id: '/paginas',
+  path: '/paginas',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedMonetizacaoRoute =
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
+  '/paginas': typeof AuthenticatedPaginasRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
+  '/paginas': typeof AuthenticatedPaginasRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
+  '/_authenticated/paginas': typeof AuthenticatedPaginasRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/generate'
     | '/library'
     | '/monetizacao'
+    | '/paginas'
     | '/pricing'
     | '/verificar-blog'
     | '/blogger/callback'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/generate'
     | '/library'
     | '/monetizacao'
+    | '/paginas'
     | '/pricing'
     | '/verificar-blog'
     | '/blogger/callback'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/_authenticated/generate'
     | '/_authenticated/library'
     | '/_authenticated/monetizacao'
+    | '/_authenticated/paginas'
     | '/_authenticated/pricing'
     | '/_authenticated/verificar-blog'
     | '/_authenticated/blogger/callback'
@@ -269,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof AuthenticatedPricingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/paginas': {
+      id: '/_authenticated/paginas'
+      path: '/paginas'
+      fullPath: '/paginas'
+      preLoaderRoute: typeof AuthenticatedPaginasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/monetizacao': {
@@ -363,6 +382,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
+  AuthenticatedPaginasRoute: typeof AuthenticatedPaginasRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
   AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
@@ -376,6 +396,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
+  AuthenticatedPaginasRoute: AuthenticatedPaginasRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
   AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
@@ -395,3 +416,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
