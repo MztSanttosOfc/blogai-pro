@@ -97,6 +97,11 @@ function VerifyBlogPage() {
               </span>
             </div>
             <Progress value={result.score} />
+            {result.finalUrl && (
+              <p className="text-xs text-muted-foreground">
+                Analisado: <span className="break-all">{result.finalUrl}</span>
+              </p>
+            )}
           </Card>
 
           <Card className="divide-y p-0">
