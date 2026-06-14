@@ -473,7 +473,7 @@ export const generateArticle = createServerFn({ method: "POST" })
         user_id: userId,
         keyword: data.keyword,
         title: parsed.title || data.keyword,
-        meta_description: parsed.meta_description || "",
+        meta_description: parsed.meta_description || data.metaHint || "",
         headings: parsed.headings,
         content: parsed.content || "",
         faq: parsed.faq,
