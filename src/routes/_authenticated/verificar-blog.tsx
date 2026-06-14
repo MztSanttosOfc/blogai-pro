@@ -27,6 +27,7 @@ interface Result {
   score: number;
   items: BlogCheckItem[];
   recommendations: string[];
+  finalUrl?: string;
 }
 
 function VerifyBlogPage() {
