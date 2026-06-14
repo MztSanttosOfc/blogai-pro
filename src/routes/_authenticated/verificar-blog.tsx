@@ -43,9 +43,8 @@ function VerifyBlogPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    let normalized = url.trim();
+    const normalized = url.trim();
     if (!normalized) return;
-    if (!/^https?:\/\//i.test(normalized)) normalized = `https://${normalized}`;
     mutation.mutate(normalized);
   };
 
