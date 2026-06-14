@@ -209,7 +209,135 @@ function parseDelimitedArticle(
   return result;
 }
 
-export const generateArticle = createServerFn({ method: "POST" })
+/** Robustly extract a JSON object from a model response (handles code fences). */
+function parseJsonObject(raw: string): Record<string, unknown> {
+  let text = raw.trim();
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced) text = fenced[1].trim();
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) {
+    throw new Error("A IA não retornou uma análise válida. Tente novamente.");
+  }
+  return JSON.parse(text.slice(start, end + 1)) as Record<string, unknown>;
+}
+
+const asStr = (v: unknown, fallback = ""): string =>
+  typeof v === "string" ? v.trim() : fallback;
+const asStrArr = (v: unknown): string[] =>
+  Array.isArray(v)
+    ? v.map((x) => (typeof x === "string" ? x.trim() : String(x))).filter(Boolean)
+    : [];
+
+/**
+ * Smart-mode SEO analysis: given just a topic, the AI proposes a full content
+ * strategy (keywords, intent, audience, structure, FAQ, slug, etc.).
+ */
+export const analyzeTopic = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => AnalyzeInput.parse(input))
+  .handler(async ({ data }): Promise<TopicAnalysis> => {
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("Serviço de IA indisponível no momento.");
+
+    const systemPrompt =
+      `Você é um estrategista de SEO e conteúdo para blogs (Blogger/AdSense). ` +
+      `Analise o tema e responda APENAS com um objeto JSON válido, sem texto extra ` +
+      `e sem blocos de código. Escreva os valores no idioma solicitado.`;
+
+    const userPrompt =
+      `Tema: "${data.topic}"\n` +
+      `Idioma: ${data.language}\n` +
+      `País/Região: ${data.country || "Brasil"}\n\n` +
+      `Retorne EXATAMENTE este JSON:\n` +
+      `{\n` +
+      `  "mainKeyword": "palavra-chave principal ideal",\n` +
+      `  "secondaryKeywords": ["5 a 8 palavras-chave secundárias/relacionadas"],\n` +
+      `  "searchIntent": "informacional|comercial|transacional|navegacional + breve explicação",\n` +
+      `  "audience": "descrição do público-alvo",\n` +
+      `  "tone": "um tom recomendado",\n` +
+      `  "structure": ["6 a 9 títulos H2 sugeridos para o artigo"],\n` +
+      `  "recommendedWordCount": 1200,\n` +
+      `  "metaDescription": "meta descrição persuasiva (máx 155 caracteres)",\n` +
+      `  "tags": ["5 a 8 tags"],\n` +
+      `  "faq": ["4 a 6 perguntas frequentes"],\n` +
+      `  "category": "categoria recomendada",\n` +
+      `  "slug": "slug-sugerido-em-minusculas",\n` +
+      `  "titleSuggestion": "título otimizado (máx 60 caracteres)",\n` +
+      `  "competition": "Baixa|Média|Alta",\n` +
+      `  "trafficPotential": "Baixo|Médio|Alto",\n` +
+      `  "strategy": "estratégia recomendada de ranqueamento em 1-3 frases"\n` +
+      `}`;
+
+    let response: Response;
+    try {
+      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          max_tokens: 2000,
+          temperature: 0.6,
+          response_format: { type: "json_object" },
+        }),
+      });
+    } catch (err) {
+      console.error("[topic-ai:network-error]", err);
+      throw new Error("Falha de conexão com o serviço de IA. Tente novamente.");
+    }
+
+    if (response.status === 429)
+      throw new Error("Limite de requisições atingido. Tente novamente em instantes.");
+    if (response.status === 402)
+      throw new Error("Créditos de IA do workspace esgotados. Adicione créditos para continuar.");
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      console.error("[topic-ai:gateway-error]", { status: response.status, errText });
+      throw new Error("Falha ao analisar o tema. Tente novamente.");
+    }
+
+    const completion = await response.json();
+    const raw: string = completion?.choices?.[0]?.message?.content ?? "";
+    if (!raw.trim()) throw new Error("A IA não retornou a análise. Tente novamente.");
+
+    const obj = parseJsonObject(raw);
+
+    const wc = Number(obj.recommendedWordCount);
+    const analysis: TopicAnalysis = {
+      mainKeyword: asStr(obj.mainKeyword, data.topic),
+      secondaryKeywords: asStrArr(obj.secondaryKeywords).slice(0, 10),
+      searchIntent: asStr(obj.searchIntent),
+      audience: asStr(obj.audience),
+      tone: asStr(obj.tone, "Profissional"),
+      structure: asStrArr(obj.structure).slice(0, 12),
+      recommendedWordCount: Number.isFinite(wc) ? Math.min(3000, Math.max(500, wc)) : 1200,
+      metaDescription: asStr(obj.metaDescription).slice(0, 260),
+      tags: asStrArr(obj.tags).slice(0, 12),
+      faq: asStrArr(obj.faq).slice(0, 8),
+      category: asStr(obj.category),
+      slug: asStr(obj.slug)
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 120),
+      titleSuggestion: asStr(obj.titleSuggestion, data.topic).slice(0, 120),
+      competition: asStr(obj.competition, "Média"),
+      trafficPotential: asStr(obj.trafficPotential, "Médio"),
+      strategy: asStr(obj.strategy),
+    };
+
+    return analysis;
+  });
+
+
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateInput.parse(input))
   .handler(async ({ data, context }) => {
