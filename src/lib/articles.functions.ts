@@ -251,10 +251,23 @@ export const generateArticle = createServerFn({ method: "POST" })
     const userPrompt =
       `Crie um artigo de blog completo e otimizado para SEO.\n` +
       `- Palavra-chave principal: "${data.keyword}"\n` +
+      (data.secondaryKeywords.length
+        ? `- Palavras-chave secundárias: ${data.secondaryKeywords.join(", ")}\n`
+        : "") +
       (data.title ? `- Título sugerido: "${data.title}"\n` : "") +
+      (data.searchIntent ? `- Intenção de busca: ${data.searchIntent}\n` : "") +
+      (data.audience ? `- Público-alvo: ${data.audience}\n` : "") +
+      (data.objective ? `- Objetivo do conteúdo: ${data.objective}\n` : "") +
+      (data.category ? `- Categoria: ${data.category}\n` : "") +
+      (data.country ? `- País/Região de foco: ${data.country}\n` : "") +
       `- Tamanho aproximado: ${data.wordCount} palavras\n` +
       `- Tom de escrita: ${data.tone}\n` +
-      `- Idioma: ${data.language}\n\n` +
+      `- Idioma: ${data.language}\n` +
+      (data.structure.length
+        ? `- Use preferencialmente esta estrutura de seções (H2): ${data.structure.join(" | ")}\n`
+        : "") +
+      `\nDistribua as palavras-chave de forma natural, use H2/H3 semânticos, ` +
+      `parágrafos curtos, listas quando fizer sentido e uma introdução e conclusão fortes.\n\n` +
       `Responda EXATAMENTE neste formato de texto puro (nada antes do TITLE):\n\n` +
       `TITLE: <título otimizado para SEO, máx 60 caracteres>\n` +
       `META: <meta descrição persuasiva, máx 155 caracteres>\n` +
