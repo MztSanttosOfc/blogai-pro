@@ -8,6 +8,22 @@ const GenerateInput = z.object({
   wordCount: z.number().int().min(300).max(3000).default(800),
   tone: z.string().trim().min(2).max(40).default("Profissional"),
   language: z.string().trim().min(2).max(40).default("Português"),
+  // Optional advanced / smart SEO context (all best-effort, backward compatible).
+  secondaryKeywords: z.array(z.string().trim().min(1).max(80)).max(15).optional().default([]),
+  audience: z.string().trim().max(200).optional().default(""),
+  searchIntent: z.string().trim().max(120).optional().default(""),
+  objective: z.string().trim().max(200).optional().default(""),
+  country: z.string().trim().max(60).optional().default(""),
+  category: z.string().trim().max(80).optional().default(""),
+  slug: z.string().trim().max(120).optional().default(""),
+  metaHint: z.string().trim().max(260).optional().default(""),
+  structure: z.array(z.string().trim().min(1).max(160)).max(20).optional().default([]),
+});
+
+const AnalyzeInput = z.object({
+  topic: z.string().trim().min(2).max(120),
+  language: z.string().trim().min(2).max(40).default("Português"),
+  country: z.string().trim().max(60).optional().default("Brasil"),
 });
 
 interface GeneratedArticle {
@@ -17,6 +33,25 @@ interface GeneratedArticle {
   content: string;
   faq: { question: string; answer: string }[];
   tags: string[];
+}
+
+export interface TopicAnalysis {
+  mainKeyword: string;
+  secondaryKeywords: string[];
+  searchIntent: string;
+  audience: string;
+  tone: string;
+  structure: string[];
+  recommendedWordCount: number;
+  metaDescription: string;
+  tags: string[];
+  faq: string[];
+  category: string;
+  slug: string;
+  titleSuggestion: string;
+  competition: string;
+  trafficPotential: string;
+  strategy: string;
 }
 
 function logAi(stage: string, payload: unknown) {
