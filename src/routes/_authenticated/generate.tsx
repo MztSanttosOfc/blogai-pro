@@ -102,13 +102,30 @@ function GeneratePage() {
 /* Shared helpers                                                             */
 /* -------------------------------------------------------------------------- */
 
+interface GenerateInput {
+  keyword: string;
+  title?: string;
+  wordCount: number;
+  tone: string;
+  language: string;
+  secondaryKeywords?: string[];
+  audience?: string;
+  searchIntent?: string;
+  objective?: string;
+  country?: string;
+  category?: string;
+  slug?: string;
+  metaHint?: string;
+  structure?: string[];
+}
+
 function useGenerate() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { refreshProfile } = useAuth();
   const runGenerate = useServerFn(generateArticle);
 
-  return async (input: Parameters<typeof generateArticle>[0]["data"]) => {
+  return async (input: GenerateInput) => {
     const result = await runGenerate({ data: input });
     await refreshProfile();
     await queryClient.invalidateQueries({ queryKey: ["articles"] });
