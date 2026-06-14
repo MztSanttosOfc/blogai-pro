@@ -337,7 +337,7 @@ export const analyzeTopic = createServerFn({ method: "POST" })
     return analysis;
   });
 
-
+export const generateArticle = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateInput.parse(input))
   .handler(async ({ data, context }) => {
