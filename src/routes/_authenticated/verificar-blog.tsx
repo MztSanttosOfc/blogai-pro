@@ -27,6 +27,7 @@ interface Result {
   score: number;
   items: BlogCheckItem[];
   recommendations: string[];
+  finalUrl?: string;
 }
 
 function VerifyBlogPage() {
@@ -42,9 +43,8 @@ function VerifyBlogPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    let normalized = url.trim();
+    const normalized = url.trim();
     if (!normalized) return;
-    if (!/^https?:\/\//i.test(normalized)) normalized = `https://${normalized}`;
     mutation.mutate(normalized);
   };
 
@@ -97,6 +97,11 @@ function VerifyBlogPage() {
               </span>
             </div>
             <Progress value={result.score} />
+            {result.finalUrl && (
+              <p className="text-xs text-muted-foreground">
+                Analisado: <span className="break-all">{result.finalUrl}</span>
+              </p>
+            )}
           </Card>
 
           <Card className="divide-y p-0">

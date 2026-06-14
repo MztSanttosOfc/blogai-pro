@@ -8,6 +8,22 @@ const GenerateInput = z.object({
   wordCount: z.number().int().min(300).max(3000).default(800),
   tone: z.string().trim().min(2).max(40).default("Profissional"),
   language: z.string().trim().min(2).max(40).default("Português"),
+  // Optional advanced / smart SEO context (all best-effort, backward compatible).
+  secondaryKeywords: z.array(z.string().trim().min(1).max(80)).max(15).optional().default([]),
+  audience: z.string().trim().max(200).optional().default(""),
+  searchIntent: z.string().trim().max(120).optional().default(""),
+  objective: z.string().trim().max(200).optional().default(""),
+  country: z.string().trim().max(60).optional().default(""),
+  category: z.string().trim().max(80).optional().default(""),
+  slug: z.string().trim().max(120).optional().default(""),
+  metaHint: z.string().trim().max(260).optional().default(""),
+  structure: z.array(z.string().trim().min(1).max(160)).max(20).optional().default([]),
+});
+
+const AnalyzeInput = z.object({
+  topic: z.string().trim().min(2).max(120),
+  language: z.string().trim().min(2).max(40).default("Português"),
+  country: z.string().trim().max(60).optional().default("Brasil"),
 });
 
 interface GeneratedArticle {
@@ -17,6 +33,25 @@ interface GeneratedArticle {
   content: string;
   faq: { question: string; answer: string }[];
   tags: string[];
+}
+
+export interface TopicAnalysis {
+  mainKeyword: string;
+  secondaryKeywords: string[];
+  searchIntent: string;
+  audience: string;
+  tone: string;
+  structure: string[];
+  recommendedWordCount: number;
+  metaDescription: string;
+  tags: string[];
+  faq: string[];
+  category: string;
+  slug: string;
+  titleSuggestion: string;
+  competition: string;
+  trafficPotential: string;
+  strategy: string;
 }
 
 function logAi(stage: string, payload: unknown) {
@@ -174,6 +209,134 @@ function parseDelimitedArticle(
   return result;
 }
 
+/** Robustly extract a JSON object from a model response (handles code fences). */
+function parseJsonObject(raw: string): Record<string, unknown> {
+  let text = raw.trim();
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced) text = fenced[1].trim();
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) {
+    throw new Error("A IA não retornou uma análise válida. Tente novamente.");
+  }
+  return JSON.parse(text.slice(start, end + 1)) as Record<string, unknown>;
+}
+
+const asStr = (v: unknown, fallback = ""): string =>
+  typeof v === "string" ? v.trim() : fallback;
+const asStrArr = (v: unknown): string[] =>
+  Array.isArray(v)
+    ? v.map((x) => (typeof x === "string" ? x.trim() : String(x))).filter(Boolean)
+    : [];
+
+/**
+ * Smart-mode SEO analysis: given just a topic, the AI proposes a full content
+ * strategy (keywords, intent, audience, structure, FAQ, slug, etc.).
+ */
+export const analyzeTopic = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => AnalyzeInput.parse(input))
+  .handler(async ({ data }): Promise<TopicAnalysis> => {
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("Serviço de IA indisponível no momento.");
+
+    const systemPrompt =
+      `Você é um estrategista de SEO e conteúdo para blogs (Blogger/AdSense). ` +
+      `Analise o tema e responda APENAS com um objeto JSON válido, sem texto extra ` +
+      `e sem blocos de código. Escreva os valores no idioma solicitado.`;
+
+    const userPrompt =
+      `Tema: "${data.topic}"\n` +
+      `Idioma: ${data.language}\n` +
+      `País/Região: ${data.country || "Brasil"}\n\n` +
+      `Retorne EXATAMENTE este JSON:\n` +
+      `{\n` +
+      `  "mainKeyword": "palavra-chave principal ideal",\n` +
+      `  "secondaryKeywords": ["5 a 8 palavras-chave secundárias/relacionadas"],\n` +
+      `  "searchIntent": "informacional|comercial|transacional|navegacional + breve explicação",\n` +
+      `  "audience": "descrição do público-alvo",\n` +
+      `  "tone": "um tom recomendado",\n` +
+      `  "structure": ["6 a 9 títulos H2 sugeridos para o artigo"],\n` +
+      `  "recommendedWordCount": 1200,\n` +
+      `  "metaDescription": "meta descrição persuasiva (máx 155 caracteres)",\n` +
+      `  "tags": ["5 a 8 tags"],\n` +
+      `  "faq": ["4 a 6 perguntas frequentes"],\n` +
+      `  "category": "categoria recomendada",\n` +
+      `  "slug": "slug-sugerido-em-minusculas",\n` +
+      `  "titleSuggestion": "título otimizado (máx 60 caracteres)",\n` +
+      `  "competition": "Baixa|Média|Alta",\n` +
+      `  "trafficPotential": "Baixo|Médio|Alto",\n` +
+      `  "strategy": "estratégia recomendada de ranqueamento em 1-3 frases"\n` +
+      `}`;
+
+    let response: Response;
+    try {
+      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          max_tokens: 2000,
+          temperature: 0.6,
+          response_format: { type: "json_object" },
+        }),
+      });
+    } catch (err) {
+      console.error("[topic-ai:network-error]", err);
+      throw new Error("Falha de conexão com o serviço de IA. Tente novamente.");
+    }
+
+    if (response.status === 429)
+      throw new Error("Limite de requisições atingido. Tente novamente em instantes.");
+    if (response.status === 402)
+      throw new Error("Créditos de IA do workspace esgotados. Adicione créditos para continuar.");
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      console.error("[topic-ai:gateway-error]", { status: response.status, errText });
+      throw new Error("Falha ao analisar o tema. Tente novamente.");
+    }
+
+    const completion = await response.json();
+    const raw: string = completion?.choices?.[0]?.message?.content ?? "";
+    if (!raw.trim()) throw new Error("A IA não retornou a análise. Tente novamente.");
+
+    const obj = parseJsonObject(raw);
+
+    const wc = Number(obj.recommendedWordCount);
+    const analysis: TopicAnalysis = {
+      mainKeyword: asStr(obj.mainKeyword, data.topic),
+      secondaryKeywords: asStrArr(obj.secondaryKeywords).slice(0, 10),
+      searchIntent: asStr(obj.searchIntent),
+      audience: asStr(obj.audience),
+      tone: asStr(obj.tone, "Profissional"),
+      structure: asStrArr(obj.structure).slice(0, 12),
+      recommendedWordCount: Number.isFinite(wc) ? Math.min(3000, Math.max(500, wc)) : 1200,
+      metaDescription: asStr(obj.metaDescription).slice(0, 260),
+      tags: asStrArr(obj.tags).slice(0, 12),
+      faq: asStrArr(obj.faq).slice(0, 8),
+      category: asStr(obj.category),
+      slug: asStr(obj.slug)
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 120),
+      titleSuggestion: asStr(obj.titleSuggestion, data.topic).slice(0, 120),
+      competition: asStr(obj.competition, "Média"),
+      trafficPotential: asStr(obj.trafficPotential, "Médio"),
+      strategy: asStr(obj.strategy),
+    };
+
+    return analysis;
+  });
+
 export const generateArticle = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateInput.parse(input))
@@ -216,10 +379,23 @@ export const generateArticle = createServerFn({ method: "POST" })
     const userPrompt =
       `Crie um artigo de blog completo e otimizado para SEO.\n` +
       `- Palavra-chave principal: "${data.keyword}"\n` +
+      (data.secondaryKeywords.length
+        ? `- Palavras-chave secundárias: ${data.secondaryKeywords.join(", ")}\n`
+        : "") +
       (data.title ? `- Título sugerido: "${data.title}"\n` : "") +
+      (data.searchIntent ? `- Intenção de busca: ${data.searchIntent}\n` : "") +
+      (data.audience ? `- Público-alvo: ${data.audience}\n` : "") +
+      (data.objective ? `- Objetivo do conteúdo: ${data.objective}\n` : "") +
+      (data.category ? `- Categoria: ${data.category}\n` : "") +
+      (data.country ? `- País/Região de foco: ${data.country}\n` : "") +
       `- Tamanho aproximado: ${data.wordCount} palavras\n` +
       `- Tom de escrita: ${data.tone}\n` +
-      `- Idioma: ${data.language}\n\n` +
+      `- Idioma: ${data.language}\n` +
+      (data.structure.length
+        ? `- Use preferencialmente esta estrutura de seções (H2): ${data.structure.join(" | ")}\n`
+        : "") +
+      `\nDistribua as palavras-chave de forma natural, use H2/H3 semânticos, ` +
+      `parágrafos curtos, listas quando fizer sentido e uma introdução e conclusão fortes.\n\n` +
       `Responda EXATAMENTE neste formato de texto puro (nada antes do TITLE):\n\n` +
       `TITLE: <título otimizado para SEO, máx 60 caracteres>\n` +
       `META: <meta descrição persuasiva, máx 155 caracteres>\n` +
@@ -297,7 +473,7 @@ export const generateArticle = createServerFn({ method: "POST" })
         user_id: userId,
         keyword: data.keyword,
         title: parsed.title || data.keyword,
-        meta_description: parsed.meta_description || "",
+        meta_description: parsed.meta_description || data.metaHint || "",
         headings: parsed.headings,
         content: parsed.content || "",
         faq: parsed.faq,
