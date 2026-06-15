@@ -2,22 +2,72 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+/**
+ * Optional string field that auto-truncates to `max` instead of throwing a
+ * Zod `too_big` error. Makes the schema tolerant of AI-generated values that
+ * occasionally exceed the intended length (e.g. a verbose searchIntent).
+ */
+const clampedString = (max: number) =>
+  z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().slice(0, max) : v),
+    z.string().max(max).optional().default(""),
+  );
+
+/**
+ * Required string field with a minimum length but auto-truncated maximum.
+ */
+const clampedRequired = (min: number, max: number) =>
+  z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().slice(0, max) : v),
+    z.string().min(min).max(max),
+  );
+
+/**
+ * Optional string array: drops empty/oversized items and truncates each entry
+ * and the overall list instead of rejecting the whole request.
+ */
+const clampedStringArray = (maxItem: number, maxItems: number) =>
+  z.preprocess(
+    (v) =>
+      Array.isArray(v)
+        ? v
+            .filter((x): x is string => typeof x === "string")
+            .map((x) => x.trim().slice(0, maxItem))
+            .filter(Boolean)
+            .slice(0, maxItems)
+        : v,
+    z.array(z.string().min(1).max(maxItem)).max(maxItems).optional().default([]),
+  );
+
 const GenerateInput = z.object({
-  keyword: z.string().trim().min(2).max(120),
-  title: z.string().trim().max(160).optional().default(""),
-  wordCount: z.number().int().min(300).max(3000).default(800),
-  tone: z.string().trim().min(2).max(40).default("Profissional"),
-  language: z.string().trim().min(2).max(40).default("Português"),
+  keyword: clampedRequired(2, 120),
+  title: clampedString(160),
+  wordCount: z.preprocess(
+    (v) => {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return 800;
+      return Math.min(3000, Math.max(300, Math.round(n)));
+    },
+    z.number().int().min(300).max(3000).default(800),
+  ),
+  tone: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 40) : "Profissional"),
+    z.string().min(2).max(40).default("Profissional"),
+  ),
+  language: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 40) : "Português"),
+    z.string().min(2).max(40).default("Português"),
+  ),
   // Optional advanced / smart SEO context (all best-effort, backward compatible).
-  secondaryKeywords: z.array(z.string().trim().min(1).max(80)).max(15).optional().default([]),
-  audience: z.string().trim().max(200).optional().default(""),
-  searchIntent: z.string().trim().max(120).optional().default(""),
-  objective: z.string().trim().max(200).optional().default(""),
-  country: z.string().trim().max(60).optional().default(""),
-  category: z.string().trim().max(80).optional().default(""),
-  slug: z.string().trim().max(120).optional().default(""),
-  metaHint: z.string().trim().max(260).optional().default(""),
-  structure: z.array(z.string().trim().min(1).max(160)).max(20).optional().default([]),
+  secondaryKeywords: clampedStringArray(80, 15),
+  audience: clampedString(200),
+  searchIntent: clampedString(160),
+  objective: clampedString(200),
+  country: clampedString(60),
+  category: clampedString(80),
+  slug: clampedString(120),
+  metaHint: clampedString(260),
+  structure: clampedStringArray(160, 20),
 });
 
 const AnalyzeInput = z.object({
