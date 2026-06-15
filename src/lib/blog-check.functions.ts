@@ -11,8 +11,10 @@ export interface BlogCheckItem {
   detail: string;
 }
 
+// A realistic desktop-Chrome User-Agent. Cloudflare and other WAFs frequently
+// challenge or block requests that advertise a bot UA, returning 403/503/530.
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; BlogAI-Pro-Checker/1.0; +https://blogai-pro.lovable.app)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 
 /**
  * Normalize a user-supplied address into a list of candidate URLs to try,
