@@ -155,12 +155,17 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
       continue;
     }
 
+    const serverHeader = (res.headers.get("server") || "").toLowerCase();
+    const viaCloudflare =
+      serverHeader.includes("cloudflare") || res.headers.has("cf-ray");
+
     if (res.status === 403 || res.status === 401) {
       return {
         ok: false,
         code: "BLOCKED",
-        message:
-          "O site bloqueou o acesso do verificador (proteção anti-bot / firewall). Tente novamente mais tarde.",
+        message: viaCloudflare
+          ? "O site está protegido pelo Cloudflare e bloqueou a verificação automática (desafio anti-bot). O blog funciona normalmente para visitantes."
+          : "O site bloqueou o acesso do verificador (proteção anti-bot / firewall). Tente novamente mais tarde.",
       };
     }
     if (res.status === 429) {
@@ -168,6 +173,27 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
         ok: false,
         code: "RATE_LIMIT",
         message: "O site limitou as requisições (429). Aguarde e tente novamente.",
+      };
+    }
+    // Cloudflare-specific edge errors (520–527 origin errors, 530 = paired 1XXX).
+    // These mean Cloudflare could not reach the origin or challenged the request,
+    // not that the user's address is wrong.
+    if (res.status >= 520 && res.status <= 530) {
+      return {
+        ok: false,
+        code: "CLOUDFLARE",
+        message:
+          `O Cloudflare não conseguiu acessar o servidor de origem do site (erro ${res.status}). ` +
+          "Geralmente é um problema temporário do servidor ou do desafio anti-bot — o blog costuma abrir normalmente no navegador.",
+      };
+    }
+    if (res.status === 503) {
+      return {
+        ok: false,
+        code: viaCloudflare ? "CLOUDFLARE" : "SERVER",
+        message: viaCloudflare
+          ? "O Cloudflare exibiu um desafio de verificação (503) e impediu a leitura automática do site."
+          : "O site está temporariamente indisponível (503). Tente novamente mais tarde.",
       };
     }
     if (res.status >= 500) {
