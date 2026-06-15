@@ -303,7 +303,7 @@ export const analyzeTopic = createServerFn({ method: "POST" })
       `{\n` +
       `  "mainKeyword": "palavra-chave principal ideal",\n` +
       `  "secondaryKeywords": ["5 a 8 palavras-chave secundárias/relacionadas"],\n` +
-      `  "searchIntent": "informacional|comercial|transacional|navegacional + breve explicação",\n` +
+      `  "searchIntent": "tipo (informacional|comercial|transacional|navegacional) + explicação muito curta, no máximo 150 caracteres",\n` +
       `  "audience": "descrição do público-alvo",\n` +
       `  "tone": "um tom recomendado",\n` +
       `  "structure": ["6 a 9 títulos H2 sugeridos para o artigo"],\n` +
