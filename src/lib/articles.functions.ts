@@ -361,10 +361,13 @@ export const analyzeTopic = createServerFn({ method: "POST" })
 
     const wc = Number(obj.recommendedWordCount);
     const analysis: TopicAnalysis = {
-      mainKeyword: asStr(obj.mainKeyword, data.topic),
-      secondaryKeywords: asStrArr(obj.secondaryKeywords).slice(0, 10),
-      searchIntent: asStr(obj.searchIntent),
-      audience: asStr(obj.audience),
+      mainKeyword: asStr(obj.mainKeyword, data.topic).slice(0, 120),
+      secondaryKeywords: asStrArr(obj.secondaryKeywords)
+        .map((s) => s.slice(0, 80))
+        .slice(0, 10),
+      searchIntent: asStr(obj.searchIntent).slice(0, 160),
+      audience: asStr(obj.audience).slice(0, 200),
+
       tone: asStr(obj.tone, "Profissional"),
       structure: asStrArr(obj.structure).slice(0, 12),
       recommendedWordCount: Number.isFinite(wc) ? Math.min(3000, Math.max(500, wc)) : 1200,
