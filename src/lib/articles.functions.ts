@@ -2,22 +2,72 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+/**
+ * Optional string field that auto-truncates to `max` instead of throwing a
+ * Zod `too_big` error. Makes the schema tolerant of AI-generated values that
+ * occasionally exceed the intended length (e.g. a verbose searchIntent).
+ */
+const clampedString = (max: number) =>
+  z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().slice(0, max) : v),
+    z.string().max(max).optional().default(""),
+  );
+
+/**
+ * Required string field with a minimum length but auto-truncated maximum.
+ */
+const clampedRequired = (min: number, max: number) =>
+  z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().slice(0, max) : v),
+    z.string().min(min).max(max),
+  );
+
+/**
+ * Optional string array: drops empty/oversized items and truncates each entry
+ * and the overall list instead of rejecting the whole request.
+ */
+const clampedStringArray = (maxItem: number, maxItems: number) =>
+  z.preprocess(
+    (v) =>
+      Array.isArray(v)
+        ? v
+            .filter((x): x is string => typeof x === "string")
+            .map((x) => x.trim().slice(0, maxItem))
+            .filter(Boolean)
+            .slice(0, maxItems)
+        : v,
+    z.array(z.string().min(1).max(maxItem)).max(maxItems).optional().default([]),
+  );
+
 const GenerateInput = z.object({
-  keyword: z.string().trim().min(2).max(120),
-  title: z.string().trim().max(160).optional().default(""),
-  wordCount: z.number().int().min(300).max(3000).default(800),
-  tone: z.string().trim().min(2).max(40).default("Profissional"),
-  language: z.string().trim().min(2).max(40).default("Português"),
+  keyword: clampedRequired(2, 120),
+  title: clampedString(160),
+  wordCount: z.preprocess(
+    (v) => {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return 800;
+      return Math.min(3000, Math.max(300, Math.round(n)));
+    },
+    z.number().int().min(300).max(3000).default(800),
+  ),
+  tone: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 40) : "Profissional"),
+    z.string().min(2).max(40).default("Profissional"),
+  ),
+  language: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 40) : "Português"),
+    z.string().min(2).max(40).default("Português"),
+  ),
   // Optional advanced / smart SEO context (all best-effort, backward compatible).
-  secondaryKeywords: z.array(z.string().trim().min(1).max(80)).max(15).optional().default([]),
-  audience: z.string().trim().max(200).optional().default(""),
-  searchIntent: z.string().trim().max(120).optional().default(""),
-  objective: z.string().trim().max(200).optional().default(""),
-  country: z.string().trim().max(60).optional().default(""),
-  category: z.string().trim().max(80).optional().default(""),
-  slug: z.string().trim().max(120).optional().default(""),
-  metaHint: z.string().trim().max(260).optional().default(""),
-  structure: z.array(z.string().trim().min(1).max(160)).max(20).optional().default([]),
+  secondaryKeywords: clampedStringArray(80, 15),
+  audience: clampedString(200),
+  searchIntent: clampedString(160),
+  objective: clampedString(200),
+  country: clampedString(60),
+  category: clampedString(80),
+  slug: clampedString(120),
+  metaHint: clampedString(260),
+  structure: clampedStringArray(160, 20),
 });
 
 const AnalyzeInput = z.object({
@@ -253,7 +303,7 @@ export const analyzeTopic = createServerFn({ method: "POST" })
       `{\n` +
       `  "mainKeyword": "palavra-chave principal ideal",\n` +
       `  "secondaryKeywords": ["5 a 8 palavras-chave secundárias/relacionadas"],\n` +
-      `  "searchIntent": "informacional|comercial|transacional|navegacional + breve explicação",\n` +
+      `  "searchIntent": "tipo (informacional|comercial|transacional|navegacional) + explicação muito curta, no máximo 150 caracteres",\n` +
       `  "audience": "descrição do público-alvo",\n` +
       `  "tone": "um tom recomendado",\n` +
       `  "structure": ["6 a 9 títulos H2 sugeridos para o artigo"],\n` +
@@ -311,17 +361,23 @@ export const analyzeTopic = createServerFn({ method: "POST" })
 
     const wc = Number(obj.recommendedWordCount);
     const analysis: TopicAnalysis = {
-      mainKeyword: asStr(obj.mainKeyword, data.topic),
-      secondaryKeywords: asStrArr(obj.secondaryKeywords).slice(0, 10),
-      searchIntent: asStr(obj.searchIntent),
-      audience: asStr(obj.audience),
-      tone: asStr(obj.tone, "Profissional"),
-      structure: asStrArr(obj.structure).slice(0, 12),
+      mainKeyword: asStr(obj.mainKeyword, data.topic).slice(0, 120),
+      secondaryKeywords: asStrArr(obj.secondaryKeywords)
+        .map((s) => s.slice(0, 80))
+        .slice(0, 10),
+      searchIntent: asStr(obj.searchIntent).slice(0, 160),
+      audience: asStr(obj.audience).slice(0, 200),
+
+      tone: asStr(obj.tone, "Profissional").slice(0, 40),
+      structure: asStrArr(obj.structure)
+        .map((s) => s.slice(0, 160))
+        .slice(0, 12),
       recommendedWordCount: Number.isFinite(wc) ? Math.min(3000, Math.max(500, wc)) : 1200,
       metaDescription: asStr(obj.metaDescription).slice(0, 260),
       tags: asStrArr(obj.tags).slice(0, 12),
       faq: asStrArr(obj.faq).slice(0, 8),
-      category: asStr(obj.category),
+      category: asStr(obj.category).slice(0, 80),
+
       slug: asStr(obj.slug)
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, "")

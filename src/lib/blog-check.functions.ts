@@ -11,8 +11,10 @@ export interface BlogCheckItem {
   detail: string;
 }
 
+// A realistic desktop-Chrome User-Agent. Cloudflare and other WAFs frequently
+// challenge or block requests that advertise a bot UA, returning 403/503/530.
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; BlogAI-Pro-Checker/1.0; +https://blogai-pro.lovable.app)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 
 /**
  * Normalize a user-supplied address into a list of candidate URLs to try,
@@ -78,8 +80,15 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
         method: "GET",
         headers: {
           "User-Agent": USER_AGENT,
-          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
           "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+          "Cache-Control": "no-cache",
+          "Upgrade-Insecure-Requests": "1",
+          "Sec-Fetch-Dest": "document",
+          "Sec-Fetch-Mode": "navigate",
+          "Sec-Fetch-Site": "none",
+          "Sec-Fetch-User": "?1",
         },
         redirect: "manual",
         signal: AbortSignal.timeout(15000),
@@ -146,12 +155,17 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
       continue;
     }
 
+    const serverHeader = (res.headers.get("server") || "").toLowerCase();
+    const viaCloudflare =
+      serverHeader.includes("cloudflare") || res.headers.has("cf-ray");
+
     if (res.status === 403 || res.status === 401) {
       return {
         ok: false,
         code: "BLOCKED",
-        message:
-          "O site bloqueou o acesso do verificador (proteção anti-bot / firewall). Tente novamente mais tarde.",
+        message: viaCloudflare
+          ? "O site está protegido pelo Cloudflare e bloqueou a verificação automática (desafio anti-bot). O blog funciona normalmente para visitantes."
+          : "O site bloqueou o acesso do verificador (proteção anti-bot / firewall). Tente novamente mais tarde.",
       };
     }
     if (res.status === 429) {
@@ -159,6 +173,27 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
         ok: false,
         code: "RATE_LIMIT",
         message: "O site limitou as requisições (429). Aguarde e tente novamente.",
+      };
+    }
+    // Cloudflare-specific edge errors (520–527 origin errors, 530 = paired 1XXX).
+    // These mean Cloudflare could not reach the origin or challenged the request,
+    // not that the user's address is wrong.
+    if (res.status >= 520 && res.status <= 530) {
+      return {
+        ok: false,
+        code: "CLOUDFLARE",
+        message:
+          `O Cloudflare não conseguiu acessar o servidor de origem do site (erro ${res.status}). ` +
+          "Geralmente é um problema temporário do servidor ou do desafio anti-bot — o blog costuma abrir normalmente no navegador.",
+      };
+    }
+    if (res.status === 503) {
+      return {
+        ok: false,
+        code: viaCloudflare ? "CLOUDFLARE" : "SERVER",
+        message: viaCloudflare
+          ? "O Cloudflare exibiu um desafio de verificação (503) e impediu a leitura automática do site."
+          : "O site está temporariamente indisponível (503). Tente novamente mais tarde.",
       };
     }
     if (res.status >= 500) {
