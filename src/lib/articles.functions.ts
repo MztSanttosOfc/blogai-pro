@@ -368,13 +368,16 @@ export const analyzeTopic = createServerFn({ method: "POST" })
       searchIntent: asStr(obj.searchIntent).slice(0, 160),
       audience: asStr(obj.audience).slice(0, 200),
 
-      tone: asStr(obj.tone, "Profissional"),
-      structure: asStrArr(obj.structure).slice(0, 12),
+      tone: asStr(obj.tone, "Profissional").slice(0, 40),
+      structure: asStrArr(obj.structure)
+        .map((s) => s.slice(0, 160))
+        .slice(0, 12),
       recommendedWordCount: Number.isFinite(wc) ? Math.min(3000, Math.max(500, wc)) : 1200,
       metaDescription: asStr(obj.metaDescription).slice(0, 260),
       tags: asStrArr(obj.tags).slice(0, 12),
       faq: asStrArr(obj.faq).slice(0, 8),
-      category: asStr(obj.category),
+      category: asStr(obj.category).slice(0, 80),
+
       slug: asStr(obj.slug)
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, "")
