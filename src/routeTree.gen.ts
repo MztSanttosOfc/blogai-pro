@@ -14,7 +14,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
-import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authenticated/atualizacoes'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
 import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
@@ -52,6 +51,12 @@ const AuthenticatedVerificarBlogRoute =
   AuthenticatedVerificarBlogRouteImport.update({
     id: '/verificar-blog',
     path: '/verificar-blog',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAtualizacoesRoute =
+  AuthenticatedAtualizacoesRouteImport.update({
+    id: '/atualizacoes',
+    path: '/atualizacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
