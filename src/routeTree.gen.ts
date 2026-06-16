@@ -53,12 +53,6 @@ const AuthenticatedVerificarBlogRoute =
     path: '/verificar-blog',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAtualizacoesRoute =
-  AuthenticatedAtualizacoesRouteImport.update({
-    id: '/atualizacoes',
-    path: '/atualizacoes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
