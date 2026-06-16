@@ -12,6 +12,7 @@ import {
   Wallet,
   Shield,
   FileText,
+  Rocket,
 } from "lucide-react";
 import {
   Sidebar,
@@ -39,6 +40,7 @@ const items = [
   { title: "Blogger", url: "/connections", icon: Globe },
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
   { title: "Financeiro", url: "/financeiro", icon: Wallet },
+  { title: "Atualizações Futuras", url: "/atualizacoes", icon: Rocket },
 ];
 
 const premiumItems = [
