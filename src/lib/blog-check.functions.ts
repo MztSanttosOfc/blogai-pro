@@ -8,6 +8,12 @@ const Input = z.object({ url: z.string().trim().min(3).max(300) });
 export interface BlogCheckItem {
   label: string;
   ok: boolean;
+  /** Partial credit 0..1 used for the weighted score. */
+  score: number;
+  /** Relative weight of this criterion in the final grade. */
+  weight: number;
+  /** Audit grouping shown in the UI. */
+  category: "Estrutura" | "Conteúdo" | "SEO Técnico" | "Performance";
   detail: string;
 }
 
@@ -22,7 +28,6 @@ const USER_AGENT =
  */
 function buildCandidates(raw: string): string[] {
   let input = raw.trim();
-  // Drop common copy/paste noise.
   input = input.replace(/\s+/g, "");
 
   const hasProtocol = /^https?:\/\//i.test(input);
@@ -36,7 +41,6 @@ function buildCandidates(raw: string): string[] {
   };
 
   if (hasProtocol) {
-    // Respect the user's chosen protocol first, then fall back.
     push(input);
     const proto = /^https/i.test(input) ? "http" : "https";
     push(`${proto}://${host}${path}`);
@@ -45,7 +49,6 @@ function buildCandidates(raw: string): string[] {
     push(`http://${host}${path}`);
   }
 
-  // Try toggling the www. prefix as a last resort.
   const altHost = host.startsWith("www.") ? host.slice(4) : `www.${host}`;
   push(`https://${altHost}${path}`);
 
@@ -130,7 +133,6 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
       return { ok: false, code: "NETWORK", message: "Não foi possível conectar ao site." };
     }
 
-    // Handle redirects manually to keep the SSRF guard in the loop.
     if ([301, 302, 303, 307, 308].includes(res.status)) {
       const location = res.headers.get("location");
       if (!location) {
@@ -156,8 +158,7 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
     }
 
     const serverHeader = (res.headers.get("server") || "").toLowerCase();
-    const viaCloudflare =
-      serverHeader.includes("cloudflare") || res.headers.has("cf-ray");
+    const viaCloudflare = serverHeader.includes("cloudflare") || res.headers.has("cf-ray");
 
     if (res.status === 403 || res.status === 401) {
       return {
@@ -175,9 +176,6 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
         message: "O site limitou as requisições (429). Aguarde e tente novamente.",
       };
     }
-    // Cloudflare-specific edge errors (520–527 origin errors, 530 = paired 1XXX).
-    // These mean Cloudflare could not reach the origin or challenged the request,
-    // not that the user's address is wrong.
     if (res.status >= 520 && res.status <= 530) {
       return {
         ok: false,
@@ -229,17 +227,86 @@ async function fetchPage(rawUrl: string, maxRedirects = 6): Promise<FetchOutcome
   };
 }
 
-/** Best-effort sub-resource fetch (sitemap/robots). Never throws. */
-async function fetchSubResource(origin: string, path: string): Promise<string | null> {
-  const outcome = await fetchPage(`${origin}${path}`, 4);
+/** Best-effort sub-resource fetch (sitemap/robots/article). Never throws. */
+async function fetchSubResource(url: string): Promise<string | null> {
+  const outcome = await fetchPage(url, 4);
   return outcome.ok ? outcome.html : null;
 }
 
+// ---------------------------------------------------------------------------
+// HTML extraction helpers (operate on the original-case HTML).
+// ---------------------------------------------------------------------------
+
+function getTitle(raw: string): string {
+  const m = raw.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  return m ? m[1].replace(/\s+/g, " ").trim() : "";
+}
+
+function getMeta(raw: string, key: string): string {
+  // Matches name="key" or property="key" regardless of attribute order.
+  const re = new RegExp(
+    `<meta[^>]+(?:name|property)\\s*=\\s*["']${key}["'][^>]*>`,
+    "i",
+  );
+  const tag = raw.match(re);
+  if (!tag) return "";
+  const c = tag[0].match(/content\s*=\s*["']([\s\S]*?)["']/i);
+  return c ? c[1].replace(/\s+/g, " ").trim() : "";
+}
+
+function countMatches(raw: string, re: RegExp): number {
+  return (raw.match(re) || []).length;
+}
+
+function plainTextWordCount(raw: string): number {
+  return raw
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z]+;/gi, " ")
+    .split(/\s+/)
+    .filter(Boolean).length;
+}
+
+/** Pull all <loc> values out of a sitemap (index or urlset). */
+function extractLocs(xml: string): string[] {
+  const locs: string[] = [];
+  const re = /<loc>\s*([\s\S]*?)\s*<\/loc>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(xml)) !== null) {
+    const u = m[1].trim();
+    if (/^https?:\/\//i.test(u)) locs.push(u);
+  }
+  return locs;
+}
+
+/** Pull <lastmod> dates out of a sitemap. */
+function extractLastmods(xml: string): Date[] {
+  const dates: Date[] = [];
+  const re = /<lastmod>\s*([\s\S]*?)\s*<\/lastmod>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(xml)) !== null) {
+    const d = new Date(m[1].trim());
+    if (!isNaN(d.getTime())) dates.push(d);
+  }
+  return dates;
+}
+
+function isLikelyArticleUrl(u: string): boolean {
+  // Posts usually contain a year or .html (Blogger) or a deeper path.
+  return (
+    /\/20\d{2}\//.test(u) ||
+    /\.html?($|\?)/i.test(u) ||
+    /\/(post|artigo|blog|p)\//i.test(u) ||
+    u.replace(/^https?:\/\/[^/]+/, "").split("/").filter(Boolean).length >= 2
+  );
+}
+
 /**
- * Fetches a blog's homepage HTML and runs heuristic checks for the presence of
- * required pages, sitemap, navigation and content volume. Robust against
- * custom domains, Blogger, WordPress, subdomains, redirects and Cloudflare.
- * Premium-only.
+ * Builds a professional, weighted SEO audit of a blog. Beyond the homepage it
+ * samples recent articles, inspects the sitemap/robots, structured data, meta
+ * tags, headings, images and links. Robust against custom domains, Blogger,
+ * WordPress, subdomains, redirects and Cloudflare. Premium-only.
  */
 export const analyzeBlog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -274,7 +341,6 @@ export const analyzeBlog = createServerFn({ method: "POST" })
         break;
       }
       lastError = { code: outcome.code, message: outcome.message };
-      // Don't keep retrying variants for definitive client-side problems.
       if (["INVALID", "BLOCKED", "TIMEOUT"].includes(outcome.code)) break;
     }
 
@@ -287,23 +353,118 @@ export const analyzeBlog = createServerFn({ method: "POST" })
 
     const finalUrl = new URL(page.finalUrl);
     const origin = finalUrl.origin;
-    const html = page.html.toLowerCase();
+    const host = finalUrl.hostname.replace(/^www\./, "");
+    const raw = page.html;
+    const html = raw.toLowerCase();
 
-    const sitemapHtml =
-      (await fetchSubResource(origin, "/sitemap.xml")) ??
-      (await fetchSubResource(origin, "/sitemap")) ??
-      (await fetchSubResource(origin, "/atom.xml")); // Blogger feed fallback
-    const robotsHtml = await fetchSubResource(origin, "/robots.txt");
-    const sitemapOk = !!sitemapHtml;
+    // --- Sub-resources -----------------------------------------------------
+    const robotsHtml = await fetchSubResource(`${origin}/robots.txt`);
+    let sitemapXml =
+      (await fetchSubResource(`${origin}/sitemap.xml`)) ??
+      (await fetchSubResource(`${origin}/sitemap-index.xml`)) ??
+      (await fetchSubResource(`${origin}/sitemap`));
+    const atomXml = sitemapXml ? null : await fetchSubResource(`${origin}/atom.xml`);
 
+    // Resolve sitemap indexes one level deep to reach real article URLs.
+    let locs: string[] = [];
+    let lastmods: Date[] = [];
+    if (sitemapXml) {
+      locs = extractLocs(sitemapXml);
+      lastmods = extractLastmods(sitemapXml);
+      const isIndex = /<sitemapindex/i.test(sitemapXml);
+      if (isIndex && locs.length) {
+        // Prefer a sub-sitemap that looks like it holds posts.
+        const sub =
+          locs.find((u) => /post|article|blog/i.test(u)) ?? locs[0];
+        const subXml = await fetchSubResource(sub);
+        if (subXml) {
+          locs = extractLocs(subXml);
+          lastmods = extractLastmods(subXml);
+        }
+      }
+    } else if (atomXml) {
+      // Blogger Atom feed: <link rel="alternate" href="...">
+      const re = /<link[^>]+rel=["']alternate["'][^>]+href=["']([^"']+)["']/gi;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(atomXml)) !== null) locs.push(m[1]);
+      const dre = /<(?:published|updated)>\s*([\s\S]*?)\s*<\/(?:published|updated)>/gi;
+      while ((m = dre.exec(atomXml)) !== null) {
+        const d = new Date(m[1].trim());
+        if (!isNaN(d.getTime())) lastmods.push(d);
+      }
+    }
+
+    const sitemapOk = !!(sitemapXml || atomXml);
+    const articleUrls = locs.filter(isLikelyArticleUrl);
+    const articleCount = articleUrls.length || locs.length;
+
+    // --- Sample recent articles -------------------------------------------
+    const sample = articleUrls.slice(0, 3);
+    const articleStats: { words: number; h2: number; imgs: number }[] = [];
+    for (const u of sample) {
+      const articleHtml = await fetchSubResource(u);
+      if (!articleHtml) continue;
+      articleStats.push({
+        words: plainTextWordCount(articleHtml),
+        h2: countMatches(articleHtml, /<h2\b/gi),
+        imgs: countMatches(articleHtml, /<img\b/gi),
+      });
+    }
+    const avgWords =
+      articleStats.length > 0
+        ? Math.round(
+            articleStats.reduce((s, a) => s + a.words, 0) / articleStats.length,
+          )
+        : plainTextWordCount(raw); // fallback to homepage when no sample
+
+    // --- Homepage signals --------------------------------------------------
     const has = (...terms: string[]) => terms.some((t) => html.includes(t));
-    const linkCount = (html.match(/<a\b/g) || []).length;
-    const wordCount = html
-      .replace(/<script[\s\S]*?<\/script>/g, " ")
-      .replace(/<style[\s\S]*?<\/style>/g, " ")
-      .replace(/<[^>]+>/g, " ")
-      .split(/\s+/)
-      .filter(Boolean).length;
+    const title = getTitle(raw);
+    const metaDesc = getMeta(raw, "description");
+    const ogTitle = getMeta(raw, "og:title");
+    const ogImage = getMeta(raw, "og:image");
+    const ogDesc = getMeta(raw, "og:description");
+    const canonical = /<link[^>]+rel=["']canonical["']/i.test(raw);
+    const viewport = /<meta[^>]+name=["']viewport["']/i.test(raw);
+    const jsonLd = countMatches(raw, /<script[^>]+application\/ld\+json/gi) > 0;
+
+    const h1 = countMatches(raw, /<h1\b/gi);
+    const h2 = countMatches(raw, /<h2\b/gi);
+    const h3 = countMatches(raw, /<h3\b/gi);
+
+    const imgTags = raw.match(/<img\b[^>]*>/gi) || [];
+    const imgsWithAlt = imgTags.filter((t) => /\balt\s*=\s*["'][^"']+["']/i.test(t)).length;
+    const altRatio = imgTags.length > 0 ? imgsWithAlt / imgTags.length : 1;
+
+    const anchors = raw.match(/<a\b[^>]*href=["']([^"']+)["']/gi) || [];
+    let internalLinks = 0;
+    let externalLinks = 0;
+    for (const a of anchors) {
+      const href = (a.match(/href=["']([^"']+)["']/i) || [])[1] || "";
+      if (/^https?:\/\//i.test(href)) {
+        if (href.toLowerCase().includes(host)) internalLinks++;
+        else externalLinks++;
+      } else if (href.startsWith("/")) {
+        internalLinks++;
+      }
+    }
+
+    // Publishing frequency from sitemap dates (posts in the last 90 days).
+    let postsPer90 = 0;
+    let lastPostLabel = "sem dados de data";
+    if (lastmods.length) {
+      const now = Date.now();
+      postsPer90 = lastmods.filter(
+        (d) => now - d.getTime() <= 90 * 24 * 3600 * 1000,
+      ).length;
+      const newest = lastmods.reduce((a, b) => (a > b ? a : b));
+      const days = Math.round((now - newest.getTime()) / (24 * 3600 * 1000));
+      lastPostLabel = days <= 1 ? "hoje" : `há ${days} dia(s)`;
+    }
+
+    // Basic performance heuristic from homepage weight.
+    const htmlKb = Math.round(raw.length / 1024);
+    const scriptCount = countMatches(raw, /<script\b/gi);
 
     const isBlogger =
       html.includes("blogger") ||
@@ -311,66 +472,218 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       origin.includes("blogspot.com");
     const isWordPress = html.includes("wp-content") || html.includes("wp-json");
 
+    // --- Weighted criteria -------------------------------------------------
+    const clamp = (n: number) => Math.max(0, Math.min(1, n));
     const items: BlogCheckItem[] = [
+      // Estrutura
       {
-        label: "Página Sobre",
-        ok: has("sobre", "about", "quem somos", "/p/sobre"),
-        detail: "Apresenta o autor/projeto e gera confiança.",
+        label: "Páginas institucionais",
+        category: "Estrutura",
+        weight: 6,
+        score: clamp(
+          [
+            has("sobre", "about", "quem somos"),
+            has("contato", "contact", "fale conosco"),
+            has("política de privacidade", "privacy policy", "privacidade"),
+            has("termos de uso", "terms of", "termos e condições"),
+          ].filter(Boolean).length / 4,
+        ),
+        ok: false,
+        detail: "Sobre, Contato, Privacidade e Termos aumentam a confiança e ajudam na monetização.",
       },
       {
-        label: "Página Contato",
-        ok: has("contato", "contact", "fale conosco", "/p/contato"),
-        detail: "Permite que leitores e anunciantes entrem em contato.",
+        label: "Quantidade de artigos",
+        category: "Estrutura",
+        weight: 8,
+        score: clamp(articleCount / 30),
+        ok: articleCount >= 10,
+        detail: `${articleCount} artigo(s) detectado(s) no sitemap/feed.`,
       },
       {
-        label: "Política de Privacidade",
-        ok: has("política de privacidade", "privacy policy", "privacidade"),
-        detail: "Página essencial para um blog profissional.",
-      },
-      {
-        label: "Termos de Uso",
-        ok: has("termos de uso", "terms of", "termos e condições"),
-        detail: "Define regras de uso do conteúdo.",
-      },
-      {
-        label: "Sitemap / Feed",
-        ok: sitemapOk,
-        detail: "Ajuda os buscadores a indexar todas as páginas.",
-      },
-      {
-        label: "Robots.txt",
-        ok: !!robotsHtml && robotsHtml.length > 0,
-        detail: "Orienta os robôs de busca sobre o rastreamento.",
+        label: "Frequência de publicação",
+        category: "Estrutura",
+        weight: 6,
+        score: clamp(postsPer90 / 6),
+        ok: postsPer90 >= 3,
+        detail: `${postsPer90} publicação(ões) nos últimos 90 dias · última ${lastPostLabel}.`,
       },
       {
         label: "Estrutura de navegação",
-        ok: linkCount >= 8,
-        detail: `Foram encontrados ${linkCount} links na página inicial.`,
+        category: "Estrutura",
+        weight: 4,
+        score: clamp((internalLinks + externalLinks) / 15),
+        ok: internalLinks + externalLinks >= 8,
+        detail: `${anchors.length} links na home (${internalLinks} internos, ${externalLinks} externos).`,
+      },
+
+      // Conteúdo
+      {
+        label: "Profundidade dos artigos",
+        category: "Conteúdo",
+        weight: 10,
+        score: clamp(avgWords / 1200),
+        ok: avgWords >= 600,
+        detail:
+          articleStats.length > 0
+            ? `Média de ${avgWords} palavras em ${articleStats.length} artigo(s) recente(s).`
+            : `~${avgWords} palavras estimadas (amostra de artigos indisponível, usando a home).`,
       },
       {
-        label: "Volume de conteúdo",
-        ok: wordCount >= 400,
-        detail: `Aproximadamente ${wordCount} palavras na página inicial.`,
+        label: "Qualidade dos títulos",
+        category: "Conteúdo",
+        weight: 6,
+        score: clamp(
+          (title.length >= 25 && title.length <= 65 ? 0.6 : 0.3) +
+            (title && title.toLowerCase() !== host ? 0.4 : 0),
+        ),
+        ok: title.length >= 20 && title.length <= 70,
+        detail: title
+          ? `Title com ${title.length} caracteres: "${title.slice(0, 70)}".`
+          : "Nenhum <title> encontrado.",
       },
       {
-        label: "Plataforma detectada",
-        ok: true,
-        detail: isBlogger
-          ? "Blogger detectado — compatível com publicação automática."
-          : isWordPress
-            ? "WordPress detectado."
-            : "Plataforma personalizada/CMS próprio.",
+        label: "Links internos",
+        category: "Conteúdo",
+        weight: 5,
+        score: clamp(internalLinks / 10),
+        ok: internalLinks >= 5,
+        detail: `${internalLinks} links internos — essenciais para SEO e tempo de permanência.`,
+      },
+      {
+        label: "Links externos",
+        category: "Conteúdo",
+        weight: 3,
+        score: clamp(externalLinks / 3),
+        ok: externalLinks >= 1,
+        detail: `${externalLinks} links externos — referências aumentam a credibilidade.`,
+      },
+      {
+        label: "Imagens com ALT text",
+        category: "Conteúdo",
+        weight: 5,
+        score: clamp(altRatio),
+        ok: altRatio >= 0.7,
+        detail:
+          imgTags.length > 0
+            ? `${imgsWithAlt}/${imgTags.length} imagens com ALT (${Math.round(altRatio * 100)}%).`
+            : "Nenhuma imagem detectada na home.",
+      },
+
+      // SEO Técnico
+      {
+        label: "Headings (H1/H2/H3)",
+        category: "SEO Técnico",
+        weight: 7,
+        score: clamp((h1 === 1 ? 0.4 : h1 > 1 ? 0.2 : 0) + (h2 >= 1 ? 0.4 : 0) + (h3 >= 1 ? 0.2 : 0)),
+        ok: h1 >= 1 && h2 >= 1,
+        detail: `H1: ${h1} · H2: ${h2} · H3: ${h3}. Ideal: 1 H1 e vários H2/H3.`,
+      },
+      {
+        label: "Meta Description",
+        category: "SEO Técnico",
+        weight: 6,
+        score: clamp(metaDesc.length >= 80 && metaDesc.length <= 165 ? 1 : metaDesc ? 0.5 : 0),
+        ok: metaDesc.length >= 50,
+        detail: metaDesc
+          ? `Meta description com ${metaDesc.length} caracteres.`
+          : "Meta description ausente.",
+      },
+      {
+        label: "Open Graph",
+        category: "SEO Técnico",
+        weight: 5,
+        score: clamp([!!ogTitle, !!ogDesc, !!ogImage].filter(Boolean).length / 3),
+        ok: !!(ogTitle && ogImage),
+        detail: `og:title ${ogTitle ? "✓" : "✗"} · og:description ${ogDesc ? "✓" : "✗"} · og:image ${ogImage ? "✓" : "✗"}.`,
+      },
+      {
+        label: "Dados estruturados (JSON-LD)",
+        category: "SEO Técnico",
+        weight: 5,
+        score: jsonLd ? 1 : 0,
+        ok: jsonLd,
+        detail: jsonLd
+          ? "Schema.org JSON-LD presente — melhora os rich results."
+          : "Sem dados estruturados JSON-LD.",
+      },
+      {
+        label: "Canonical URL",
+        category: "SEO Técnico",
+        weight: 4,
+        score: canonical ? 1 : 0,
+        ok: canonical,
+        detail: canonical
+          ? "Tag canonical presente — evita conteúdo duplicado."
+          : "Tag canonical ausente.",
+      },
+      {
+        label: "Sitemap indexável",
+        category: "SEO Técnico",
+        weight: 6,
+        score: sitemapOk ? 1 : 0,
+        ok: sitemapOk,
+        detail: sitemapOk
+          ? `Sitemap/feed encontrado com ${locs.length} URL(s).`
+          : "Nenhum sitemap.xml ou feed acessível.",
+      },
+      {
+        label: "Robots.txt",
+        category: "SEO Técnico",
+        weight: 3,
+        score: robotsHtml && robotsHtml.length > 0 ? 1 : 0,
+        ok: !!robotsHtml && robotsHtml.length > 0,
+        detail: robotsHtml
+          ? "robots.txt acessível."
+          : "robots.txt não encontrado.",
+      },
+
+      // Performance
+      {
+        label: "Compatibilidade mobile",
+        category: "Performance",
+        weight: 6,
+        score: viewport ? 1 : 0,
+        ok: viewport,
+        detail: viewport
+          ? "Meta viewport presente — layout responsivo."
+          : "Meta viewport ausente — risco de layout não responsivo.",
+      },
+      {
+        label: "Performance básica",
+        category: "Performance",
+        weight: 5,
+        score: clamp(1 - Math.max(0, htmlKb - 100) / 400) * clamp(1 - Math.max(0, scriptCount - 10) / 30),
+        ok: htmlKb <= 250 && scriptCount <= 25,
+        detail: `HTML ~${htmlKb}KB · ${scriptCount} scripts na home.`,
       },
     ];
 
-    const passed = items.filter((i) => i.ok).length;
-    const score = Math.round((passed / items.length) * 100);
+    // Derive the boolean "ok" for the institutional pages criterion.
+    items[0].ok = items[0].score >= 0.75;
+
+    const totalWeight = items.reduce((s, i) => s + i.weight, 0);
+    const weighted = items.reduce((s, i) => s + i.score * i.weight, 0);
+    const score = Math.round((weighted / totalWeight) * 100);
 
     const recommendations = items
-      .filter((i) => !i.ok)
-      .map((i) => `Adicione/ajuste: ${i.label}. ${i.detail}`);
+      .filter((i) => i.score < 0.7)
+      .sort((a, b) => b.weight - a.weight)
+      .map((i) => `[${i.category}] ${i.label}: ${i.detail}`);
 
-    const report = { items, recommendations, finalUrl: page.finalUrl };
+    const platform = isBlogger
+      ? "Blogger"
+      : isWordPress
+        ? "WordPress"
+        : "CMS/personalizado";
+
+    const report = {
+      items,
+      recommendations,
+      finalUrl: page.finalUrl,
+      platform,
+      articleCount,
+      avgWords,
+    };
 
     await supabase.from("blog_checks").insert({
       user_id: userId,
@@ -379,5 +692,13 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       report: report as unknown as import("@/integrations/supabase/types").Json,
     });
 
-    return { score, items, recommendations, finalUrl: page.finalUrl };
+    return {
+      score,
+      items,
+      recommendations,
+      finalUrl: page.finalUrl,
+      platform,
+      articleCount,
+      avgWords,
+    };
   });
