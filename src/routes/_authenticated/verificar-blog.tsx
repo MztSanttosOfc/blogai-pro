@@ -2,12 +2,22 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { ShieldCheck, CheckCircle2, XCircle, Loader2, AlertTriangle } from "lucide-react";
+import {
+  ShieldCheck,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  AlertTriangle,
+  MinusCircle,
+  FileText,
+  Gauge,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { PremiumGate } from "@/components/PremiumGate";
 import { analyzeBlog, type BlogCheckItem } from "@/lib/blog-check.functions";
 
@@ -16,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/verificar-blog")({
   component: () => (
     <PremiumGate
       title="Verificar Meu Blog"
-      description="Analise a estrutura do seu blog (páginas obrigatórias, SEO e conteúdo) com o plano Premium."
+      description="Auditoria SEO profissional do seu blog (estrutura, conteúdo, SEO técnico e performance) com o plano Premium."
     >
       <VerifyBlogPage />
     </PremiumGate>
@@ -28,6 +38,47 @@ interface Result {
   items: BlogCheckItem[];
   recommendations: string[];
   finalUrl?: string;
+  platform?: string;
+  articleCount?: number;
+  avgWords?: number;
+}
+
+const CATEGORY_ORDER: BlogCheckItem["category"][] = [
+  "Estrutura",
+  "Conteúdo",
+  "SEO Técnico",
+  "Performance",
+];
+
+function scoreColor(score: number) {
+  if (score >= 80) return "text-success";
+  if (score >= 50) return "text-warning";
+  return "text-destructive";
+}
+
+function ItemRow({ item }: { item: BlogCheckItem }) {
+  const Icon =
+    item.score >= 0.7 ? CheckCircle2 : item.score >= 0.4 ? MinusCircle : XCircle;
+  const color =
+    item.score >= 0.7
+      ? "text-success"
+      : item.score >= 0.4
+        ? "text-warning"
+        : "text-destructive";
+  return (
+    <div className="flex items-start gap-3 p-4">
+      <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${color}`} />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-2">
+          <p className="font-medium">{item.label}</p>
+          <span className="shrink-0 text-xs text-muted-foreground">
+            peso {item.weight} · {Math.round(item.score * 100)}%
+          </span>
+        </div>
+        <p className="text-sm text-muted-foreground">{item.detail}</p>
+      </div>
+    </div>
+  );
 }
 
 function VerifyBlogPage() {
@@ -57,7 +108,7 @@ function VerifyBlogPage() {
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">Verificar Meu Blog</h1>
           <p className="text-muted-foreground">
-            Análise orientativa da estrutura, SEO e conteúdo do seu blog.
+            Auditoria SEO profissional do blog inteiro — não apenas da página inicial.
           </p>
         </div>
       </div>
@@ -83,7 +134,8 @@ function VerifyBlogPage() {
         </form>
         <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          Esta análise é orientativa e não garante aprovação em programas de monetização.
+          A análise inspeciona sitemap, artigos recentes, headings, meta tags e mais.
+          É orientativa e não garante aprovação em programas de monetização.
         </p>
       </Card>
 
@@ -91,12 +143,27 @@ function VerifyBlogPage() {
         <div className="space-y-6">
           <Card className="space-y-3 p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Pontuação geral</h2>
-              <span className="font-display text-3xl font-bold text-primary">
+              <h2 className="text-lg font-semibold">Pontuação SEO geral</h2>
+              <span className={`font-display text-3xl font-bold ${scoreColor(result.score)}`}>
                 {result.score}%
               </span>
             </div>
             <Progress value={result.score} />
+            <div className="flex flex-wrap gap-2 pt-1">
+              {result.platform && (
+                <Badge variant="secondary">Plataforma: {result.platform}</Badge>
+              )}
+              {typeof result.articleCount === "number" && (
+                <Badge variant="secondary" className="gap-1">
+                  <FileText className="h-3 w-3" /> {result.articleCount} artigos
+                </Badge>
+              )}
+              {typeof result.avgWords === "number" && (
+                <Badge variant="secondary" className="gap-1">
+                  <Gauge className="h-3 w-3" /> {result.avgWords} palavras/artigo
+                </Badge>
+              )}
+            </div>
             {result.finalUrl && (
               <p className="text-xs text-muted-foreground">
                 Analisado: <span className="break-all">{result.finalUrl}</span>
@@ -104,25 +171,26 @@ function VerifyBlogPage() {
             )}
           </Card>
 
-          <Card className="divide-y p-0">
-            {result.items.map((item) => (
-              <div key={item.label} className="flex items-start gap-3 p-4">
-                {item.ok ? (
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
-                ) : (
-                  <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-                )}
-                <div>
-                  <p className="font-medium">{item.label}</p>
-                  <p className="text-sm text-muted-foreground">{item.detail}</p>
+          {CATEGORY_ORDER.map((cat) => {
+            const catItems = result.items.filter((i) => i.category === cat);
+            if (catItems.length === 0) return null;
+            return (
+              <Card key={cat} className="p-0">
+                <div className="border-b px-4 py-3">
+                  <h3 className="font-semibold">{cat}</h3>
                 </div>
-              </div>
-            ))}
-          </Card>
+                <div className="divide-y">
+                  {catItems.map((item) => (
+                    <ItemRow key={item.label} item={item} />
+                  ))}
+                </div>
+              </Card>
+            );
+          })}
 
           {result.recommendations.length > 0 && (
             <Card className="space-y-3 p-6">
-              <h2 className="text-lg font-semibold">Recomendações</h2>
+              <h2 className="text-lg font-semibold">Recomendações prioritárias</h2>
               <ul className="space-y-2">
                 {result.recommendations.map((r) => (
                   <li key={r} className="flex items-start gap-2 text-sm text-muted-foreground">
