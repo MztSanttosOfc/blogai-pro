@@ -12,6 +12,7 @@ import {
   Wallet,
   Shield,
   FileText,
+  Rocket,
 } from "lucide-react";
 import {
   Sidebar,
