@@ -77,6 +77,10 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
+    "@capacitor/splash-screen": "^8.0.1",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "2.3.2",
     "@types/node": "^22.16.5",
