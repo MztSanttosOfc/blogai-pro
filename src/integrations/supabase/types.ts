@@ -383,6 +383,173 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_completions: {
+        Row: {
+          correct_answers: number
+          created_at: string
+          credits_awarded: number
+          id: string
+          mission_id: string
+          read_seconds: number
+          score: number
+          scroll_percent: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          correct_answers?: number
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          mission_id: string
+          read_seconds?: number
+          score?: number
+          scroll_percent?: number
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          correct_answers?: number
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          mission_id?: string
+          read_seconds?: number
+          score?: number
+          scroll_percent?: number
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_completions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "reward_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reward_missions: {
+        Row: {
+          category: string
+          completion_count: number
+          content: string
+          created_at: string
+          credits: number
+          difficulty: string
+          estimated_read_seconds: number
+          excerpt: string
+          external_id: string
+          id: string
+          published_at: string | null
+          quiz: Json | null
+          read_count: number
+          source: string
+          status: string
+          title: string
+          updated_at: string
+          url: string
+          word_count: number
+        }
+        Insert: {
+          category?: string
+          completion_count?: number
+          content?: string
+          created_at?: string
+          credits?: number
+          difficulty?: string
+          estimated_read_seconds?: number
+          excerpt?: string
+          external_id: string
+          id?: string
+          published_at?: string | null
+          quiz?: Json | null
+          read_count?: number
+          source?: string
+          status?: string
+          title: string
+          updated_at?: string
+          url: string
+          word_count?: number
+        }
+        Update: {
+          category?: string
+          completion_count?: number
+          content?: string
+          created_at?: string
+          credits?: number
+          difficulty?: string
+          estimated_read_seconds?: number
+          excerpt?: string
+          external_id?: string
+          id?: string
+          published_at?: string | null
+          quiz?: Json | null
+          read_count?: number
+          source?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          url?: string
+          word_count?: number
+        }
+        Relationships: []
+      }
+      reward_settings: {
+        Row: {
+          auto_approve: boolean
+          blog_url: string
+          content_source: string
+          credits_by_category: Json
+          credits_by_difficulty: Json
+          credits_per_article: number
+          daily_credit_limit: number
+          daily_mission_limit: number
+          eligible_categories: string[]
+          enabled: boolean
+          id: boolean
+          min_scroll_percent: number
+          pass_threshold: number
+          seconds_per_100_words: number
+          updated_at: string
+        }
+        Insert: {
+          auto_approve?: boolean
+          blog_url?: string
+          content_source?: string
+          credits_by_category?: Json
+          credits_by_difficulty?: Json
+          credits_per_article?: number
+          daily_credit_limit?: number
+          daily_mission_limit?: number
+          eligible_categories?: string[]
+          enabled?: boolean
+          id?: boolean
+          min_scroll_percent?: number
+          pass_threshold?: number
+          seconds_per_100_words?: number
+          updated_at?: string
+        }
+        Update: {
+          auto_approve?: boolean
+          blog_url?: string
+          content_source?: string
+          credits_by_category?: Json
+          credits_by_difficulty?: Json
+          credits_per_article?: number
+          daily_credit_limit?: number
+          daily_mission_limit?: number
+          eligible_categories?: string[]
+          enabled?: boolean
+          id?: boolean
+          min_scroll_percent?: number
+          pass_threshold?: number
+          seconds_per_100_words?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_pages: {
         Row: {
           blogger_post_id: string | null
@@ -581,6 +748,31 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      reward_admin_list_missions: { Args: never; Returns: Json }
+      reward_admin_set_status: {
+        Args: { p_id: string; p_status: string }
+        Returns: Json
+      }
+      reward_admin_stats: { Args: never; Returns: Json }
+      reward_admin_update_settings: { Args: { p: Json }; Returns: Json }
+      reward_claim: {
+        Args: {
+          p_correct: number
+          p_mission_id: string
+          p_read_seconds: number
+          p_scroll_percent: number
+          p_total: number
+        }
+        Returns: Json
+      }
+      reward_config: { Args: never; Returns: Json }
+      reward_get_mission: { Args: { p_id: string }; Returns: Json }
+      reward_list_missions: { Args: never; Returns: Json }
+      reward_save_quiz: {
+        Args: { p_id: string; p_quiz: Json }
+        Returns: undefined
+      }
+      reward_upsert_mission: { Args: { p: Json }; Returns: Json }
     }
     Enums: {
       app_role: "owner" | "admin" | "user"

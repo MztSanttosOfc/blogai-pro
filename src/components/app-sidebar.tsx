@@ -13,6 +13,7 @@ import {
   Shield,
   FileText,
   Rocket,
+  Gift,
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,6 +37,7 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Gerar Artigo", url: "/generate", icon: Sparkles },
   { title: "Biblioteca", url: "/library", icon: Library },
+  { title: "Central de Recompensas", url: "/recompensas", icon: Gift },
   { title: "Páginas", url: "/paginas", icon: FileText },
   { title: "Blogger", url: "/connections", icon: Globe },
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
