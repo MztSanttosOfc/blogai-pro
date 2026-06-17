@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
+import { Route as AuthenticatedRecompensasRouteImport } from './routes/_authenticated/recompensas'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
 import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
@@ -51,6 +52,12 @@ const AuthenticatedVerificarBlogRoute =
   AuthenticatedVerificarBlogRouteImport.update({
     id: '/verificar-blog',
     path: '/verificar-blog',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRecompensasRoute =
+  AuthenticatedRecompensasRouteImport.update({
+    id: '/recompensas',
+    path: '/recompensas',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
@@ -138,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
   '/pricing': typeof AuthenticatedPricingRoute
+  '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
@@ -157,6 +165,7 @@ export interface FileRoutesByTo {
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
   '/pricing': typeof AuthenticatedPricingRoute
+  '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
@@ -178,6 +187,7 @@ export interface FileRoutesById {
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/_authenticated/paginas': typeof AuthenticatedPaginasRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
+  '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/monetizacao'
     | '/paginas'
     | '/pricing'
+    | '/recompensas'
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/monetizacao'
     | '/paginas'
     | '/pricing'
+    | '/recompensas'
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
@@ -238,6 +250,7 @@ export interface FileRouteTypes {
     | '/_authenticated/monetizacao'
     | '/_authenticated/paginas'
     | '/_authenticated/pricing'
+    | '/_authenticated/recompensas'
     | '/_authenticated/verificar-blog'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
@@ -287,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/verificar-blog'
       fullPath: '/verificar-blog'
       preLoaderRoute: typeof AuthenticatedVerificarBlogRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/recompensas': {
+      id: '/_authenticated/recompensas'
+      path: '/recompensas'
+      fullPath: '/recompensas'
+      preLoaderRoute: typeof AuthenticatedRecompensasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pricing': {
@@ -405,6 +425,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
   AuthenticatedPaginasRoute: typeof AuthenticatedPaginasRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
+  AuthenticatedRecompensasRoute: typeof AuthenticatedRecompensasRoute
   AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
   AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
 }
@@ -420,6 +441,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
   AuthenticatedPaginasRoute: AuthenticatedPaginasRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
+  AuthenticatedRecompensasRoute: AuthenticatedRecompensasRoute,
   AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
   AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
 }
