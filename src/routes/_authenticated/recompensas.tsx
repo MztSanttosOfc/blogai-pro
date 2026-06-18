@@ -302,29 +302,75 @@ function MissionReaderView({
   onCompleted: () => void;
 }) {
   const submit = useServerFn(submitMission);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const startedAt = useRef(Date.now());
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const activeMs = useRef(0);
   const [scrollPercent, setScrollPercent] = useState(0);
+  const [reachedEnd, setReachedEnd] = useState(false);
+  const [engaged, setEngaged] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [showQuiz, setShowQuiz] = useState(false);
 
+  const articleOrigin = useMemo(() => {
+    try {
+      return new URL(reader.url).origin;
+    } catch {
+      return "";
+    }
+  }, [reader.url]);
+
+  // Count reading time only while the tab/app is visible (active seconds).
   useEffect(() => {
-    const t = setInterval(() => setSeconds(Math.round((Date.now() - startedAt.current) / 1000)), 1000);
+    let last = Date.now();
+    const tick = () => {
+      const now = Date.now();
+      if (document.visibilityState === "visible") {
+        activeMs.current += now - last;
+        setSeconds(Math.round(activeMs.current / 1000));
+      }
+      last = now;
+    };
+    const t = setInterval(tick, 1000);
     return () => clearInterval(t);
   }, []);
 
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const max = el.scrollHeight - el.clientHeight;
-    const pct = max <= 0 ? 100 : Math.min(100, Math.round((el.scrollTop / max) * 100));
-    setScrollPercent((p) => Math.max(p, pct));
+  // Detect interaction with the cross-origin frame: focusing the iframe blurs
+  // the parent window. Combined with active time this is our engagement signal.
+  useEffect(() => {
+    const onBlur = () => {
+      if (document.activeElement === iframeRef.current) setEngaged(true);
+    };
+    window.addEventListener("blur", onBlur);
+    return () => window.removeEventListener("blur", onBlur);
   }, []);
 
+  // Optional precise tracking: the blog (same owner) may post scroll progress.
+  // Snippet: window.parent.postMessage({type:'reward-progress',scroll,atEnd},'*')
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (articleOrigin && e.origin !== articleOrigin) return;
+      const d = e.data as { type?: string; scroll?: number; atEnd?: boolean } | null;
+      if (!d || d.type !== "reward-progress") return;
+      if (typeof d.scroll === "number") {
+        setScrollPercent((p) => Math.max(p, Math.min(100, Math.round(d.scroll!))));
+        setEngaged(true);
+      }
+      if (d.atEnd) setReachedEnd(true);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [articleOrigin]);
+
   const minSeconds = Math.floor(reader.estimatedReadSeconds * 0.6);
-  const readingDone = scrollPercent >= reader.minScrollPercent && seconds >= minSeconds;
+  // Effective reading progress: precise scroll when available, otherwise an
+  // engagement+time estimate (the quiz is the real comprehension gate).
+  const timeRatio = Math.min(1, minSeconds > 0 ? seconds / minSeconds : 1);
+  const estimatedProgress = engaged ? Math.round(timeRatio * 100) : Math.round(timeRatio * 60);
+  const effectiveScroll = Math.max(scrollPercent, reachedEnd ? 100 : estimatedProgress);
+  const readingDone =
+    effectiveScroll >= reader.minScrollPercent && seconds >= minSeconds && (engaged || reachedEnd || scrollPercent > 0);
   const allAnswered = reader.questions.every((q) => answers[q.id] !== undefined);
 
   const reasonMessage: Record<string, string> = {
