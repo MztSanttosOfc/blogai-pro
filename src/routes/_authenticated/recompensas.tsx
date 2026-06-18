@@ -436,38 +436,50 @@ function MissionReaderView({
       <div>
         <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
           <span>Progresso de leitura</span>
-          <span>{scrollPercent}% / {reader.minScrollPercent}%</span>
+          <span>
+            {effectiveScroll}% / {reader.minScrollPercent}%
+          </span>
         </div>
-        <Progress value={scrollPercent} />
+        <Progress value={effectiveScroll} />
       </div>
 
-      <Card className="p-0">
-        <div className="border-b p-4">
-          <h2 className="text-lg font-bold">{reader.title}</h2>
+      <Card className="overflow-hidden p-0">
+        <div className="flex items-center justify-between gap-2 border-b p-3">
+          <h2 className="min-w-0 flex-1 truncate text-sm font-bold sm:text-base">{reader.title}</h2>
           {reader.url && (
             <a
               href={reader.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+              className="inline-flex shrink-0 items-center gap-1 text-xs text-primary hover:underline"
             >
-              Ler no blog oficial <ExternalLink className="h-3 w-3" />
+              Abrir no blog <ExternalLink className="h-3 w-3" />
             </a>
           )}
         </div>
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          className="max-h-[55vh] overflow-y-auto whitespace-pre-wrap p-4 text-sm leading-relaxed text-foreground/90"
-        >
-          {reader.content}
-        </div>
+        <iframe
+          ref={iframeRef}
+          src={reader.url}
+          title={reader.title}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          className="h-[60vh] w-full border-0 bg-white sm:h-[70vh]"
+        />
       </Card>
 
       {!readingDone ? (
         <Card className="border-dashed p-4 text-center text-sm text-muted-foreground">
           <BookOpen className="mx-auto mb-2 h-5 w-5" />
-          Continue lendo até o final para liberar o quiz.
+          Leia o artigo acima até o final. O quiz será liberado após o tempo mínimo de leitura.
+        </Card>
+      ) : !showQuiz ? (
+        <Card className="flex flex-col items-center gap-3 border-primary/30 bg-primary/5 p-5 text-center">
+          <CheckCircle2 className="h-6 w-6 text-primary" />
+          <p className="text-sm font-medium">Leitura concluída! Responda ao quiz para resgatar seus créditos.</p>
+          <Button onClick={() => setShowQuiz(true)}>
+            <Sparkles className="mr-2 h-4 w-4" /> Liberar quiz
+          </Button>
         </Card>
       ) : (
         <Card className="space-y-5 p-5">
