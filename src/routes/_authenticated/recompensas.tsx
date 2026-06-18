@@ -391,7 +391,7 @@ function MissionReaderView({
         data: {
           missionId: reader.missionId,
           readSeconds: seconds,
-          scrollPercent,
+          scrollPercent: effectiveScroll,
           answers: reader.questions.map((q) => ({ id: q.id, answer: answers[q.id] ?? "" })),
         },
       });
