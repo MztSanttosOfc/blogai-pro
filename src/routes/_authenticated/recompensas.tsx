@@ -302,29 +302,75 @@ function MissionReaderView({
   onCompleted: () => void;
 }) {
   const submit = useServerFn(submitMission);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const startedAt = useRef(Date.now());
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const activeMs = useRef(0);
   const [scrollPercent, setScrollPercent] = useState(0);
+  const [reachedEnd, setReachedEnd] = useState(false);
+  const [engaged, setEngaged] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [showQuiz, setShowQuiz] = useState(false);
 
+  const articleOrigin = useMemo(() => {
+    try {
+      return new URL(reader.url).origin;
+    } catch {
+      return "";
+    }
+  }, [reader.url]);
+
+  // Count reading time only while the tab/app is visible (active seconds).
   useEffect(() => {
-    const t = setInterval(() => setSeconds(Math.round((Date.now() - startedAt.current) / 1000)), 1000);
+    let last = Date.now();
+    const tick = () => {
+      const now = Date.now();
+      if (document.visibilityState === "visible") {
+        activeMs.current += now - last;
+        setSeconds(Math.round(activeMs.current / 1000));
+      }
+      last = now;
+    };
+    const t = setInterval(tick, 1000);
     return () => clearInterval(t);
   }, []);
 
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const max = el.scrollHeight - el.clientHeight;
-    const pct = max <= 0 ? 100 : Math.min(100, Math.round((el.scrollTop / max) * 100));
-    setScrollPercent((p) => Math.max(p, pct));
+  // Detect interaction with the cross-origin frame: focusing the iframe blurs
+  // the parent window. Combined with active time this is our engagement signal.
+  useEffect(() => {
+    const onBlur = () => {
+      if (document.activeElement === iframeRef.current) setEngaged(true);
+    };
+    window.addEventListener("blur", onBlur);
+    return () => window.removeEventListener("blur", onBlur);
   }, []);
 
+  // Optional precise tracking: the blog (same owner) may post scroll progress.
+  // Snippet: window.parent.postMessage({type:'reward-progress',scroll,atEnd},'*')
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (articleOrigin && e.origin !== articleOrigin) return;
+      const d = e.data as { type?: string; scroll?: number; atEnd?: boolean } | null;
+      if (!d || d.type !== "reward-progress") return;
+      if (typeof d.scroll === "number") {
+        setScrollPercent((p) => Math.max(p, Math.min(100, Math.round(d.scroll!))));
+        setEngaged(true);
+      }
+      if (d.atEnd) setReachedEnd(true);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [articleOrigin]);
+
   const minSeconds = Math.floor(reader.estimatedReadSeconds * 0.6);
-  const readingDone = scrollPercent >= reader.minScrollPercent && seconds >= minSeconds;
+  // Effective reading progress: precise scroll when available, otherwise an
+  // engagement+time estimate (the quiz is the real comprehension gate).
+  const timeRatio = Math.min(1, minSeconds > 0 ? seconds / minSeconds : 1);
+  const estimatedProgress = engaged ? Math.round(timeRatio * 100) : Math.round(timeRatio * 60);
+  const effectiveScroll = Math.max(scrollPercent, reachedEnd ? 100 : estimatedProgress);
+  const readingDone =
+    effectiveScroll >= reader.minScrollPercent && seconds >= minSeconds && (engaged || reachedEnd || scrollPercent > 0);
   const allAnswered = reader.questions.every((q) => answers[q.id] !== undefined);
 
   const reasonMessage: Record<string, string> = {
@@ -345,7 +391,7 @@ function MissionReaderView({
         data: {
           missionId: reader.missionId,
           readSeconds: seconds,
-          scrollPercent,
+          scrollPercent: effectiveScroll,
           answers: reader.questions.map((q) => ({ id: q.id, answer: answers[q.id] ?? "" })),
         },
       });
@@ -390,38 +436,50 @@ function MissionReaderView({
       <div>
         <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
           <span>Progresso de leitura</span>
-          <span>{scrollPercent}% / {reader.minScrollPercent}%</span>
+          <span>
+            {effectiveScroll}% / {reader.minScrollPercent}%
+          </span>
         </div>
-        <Progress value={scrollPercent} />
+        <Progress value={effectiveScroll} />
       </div>
 
-      <Card className="p-0">
-        <div className="border-b p-4">
-          <h2 className="text-lg font-bold">{reader.title}</h2>
+      <Card className="overflow-hidden p-0">
+        <div className="flex items-center justify-between gap-2 border-b p-3">
+          <h2 className="min-w-0 flex-1 truncate text-sm font-bold sm:text-base">{reader.title}</h2>
           {reader.url && (
             <a
               href={reader.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+              className="inline-flex shrink-0 items-center gap-1 text-xs text-primary hover:underline"
             >
-              Ler no blog oficial <ExternalLink className="h-3 w-3" />
+              Abrir no blog <ExternalLink className="h-3 w-3" />
             </a>
           )}
         </div>
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          className="max-h-[55vh] overflow-y-auto whitespace-pre-wrap p-4 text-sm leading-relaxed text-foreground/90"
-        >
-          {reader.content}
-        </div>
+        <iframe
+          ref={iframeRef}
+          src={reader.url}
+          title={reader.title}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          className="h-[60vh] w-full border-0 bg-white sm:h-[70vh]"
+        />
       </Card>
 
       {!readingDone ? (
         <Card className="border-dashed p-4 text-center text-sm text-muted-foreground">
           <BookOpen className="mx-auto mb-2 h-5 w-5" />
-          Continue lendo até o final para liberar o quiz.
+          Leia o artigo acima até o final. O quiz será liberado após o tempo mínimo de leitura.
+        </Card>
+      ) : !showQuiz ? (
+        <Card className="flex flex-col items-center gap-3 border-primary/30 bg-primary/5 p-5 text-center">
+          <CheckCircle2 className="h-6 w-6 text-primary" />
+          <p className="text-sm font-medium">Leitura concluída! Responda ao quiz para resgatar seus créditos.</p>
+          <Button onClick={() => setShowQuiz(true)}>
+            <Sparkles className="mr-2 h-4 w-4" /> Liberar quiz
+          </Button>
         </Card>
       ) : (
         <Card className="space-y-5 p-5">
