@@ -15,6 +15,10 @@ import {
   Loader2,
   ShieldCheck,
   Sparkles,
+  ArrowLeft,
+  Smartphone,
+  Timer,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
