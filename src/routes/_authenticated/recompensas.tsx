@@ -322,12 +322,16 @@ function MissionReaderView({
 }) {
   const submit = useServerFn(submitMission);
   const probe = useServerFn(probeEmbeddable);
+  const fetchReader = useServerFn(getMissionReaderMode);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const readerRef = useRef<HTMLDivElement>(null);
   const activeMs = useRef(0);
   const nativeSession = useRef<NativeBrowserSession | null>(null);
 
   const [strategy, setStrategy] = useState<ReaderStrategy | null>(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [readerContent, setReaderContent] = useState<ReaderModeContent | null>(null);
+  const [readerLoading, setReaderLoading] = useState(false);
   const [scrollPercent, setScrollPercent] = useState(0);
   const [reachedEnd, setReachedEnd] = useState(false);
   const [engaged, setEngaged] = useState(false);
