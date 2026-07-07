@@ -14,7 +14,9 @@ import {
   FileText,
   Rocket,
   Gift,
-  Wrench,
+  CalendarClock,
+  Network,
+  BarChart3,
 } from "lucide-react";
 import {
   Sidebar,
