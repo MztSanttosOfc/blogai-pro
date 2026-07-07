@@ -82,14 +82,14 @@ const DIFFICULTY_LABEL: Record<string, string> = {
 function RewardsPage() {
   const { isAdmin } = useAuth();
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <header className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+    <div className="mx-auto w-full max-w-5xl space-y-6 overflow-x-hidden">
+      <header className="flex min-w-0 items-center gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Gift className="h-6 w-6" />
         </div>
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold md:text-3xl">Central de Recompensas</h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground sm:text-base">
             Aprenda lendo conteúdos educacionais e ganhe créditos ao concluir o quiz.
           </p>
         </div>
