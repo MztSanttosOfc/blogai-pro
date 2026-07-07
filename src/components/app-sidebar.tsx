@@ -46,6 +46,7 @@ const items = [
 ];
 
 const premiumItems = [
+  { title: "Ferramentas Premium", url: "/ferramentas", icon: Wrench },
   { title: "Central de Monetização", url: "/monetizacao", icon: Crown },
   { title: "Verificar Meu Blog", url: "/verificar-blog", icon: ShieldCheck },
 ];
