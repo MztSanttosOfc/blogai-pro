@@ -461,7 +461,10 @@ export const syncRewardMissions = createServerFn({ method: "POST" })
       estimateReadSeconds,
       computeDifficulty,
       creditsForMission,
+      generateSummary,
     } = await import("./rewards.server");
+
+    const apiKey = process.env.LOVABLE_API_KEY;
 
     const blogUrl = cfg.blog_url;
     const discovered = await discoverArticles(blogUrl, 30);
