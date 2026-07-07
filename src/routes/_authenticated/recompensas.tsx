@@ -35,6 +35,7 @@ import {
   openMission,
   submitMission,
   probeEmbeddable,
+  getMissionReaderMode,
   getRewardAdminData,
   updateRewardSettings,
   setMissionStatus,
@@ -42,17 +43,20 @@ import {
   type RewardConfig,
   type RewardMission,
   type MissionReader,
+  type ReaderModeContent,
   type RewardAdminMission,
   type RewardAdminStats,
 } from "@/lib/rewards.functions";
 import {
   resolveStrategy,
+  nextFallback,
   isCapacitorNative,
   openNativeBrowser,
   openPopup,
   type ReaderStrategy,
   type NativeBrowserSession,
 } from "@/lib/reader-strategy";
+import { makeSummary } from "@/lib/sanitize-text";
 
 export const Route = createFileRoute("/_authenticated/recompensas")({
   head: () => ({
