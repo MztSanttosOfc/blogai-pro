@@ -246,29 +246,33 @@ export function normalizeUrl(u: string): string {
   }
 }
 
+/** Isolate the most likely main-content container from a full HTML page. */
+export function extractContainer(html: string): string {
+  const article = html.match(/<article[\s>][\s\S]*?<\/article>/i);
+  const postBody = html.match(/<div[^>]+class=["'][^"']*post-body[^"']*["'][\s\S]*?<\/div>/i);
+  const entry = html.match(/<div[^>]+class=["'][^"']*(entry-content|post-content)[^"']*["'][\s\S]*?<\/div>/i);
+  const main = html.match(/<main[\s>][\s\S]*?<\/main>/i);
+  return article?.[0] || postBody?.[0] || entry?.[0] || main?.[0] || html;
+}
+
+function extractTitle(html: string): string {
+  const ogTitle = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
+  const titleTag = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  return decodeEntities(
+    (ogTitle?.[1] || (titleTag ? titleTag[1] : "") || (h1 ? h1[1].replace(/<[^>]+>/g, "") : "") || "Artigo")
+      .replace(/<[^>]+>/g, "")
+      .replace(/\s+/g, " "),
+  ).trim();
+}
+
 /** Extract the main readable text from an article HTML page. */
 export async function fetchArticleContent(url: string): Promise<ArticleContent | null> {
   const html = await fetchText(url);
   if (!html) return null;
 
-  // Title preference: og:title > <title> > first <h1>
-  const ogTitle = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
-  const titleTag = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  const title = decodeEntities(
-    (ogTitle?.[1] || (titleTag ? titleTag[1] : "") || (h1 ? h1[1].replace(/<[^>]+>/g, "") : "") || "Artigo")
-      .replace(/<[^>]+>/g, "")
-      .replace(/\s+/g, " "),
-  ).trim();
-
-  // Isolate the most likely content container.
-  let body = html;
-  const article = html.match(/<article[\s>][\s\S]*?<\/article>/i);
-  const postBody = html.match(/<div[^>]+class=["'][^"']*post-body[^"']*["'][\s\S]*?<\/div>/i);
-  const main = html.match(/<main[\s>][\s\S]*?<\/main>/i);
-  if (article) body = article[0];
-  else if (postBody) body = postBody[0];
-  else if (main) body = main[0];
+  const title = extractTitle(html);
+  const body = extractContainer(html);
 
   const text = decodeEntities(
     body
@@ -285,11 +289,123 @@ export async function fetchArticleContent(url: string): Promise<ArticleContent |
   if (text.length < 200) return null; // not a real article
 
   const wordCount = text.split(/\s+/).filter(Boolean).length;
-  const excerpt = text.slice(0, 280);
+  const excerpt = makeSummary(text);
   const category = guessCategory(`${title} ${text.slice(0, 2000)}`);
 
   return { title, content: text.slice(0, 12000), excerpt, wordCount, category };
 }
+
+/**
+ * Fetch an article and return a SANITIZED HTML fragment for the in-app "Reader
+ * Mode" — the third fallback used when both iframe embedding and a native/system
+ * browser are blocked. Only a safe whitelist of structural tags survives
+ * (headings, paragraphs, lists, images, links, quotes) so the original visual
+ * structure and images are preserved without any scripts or unsafe attributes.
+ */
+export async function fetchReaderHtml(
+  url: string,
+): Promise<{ title: string; html: string } | null> {
+  const raw = await fetchText(url);
+  if (!raw) return null;
+  const title = extractTitle(raw);
+  const html = sanitizeArticleHtml(extractContainer(raw), url);
+  if (html.replace(/<[^>]*>/g, "").trim().length < 120) return null;
+  return { title, html };
+}
+
+const ALLOWED_TAGS = new Set([
+  "p", "br", "hr", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li",
+  "strong", "b", "em", "i", "u", "blockquote", "img", "figure", "figcaption",
+  "a", "pre", "code", "table", "thead", "tbody", "tr", "td", "th", "span", "div",
+]);
+
+/** Whitelist-based HTML sanitizer for trusted own-blog content. */
+export function sanitizeArticleHtml(input: string, baseUrl: string): string {
+  let base: URL | null = null;
+  try {
+    base = new URL(baseUrl);
+  } catch {
+    base = null;
+  }
+  const resolve = (u: string): string => {
+    try {
+      return base ? new URL(u, base).toString() : u;
+    } catch {
+      return "";
+    }
+  };
+
+  let s = input
+    .replace(/<(script|style|noscript|iframe|form|svg|button|input|nav|footer|header)[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ");
+
+  s = s.replace(/<(\/?)([a-z0-9]+)([^>]*?)(\/?)>/gi, (_m, slash, tagRaw, attrs, selfClose) => {
+    const tag = String(tagRaw).toLowerCase();
+    if (!ALLOWED_TAGS.has(tag)) return " ";
+    if (slash) return `</${tag}>`;
+
+    if (tag === "img") {
+      const src = attrs.match(/\ssrc=["']([^"']+)["']/i)?.[1] || attrs.match(/\sdata-src=["']([^"']+)["']/i)?.[1];
+      const alt = attrs.match(/\salt=["']([^"']*)["']/i)?.[1] || "";
+      const resolved = src ? resolve(src) : "";
+      if (!resolved || !/^https?:/i.test(resolved)) return " ";
+      return `<img src="${resolved}" alt="${alt.replace(/"/g, "")}" loading="lazy" />`;
+    }
+    if (tag === "a") {
+      const href = attrs.match(/\shref=["']([^"']+)["']/i)?.[1];
+      const resolved = href ? resolve(href) : "";
+      if (!resolved || !/^https?:/i.test(resolved)) return "<span>";
+      return `<a href="${resolved}" target="_blank" rel="noopener noreferrer nofollow">`;
+    }
+    return selfClose ? `<${tag} />` : `<${tag}>`;
+  });
+
+  // Collapse empty wrappers and excess whitespace.
+  return s.replace(/\s+/g, " ").replace(/(<p>\s*<\/p>|<div>\s*<\/div>|<span>\s*<\/span>)/gi, " ").trim();
+}
+
+/**
+ * Generate a short, attractive marketing-style description (~120–180 chars) for
+ * a mission card using Lovable AI. Falls back to a plain-text summary on any
+ * failure so cards always have a clean description.
+ */
+export async function generateSummary(
+  apiKey: string,
+  title: string,
+  content: string,
+): Promise<string> {
+  const plain = content.replace(/\s+/g, " ").trim().slice(0, 4000);
+  try {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "system",
+            content:
+              "Você escreve descrições curtas e atraentes para cards de artigos, em português do Brasil. " +
+              "Responda APENAS com o texto puro da descrição, sem aspas, sem HTML, sem markdown, " +
+              "entre 120 e 180 caracteres, despertando curiosidade sobre o conteúdo.",
+          },
+          { role: "user", content: `Título: ${title}\n\nConteúdo:\n${plain}` },
+        ],
+        max_tokens: 120,
+        temperature: 0.6,
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!response.ok) return makeSummary(content);
+    const completion = await response.json();
+    const raw: string = completion?.choices?.[0]?.message?.content ?? "";
+    const cleaned = makeSummary(raw, 100, 180);
+    return cleaned || makeSummary(content);
+  } catch {
+    return makeSummary(content);
+  }
+}
+
 
 export function guessCategory(text: string): string {
   const low = text.toLowerCase();
