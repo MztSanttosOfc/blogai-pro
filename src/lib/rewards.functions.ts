@@ -81,9 +81,16 @@ export const getRewardData = createServerFn({ method: "GET" })
       supabase.rpc("reward_config"),
       supabase.rpc("reward_list_missions"),
     ]);
+    // Defensive: guarantee no raw HTML/entities ever reach a mission card,
+    // even for rows imported before the clean-summary pipeline existed.
+    const cleanMissions = ((missions ?? []) as unknown as RewardMission[]).map((m) => ({
+      ...m,
+      title: makeSummary(m.title, 60, 140) || m.title,
+      excerpt: makeSummary(m.excerpt),
+    }));
     return {
       config: (config ?? null) as RewardConfig | null,
-      missions: (missions ?? []) as unknown as RewardMission[],
+      missions: cleanMissions,
     };
   });
 
