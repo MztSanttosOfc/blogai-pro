@@ -24,6 +24,7 @@ import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authentic
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authenticated/atualizacoes'
+import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
@@ -109,6 +110,12 @@ const AuthenticatedAtualizacoesRoute =
     path: '/atualizacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAgendamentosRoute =
+  AuthenticatedAgendamentosRouteImport.update({
+    id: '/agendamentos',
+    path: '/agendamentos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -143,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -164,6 +172,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -187,6 +196,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/_authenticated/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/admin'
+    | '/agendamentos'
     | '/atualizacoes'
     | '/connections'
     | '/dashboard'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/admin'
+    | '/agendamentos'
     | '/atualizacoes'
     | '/connections'
     | '/dashboard'
@@ -253,6 +265,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/admin'
+    | '/_authenticated/agendamentos'
     | '/_authenticated/atualizacoes'
     | '/_authenticated/connections'
     | '/_authenticated/dashboard'
@@ -386,6 +399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAtualizacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/agendamentos': {
+      id: '/_authenticated/agendamentos'
+      path: '/agendamentos'
+      fullPath: '/agendamentos'
+      preLoaderRoute: typeof AuthenticatedAgendamentosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -437,6 +457,7 @@ const AuthenticatedLibraryRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAgendamentosRoute: typeof AuthenticatedAgendamentosRoute
   AuthenticatedAtualizacoesRoute: typeof AuthenticatedAtualizacoesRoute
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -453,6 +474,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAgendamentosRoute: AuthenticatedAgendamentosRoute,
   AuthenticatedAtualizacoesRoute: AuthenticatedAtualizacoesRoute,
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
