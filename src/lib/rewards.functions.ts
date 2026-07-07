@@ -265,7 +265,7 @@ export const getMissionReaderMode = createServerFn({ method: "POST" })
     return { title: String(mission.title ?? "Artigo"), html: paragraphs || "<p></p>", url };
   });
 
-
+const SubmitInput = z.object({
   missionId: z.string().uuid(),
   readSeconds: z.number().int().min(0).max(60 * 60 * 4),
   scrollPercent: z.number().int().min(0).max(100),
