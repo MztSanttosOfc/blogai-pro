@@ -56,7 +56,7 @@ import {
   type ReaderStrategy,
   type NativeBrowserSession,
 } from "@/lib/reader-strategy";
-import { makeSummary } from "@/lib/sanitize-text";
+import { makeSummary, htmlToPlainText } from "@/lib/sanitize-text";
 
 export const Route = createFileRoute("/_authenticated/recompensas")({
   head: () => ({
