@@ -264,9 +264,11 @@ function MissionCard({
   };
 
   return (
-    <Card className={`flex flex-col p-5 ${mission.completed ? "opacity-70" : ""}`}>
+    <Card className={`flex min-w-0 flex-col p-4 sm:p-5 ${mission.completed ? "opacity-70" : ""}`}>
       <div className="flex flex-wrap items-center gap-2">
-        {mission.category && <Badge variant="secondary">{mission.category}</Badge>}
+        {mission.category && (
+          <Badge variant="secondary" className="max-w-full truncate">{mission.category}</Badge>
+        )}
         <Badge variant="outline">{DIFFICULTY_LABEL[mission.difficulty] ?? mission.difficulty}</Badge>
         {mission.completed && (
           <Badge className="gap-1 border-0 bg-green-500/15 text-green-600">
@@ -274,16 +276,16 @@ function MissionCard({
           </Badge>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 font-semibold">{mission.title}</h3>
+      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{mission.title}</h3>
       {mission.excerpt && (
-        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{mission.excerpt}</p>
+        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{mission.excerpt}</p>
       )}
-      <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <Clock className="h-3.5 w-3.5" /> {fmtMinutes(mission.estimated_read_seconds)}
+          <Clock className="h-3.5 w-3.5 shrink-0" /> {fmtMinutes(mission.estimated_read_seconds)}
         </span>
         <span className="flex items-center gap-1 text-primary">
-          <Coins className="h-3.5 w-3.5" /> até {mission.credits} créditos
+          <Coins className="h-3.5 w-3.5 shrink-0" /> até {mission.credits} créditos
         </span>
       </div>
       <div className="mt-4 flex-1" />
