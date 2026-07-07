@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { makeSummary } from "@/lib/sanitize-text";
+import { makeSummary, htmlToPlainText } from "@/lib/sanitize-text";
 
 // ---- Public-facing types (no correct answers leak to the client) ----------
 
