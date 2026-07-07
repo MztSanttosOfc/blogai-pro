@@ -23,6 +23,7 @@ import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
+import { Route as AuthenticatedClustersRouteImport } from './routes/_authenticated/clusters'
 import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authenticated/atualizacoes'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -104,6 +105,11 @@ const AuthenticatedConnectionsRoute =
     path: '/connections',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedClustersRoute = AuthenticatedClustersRouteImport.update({
+  id: '/clusters',
+  path: '/clusters',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAtualizacoesRoute =
   AuthenticatedAtualizacoesRouteImport.update({
     id: '/atualizacoes',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
+  '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
+  '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/_authenticated/atualizacoes': typeof AuthenticatedAtualizacoesRoute
+  '/_authenticated/clusters': typeof AuthenticatedClustersRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamentos'
     | '/atualizacoes'
+    | '/clusters'
     | '/connections'
     | '/dashboard'
     | '/financeiro'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamentos'
     | '/atualizacoes'
+    | '/clusters'
     | '/connections'
     | '/dashboard'
     | '/financeiro'
@@ -267,6 +278,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/agendamentos'
     | '/_authenticated/atualizacoes'
+    | '/_authenticated/clusters'
     | '/_authenticated/connections'
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
@@ -392,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConnectionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/clusters': {
+      id: '/_authenticated/clusters'
+      path: '/clusters'
+      fullPath: '/clusters'
+      preLoaderRoute: typeof AuthenticatedClustersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/atualizacoes': {
       id: '/_authenticated/atualizacoes'
       path: '/atualizacoes'
@@ -459,6 +478,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAgendamentosRoute: typeof AuthenticatedAgendamentosRoute
   AuthenticatedAtualizacoesRoute: typeof AuthenticatedAtualizacoesRoute
+  AuthenticatedClustersRoute: typeof AuthenticatedClustersRoute
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
@@ -476,6 +496,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAgendamentosRoute: AuthenticatedAgendamentosRoute,
   AuthenticatedAtualizacoesRoute: AuthenticatedAtualizacoesRoute,
+  AuthenticatedClustersRoute: AuthenticatedClustersRoute,
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
