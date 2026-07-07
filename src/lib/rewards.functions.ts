@@ -85,7 +85,7 @@ export const getRewardData = createServerFn({ method: "GET" })
     // even for rows imported before the clean-summary pipeline existed.
     const cleanMissions = ((missions ?? []) as unknown as RewardMission[]).map((m) => ({
       ...m,
-      title: makeSummary(m.title, 60, 140) || m.title,
+      title: htmlToPlainText(m.title) || m.title,
       excerpt: makeSummary(m.excerpt),
     }));
     return {
