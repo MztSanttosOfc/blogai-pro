@@ -397,7 +397,7 @@ function MissionReaderView({
           setReachedEnd(true);
         }
       } catch {
-        if (!done) setStrategy("popup"); // native plugin unavailable → web fallback
+        if (!done) setStrategy(nextFallback("native-browser")); // no native browser → reader mode
       }
     })();
     return () => {
