@@ -14,7 +14,9 @@ import {
   FileText,
   Rocket,
   Gift,
-  Wrench,
+  CalendarClock,
+  Network,
+  BarChart3,
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,6 +40,9 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Gerar Artigo", url: "/generate", icon: Sparkles },
   { title: "Biblioteca", url: "/library", icon: Library },
+  { title: "Agendamentos", url: "/agendamentos", icon: CalendarClock },
+  { title: "Clusters de Conteúdo", url: "/clusters", icon: Network },
+  { title: "Desempenho SEO", url: "/desempenho", icon: BarChart3 },
   { title: "Central de Recompensas", url: "/recompensas", icon: Gift },
   { title: "Páginas", url: "/paginas", icon: FileText },
   { title: "Blogger", url: "/connections", icon: Globe },
@@ -47,10 +52,10 @@ const items = [
 ];
 
 const premiumItems = [
-  { title: "Ferramentas Premium", url: "/ferramentas", icon: Wrench },
   { title: "Central de Monetização", url: "/monetizacao", icon: Crown },
   { title: "Verificar Meu Blog", url: "/verificar-blog", icon: ShieldCheck },
 ];
+
 
 export function AppSidebar() {
   const navigate = useNavigate();

@@ -6,6 +6,7 @@ const USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
 
 export const BLOGGER_SCOPES = [
   "https://www.googleapis.com/auth/blogger",
+  "https://www.googleapis.com/auth/webmasters.readonly",
   "https://www.googleapis.com/auth/userinfo.email",
 ].join(" ");
 

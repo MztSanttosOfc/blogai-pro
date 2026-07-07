@@ -182,6 +182,48 @@ export type Database = {
         }
         Relationships: []
       }
+      content_clusters: {
+        Row: {
+          created_at: string
+          id: string
+          internal_links: Json
+          language: string
+          pillar: Json
+          primary_keywords: string[]
+          satellites: Json
+          secondary_keywords: string[]
+          topic: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          internal_links?: Json
+          language?: string
+          pillar?: Json
+          primary_keywords?: string[]
+          satellites?: Json
+          secondary_keywords?: string[]
+          topic: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          internal_links?: Json
+          language?: string
+          pillar?: Json
+          primary_keywords?: string[]
+          satellites?: Json
+          secondary_keywords?: string[]
+          topic?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       course_progress: {
         Row: {
           completed: boolean
@@ -549,6 +591,94 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      scheduled_post_logs: {
+        Row: {
+          created_at: string
+          id: string
+          level: string
+          message: string
+          scheduled_post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level?: string
+          message: string
+          scheduled_post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string
+          scheduled_post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_post_logs_scheduled_post_id_fkey"
+            columns: ["scheduled_post_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduled_posts: {
+        Row: {
+          article_id: string
+          attempts: number
+          blogger_post_id: string | null
+          blogger_post_url: string | null
+          created_at: string
+          error: string | null
+          executed_at: string | null
+          id: string
+          scheduled_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          article_id: string
+          attempts?: number
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          article_id?: string
+          attempts?: number
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_posts_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_pages: {
         Row: {
