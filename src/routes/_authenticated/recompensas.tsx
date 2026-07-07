@@ -15,6 +15,10 @@ import {
   Loader2,
   ShieldCheck,
   Sparkles,
+  ArrowLeft,
+  Smartphone,
+  Timer,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
@@ -30,6 +34,7 @@ import {
   getRewardData,
   openMission,
   submitMission,
+  probeEmbeddable,
   getRewardAdminData,
   updateRewardSettings,
   setMissionStatus,
@@ -40,6 +45,14 @@ import {
   type RewardAdminMission,
   type RewardAdminStats,
 } from "@/lib/rewards.functions";
+import {
+  resolveStrategy,
+  isCapacitorNative,
+  openNativeBrowser,
+  openPopup,
+  type ReaderStrategy,
+  type NativeBrowserSession,
+} from "@/lib/reader-strategy";
 
 export const Route = createFileRoute("/_authenticated/recompensas")({
   head: () => ({
@@ -69,14 +82,14 @@ const DIFFICULTY_LABEL: Record<string, string> = {
 function RewardsPage() {
   const { isAdmin } = useAuth();
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <header className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+    <div className="mx-auto w-full max-w-5xl space-y-6 overflow-x-hidden">
+      <header className="flex min-w-0 items-center gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Gift className="h-6 w-6" />
         </div>
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold md:text-3xl">Central de Recompensas</h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground sm:text-base">
             Aprenda lendo conteúdos educacionais e ganhe créditos ao concluir o quiz.
           </p>
         </div>
@@ -170,8 +183,8 @@ function PlayerView() {
   const remainingCredits = Math.max(0, config.daily_credit_limit - config.today_credits);
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="w-full space-y-6 overflow-x-hidden">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatBox icon={<Coins className="h-4 w-4" />} label="Créditos hoje" value={`${config.today_credits}/${config.daily_credit_limit}`} />
         <StatBox icon={<Trophy className="h-4 w-4" />} label="Missões hoje" value={`${config.today_missions}/${config.daily_mission_limit}`} />
         <StatBox icon={<ShieldCheck className="h-4 w-4" />} label="Rolagem mínima" value={`${config.min_scroll_percent}%`} />
@@ -184,7 +197,7 @@ function PlayerView() {
       )}
 
       {missions.length === 0 ? (
-        <Card className="flex flex-col items-center gap-3 p-10 text-center">
+        <Card className="flex flex-col items-center gap-3 p-6 text-center sm:p-10">
           <BookOpen className="h-8 w-8 text-muted-foreground" />
           <h3 className="text-lg font-semibold">Nenhuma missão disponível</h3>
           <p className="max-w-md text-sm text-muted-foreground">
@@ -193,7 +206,7 @@ function PlayerView() {
           </p>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {missions.map((m) => (
             <MissionCard
               key={m.id}
@@ -214,13 +227,13 @@ function PlayerView() {
 
 function StatBox({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <Card className="flex items-center gap-3 p-4">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <Card className="flex min-w-0 items-center gap-3 p-4">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         {icon}
       </div>
-      <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-lg font-semibold">{value}</p>
+      <div className="min-w-0">
+        <p className="truncate text-xs text-muted-foreground">{label}</p>
+        <p className="truncate text-lg font-semibold">{value}</p>
       </div>
     </Card>
   );
@@ -251,9 +264,11 @@ function MissionCard({
   };
 
   return (
-    <Card className={`flex flex-col p-5 ${mission.completed ? "opacity-70" : ""}`}>
+    <Card className={`flex min-w-0 flex-col p-4 sm:p-5 ${mission.completed ? "opacity-70" : ""}`}>
       <div className="flex flex-wrap items-center gap-2">
-        {mission.category && <Badge variant="secondary">{mission.category}</Badge>}
+        {mission.category && (
+          <Badge variant="secondary" className="max-w-full truncate">{mission.category}</Badge>
+        )}
         <Badge variant="outline">{DIFFICULTY_LABEL[mission.difficulty] ?? mission.difficulty}</Badge>
         {mission.completed && (
           <Badge className="gap-1 border-0 bg-green-500/15 text-green-600">
@@ -261,16 +276,16 @@ function MissionCard({
           </Badge>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 font-semibold">{mission.title}</h3>
+      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{mission.title}</h3>
       {mission.excerpt && (
-        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{mission.excerpt}</p>
+        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{mission.excerpt}</p>
       )}
-      <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <Clock className="h-3.5 w-3.5" /> {fmtMinutes(mission.estimated_read_seconds)}
+          <Clock className="h-3.5 w-3.5 shrink-0" /> {fmtMinutes(mission.estimated_read_seconds)}
         </span>
         <span className="flex items-center gap-1 text-primary">
-          <Coins className="h-3.5 w-3.5" /> até {mission.credits} créditos
+          <Coins className="h-3.5 w-3.5 shrink-0" /> até {mission.credits} créditos
         </span>
       </div>
       <div className="mt-4 flex-1" />
@@ -302,8 +317,13 @@ function MissionReaderView({
   onCompleted: () => void;
 }) {
   const submit = useServerFn(submitMission);
+  const probe = useServerFn(probeEmbeddable);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const activeMs = useRef(0);
+  const nativeSession = useRef<NativeBrowserSession | null>(null);
+
+  const [strategy, setStrategy] = useState<ReaderStrategy | null>(null);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
   const [scrollPercent, setScrollPercent] = useState(0);
   const [reachedEnd, setReachedEnd] = useState(false);
   const [engaged, setEngaged] = useState(false);
@@ -321,33 +341,111 @@ function MissionReaderView({
     }
   }, [reader.url]);
 
-  // Count reading time only while the tab/app is visible (active seconds).
+  const external = strategy === "popup" || strategy === "native-browser";
+
+  // Lock body scroll while the full-screen reader is open (native-app feel).
   useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  // Resolve the best display strategy for this environment/blog.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (isCapacitorNative()) {
+        if (!cancelled) setStrategy("native-browser");
+        return;
+      }
+      try {
+        const res = await probe({ data: { url: reader.url } });
+        if (!cancelled) setStrategy(resolveStrategy(res.embeddable));
+      } catch {
+        // If probing fails, try the iframe and let the load-timeout fall back.
+        if (!cancelled) setStrategy("iframe");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [probe, reader.url]);
+
+  // Native (Capacitor): open a native in-app WebView and measure reading time.
+  useEffect(() => {
+    if (strategy !== "native-browser") return;
+    let done = false;
+    (async () => {
+      try {
+        const session = await openNativeBrowser(reader.url);
+        nativeSession.current = session;
+        const ms = await session.waitClosed;
+        if (!done) {
+          activeMs.current += ms;
+          setSeconds(Math.round(activeMs.current / 1000));
+          setEngaged(true);
+          setReachedEnd(true);
+        }
+      } catch {
+        if (!done) setStrategy("popup"); // native plugin unavailable → web fallback
+      }
+    })();
+    return () => {
+      done = true;
+      nativeSession.current?.close();
+      nativeSession.current = null;
+    };
+  }, [strategy, reader.url]);
+
+  // Popup fallback: open the original article in a new tab.
+  useEffect(() => {
+    if (strategy !== "popup") return;
+    openPopup(reader.url);
+  }, [strategy, reader.url]);
+
+  // Iframe safety net: if it never loads (blocked by future XFO/CSP changes),
+  // switch automatically to the popup strategy without breaking the mission.
+  useEffect(() => {
+    if (strategy !== "iframe") return;
+    const t = setTimeout(() => {
+      if (!iframeLoaded) setStrategy("popup");
+    }, 8000);
+    return () => clearTimeout(t);
+  }, [strategy, iframeLoaded]);
+
+  // Reading-time counter. Embedded → count while the app is visible; external
+  // (popup/native) → count while the user is away reading the article.
+  useEffect(() => {
+    if (!strategy) return;
     let last = Date.now();
     const tick = () => {
       const now = Date.now();
-      if (document.visibilityState === "visible") {
+      const visible = document.visibilityState === "visible";
+      const shouldCount = external ? !visible : visible;
+      if (shouldCount) {
         activeMs.current += now - last;
         setSeconds(Math.round(activeMs.current / 1000));
+        if (external && !visible) setEngaged(true);
       }
       last = now;
     };
-    const t = setInterval(tick, 1000);
-    return () => clearInterval(t);
-  }, []);
+    const iv = setInterval(tick, 1000);
+    return () => clearInterval(iv);
+  }, [strategy, external]);
 
-  // Detect interaction with the cross-origin frame: focusing the iframe blurs
-  // the parent window. Combined with active time this is our engagement signal.
+  // Engagement signal for the iframe: focusing the frame blurs the parent.
   useEffect(() => {
+    if (strategy !== "iframe") return;
     const onBlur = () => {
       if (document.activeElement === iframeRef.current) setEngaged(true);
     };
     window.addEventListener("blur", onBlur);
     return () => window.removeEventListener("blur", onBlur);
-  }, []);
+  }, [strategy]);
 
-  // Optional precise tracking: the blog (same owner) may post scroll progress.
-  // Snippet: window.parent.postMessage({type:'reward-progress',scroll,atEnd},'*')
+  // Optional precise tracking via the Blogger postMessage snippet.
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
       if (articleOrigin && e.origin !== articleOrigin) return;
@@ -364,13 +462,14 @@ function MissionReaderView({
   }, [articleOrigin]);
 
   const minSeconds = Math.floor(reader.estimatedReadSeconds * 0.6);
-  // Effective reading progress: precise scroll when available, otherwise an
-  // engagement+time estimate (the quiz is the real comprehension gate).
   const timeRatio = Math.min(1, minSeconds > 0 ? seconds / minSeconds : 1);
   const estimatedProgress = engaged ? Math.round(timeRatio * 100) : Math.round(timeRatio * 60);
   const effectiveScroll = Math.max(scrollPercent, reachedEnd ? 100 : estimatedProgress);
+  const remainingSeconds = Math.max(0, minSeconds - seconds);
   const readingDone =
-    effectiveScroll >= reader.minScrollPercent && seconds >= minSeconds && (engaged || reachedEnd || scrollPercent > 0);
+    effectiveScroll >= reader.minScrollPercent &&
+    seconds >= minSeconds &&
+    (engaged || reachedEnd || scrollPercent > 0);
   const allAnswered = reader.questions.every((q) => answers[q.id] !== undefined);
 
   const reasonMessage: Record<string, string> = {
@@ -382,6 +481,11 @@ function MissionReaderView({
     disabled: "A Central de Recompensas está desativada.",
     mission_not_found: "Missão indisponível.",
     no_quiz: "Quiz indisponível para este artigo.",
+  };
+
+  const handleClose = () => {
+    nativeSession.current?.close();
+    onClose();
   };
 
   const handleSubmit = async () => {
@@ -405,10 +509,7 @@ function MissionReaderView({
       } else {
         const msg = reasonMessage[res.reason ?? ""] ?? "Não foi possível concluir a missão.";
         setResult({ ok: false, message: msg });
-        if (res.reason === "low_score") {
-          // allow retry: reset answers
-          setAnswers({});
-        }
+        if (res.reason === "low_score") setAnswers({});
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erro ao enviar.");
@@ -417,122 +518,185 @@ function MissionReaderView({
     }
   };
 
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          ← Voltar
-        </Button>
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" /> {seconds}s
-          </span>
-          <span className="flex items-center gap-1 text-primary">
-            <Coins className="h-3.5 w-3.5" /> até {reader.credits} créditos
-          </span>
-        </div>
-      </div>
+  const strategyLabel =
+    strategy === "native-browser"
+      ? "Leitor nativo"
+      : strategy === "popup"
+        ? "Aba do navegador"
+        : "Leitura no app";
 
-      <div>
-        <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-          <span>Progresso de leitura</span>
-          <span>
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background">
+      {/* Top bar */}
+      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-2 sm:px-4">
+        <Button variant="ghost" size="sm" onClick={handleClose} className="shrink-0 px-2">
+          <ArrowLeft className="h-4 w-4 sm:mr-1" />
+          <span className="hidden sm:inline">Voltar</span>
+        </Button>
+        <h2 className="min-w-0 flex-1 truncate text-sm font-semibold sm:text-base">{reader.title}</h2>
+        <Badge variant="outline" className="hidden shrink-0 gap-1 sm:inline-flex">
+          {strategy === "native-browser" ? (
+            <Smartphone className="h-3 w-3" />
+          ) : (
+            <BookOpen className="h-3 w-3" />
+          )}
+          {strategyLabel}
+        </Badge>
+      </header>
+
+      {/* Progress + remaining time */}
+      <div className="shrink-0 border-b px-3 py-2 sm:px-4">
+        <div className="mb-1 flex items-center justify-between gap-2 text-[11px] text-muted-foreground sm:text-xs">
+          <span className="flex min-w-0 items-center gap-1 truncate">
+            <Timer className="h-3 w-3 shrink-0" />
+            {readingDone
+              ? "Leitura concluída — quiz liberado"
+              : remainingSeconds > 0
+                ? `Tempo restante estimado ~${remainingSeconds}s`
+                : "Continue lendo até o final..."}
+          </span>
+          <span className="shrink-0 tabular-nums">
             {effectiveScroll}% / {reader.minScrollPercent}%
           </span>
         </div>
         <Progress value={effectiveScroll} />
       </div>
 
-      <Card className="overflow-hidden p-0">
-        <div className="flex items-center justify-between gap-2 border-b p-3">
-          <h2 className="min-w-0 flex-1 truncate text-sm font-bold sm:text-base">{reader.title}</h2>
-          {reader.url && (
-            <a
-              href={reader.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-1 text-xs text-primary hover:underline"
+      {/* Body */}
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+        {!strategy ? (
+          <div className="flex h-full items-center justify-center text-muted-foreground">
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Preparando o leitor...
+          </div>
+        ) : strategy === "iframe" ? (
+          <iframe
+            ref={iframeRef}
+            src={reader.url}
+            title={reader.title}
+            loading="lazy"
+            onLoad={() => setIframeLoaded(true)}
+            referrerPolicy="no-referrer-when-downgrade"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            className="h-[68vh] w-full max-w-full border-0 bg-white"
+          />
+        ) : (
+          <div className="mx-auto max-w-md p-6 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              {strategy === "native-browser" ? (
+                <Smartphone className="h-7 w-7" />
+              ) : (
+                <ExternalLink className="h-7 w-7" />
+              )}
+            </div>
+            <h3 className="text-lg font-semibold">
+              {strategy === "native-browser"
+                ? "Artigo aberto no leitor nativo"
+                : "Artigo aberto em nova aba"}
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Leia o conteúdo completo e volte aqui. Seu tempo de leitura está sendo registrado
+              automaticamente. O quiz será liberado ao atingir o tempo mínimo.
+            </p>
+            <Button
+              className="mt-5 w-full max-w-full"
+              variant="outline"
+              onClick={() =>
+                strategy === "native-browser"
+                  ? openNativeBrowser(reader.url).then((s) => (nativeSession.current = s))
+                  : openPopup(reader.url)
+              }
             >
-              Abrir no blog <ExternalLink className="h-3 w-3" />
-            </a>
+              <ExternalLink className="mr-2 h-4 w-4" /> Reabrir artigo
+            </Button>
+          </div>
+        )}
+
+        {/* Gate / quiz */}
+        <div className="space-y-4 p-3 sm:p-4">
+          {!readingDone ? (
+            <Card className="flex items-center gap-3 border-dashed p-4 text-sm text-muted-foreground">
+              <BookOpen className="h-5 w-5 shrink-0" />
+              <span className="min-w-0">
+                Leia o artigo até o final. O quiz será liberado após o tempo mínimo de leitura.
+              </span>
+            </Card>
+          ) : !showQuiz ? (
+            <Card className="flex flex-col items-center gap-3 border-primary/30 bg-primary/5 p-5 text-center">
+              <CheckCircle2 className="h-6 w-6 text-primary" />
+              <p className="text-sm font-medium">
+                Leitura concluída! Responda ao quiz para resgatar seus créditos.
+              </p>
+              <Button className="w-full max-w-xs" onClick={() => setShowQuiz(true)}>
+                <Sparkles className="mr-2 h-4 w-4" /> Liberar quiz
+              </Button>
+            </Card>
+          ) : (
+            <Card className="space-y-5 p-4 sm:p-5">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 shrink-0 text-primary" />
+                <h3 className="font-semibold">Quiz de verificação</h3>
+              </div>
+              {reader.questions.map((q, qi) => (
+                <div key={q.id} className="space-y-2">
+                  <p className="text-sm font-medium break-words">
+                    {qi + 1}. {q.question}
+                  </p>
+                  <div className="grid gap-2">
+                    {q.options.map((opt) => {
+                      const selected = answers[q.id] === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setAnswers((a) => ({ ...a, [q.id]: opt }))}
+                          className={`rounded-lg border px-3 py-2 text-left text-sm break-words transition-colors ${
+                            selected
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:bg-muted"
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              {result && (
+                <div
+                  className={`flex items-start gap-2 rounded-lg p-3 text-sm ${
+                    result.ok ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"
+                  }`}
+                >
+                  {result.ok ? (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+                  ) : (
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  )}
+                  <span className="min-w-0 break-words">{result.message}</span>
+                </div>
+              )}
+
+              <Button
+                className="w-full"
+                disabled={!allAnswered || submitting || result?.ok}
+                onClick={handleSubmit}
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="mr-2 h-4 w-4" /> Concluir e resgatar créditos
+                  </>
+                )}
+              </Button>
+            </Card>
           )}
         </div>
-        <iframe
-          ref={iframeRef}
-          src={reader.url}
-          title={reader.title}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          className="h-[60vh] w-full border-0 bg-white sm:h-[70vh]"
-        />
-      </Card>
-
-      {!readingDone ? (
-        <Card className="border-dashed p-4 text-center text-sm text-muted-foreground">
-          <BookOpen className="mx-auto mb-2 h-5 w-5" />
-          Leia o artigo acima até o final. O quiz será liberado após o tempo mínimo de leitura.
-        </Card>
-      ) : !showQuiz ? (
-        <Card className="flex flex-col items-center gap-3 border-primary/30 bg-primary/5 p-5 text-center">
-          <CheckCircle2 className="h-6 w-6 text-primary" />
-          <p className="text-sm font-medium">Leitura concluída! Responda ao quiz para resgatar seus créditos.</p>
-          <Button onClick={() => setShowQuiz(true)}>
-            <Sparkles className="mr-2 h-4 w-4" /> Liberar quiz
-          </Button>
-        </Card>
-      ) : (
-        <Card className="space-y-5 p-5">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold">Quiz de verificação</h3>
-          </div>
-          {reader.questions.map((q, qi) => (
-            <div key={q.id} className="space-y-2">
-              <p className="text-sm font-medium">
-                {qi + 1}. {q.question}
-              </p>
-              <div className="grid gap-2">
-                {q.options.map((opt) => {
-                  const selected = answers[q.id] === opt;
-                  return (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => setAnswers((a) => ({ ...a, [q.id]: opt }))}
-                      className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
-                        selected
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:bg-muted"
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-
-          {result && (
-            <div
-              className={`rounded-lg p-3 text-sm ${
-                result.ok ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"
-              }`}
-            >
-              {result.message}
-            </div>
-          )}
-
-          <Button className="w-full" disabled={!allAnswered || submitting || result?.ok} onClick={handleSubmit}>
-            {submitting ? (
-              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...</>
-            ) : (
-              <><CheckCircle2 className="mr-2 h-4 w-4" /> Concluir e resgatar créditos</>
-            )}
-          </Button>
-        </Card>
-      )}
+      </div>
     </div>
   );
 }
