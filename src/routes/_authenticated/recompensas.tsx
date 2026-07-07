@@ -35,6 +35,7 @@ import {
   openMission,
   submitMission,
   probeEmbeddable,
+  getMissionReaderMode,
   getRewardAdminData,
   updateRewardSettings,
   setMissionStatus,
@@ -42,17 +43,20 @@ import {
   type RewardConfig,
   type RewardMission,
   type MissionReader,
+  type ReaderModeContent,
   type RewardAdminMission,
   type RewardAdminStats,
 } from "@/lib/rewards.functions";
 import {
   resolveStrategy,
+  nextFallback,
   isCapacitorNative,
   openNativeBrowser,
   openPopup,
   type ReaderStrategy,
   type NativeBrowserSession,
 } from "@/lib/reader-strategy";
+import { makeSummary, htmlToPlainText } from "@/lib/sanitize-text";
 
 export const Route = createFileRoute("/_authenticated/recompensas")({
   head: () => ({
@@ -276,9 +280,9 @@ function MissionCard({
           </Badge>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{mission.title}</h3>
+      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{htmlToPlainText(mission.title) || mission.title}</h3>
       {mission.excerpt && (
-        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{mission.excerpt}</p>
+        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{makeSummary(mission.excerpt)}</p>
       )}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
@@ -318,12 +322,16 @@ function MissionReaderView({
 }) {
   const submit = useServerFn(submitMission);
   const probe = useServerFn(probeEmbeddable);
+  const fetchReader = useServerFn(getMissionReaderMode);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const readerRef = useRef<HTMLDivElement>(null);
   const activeMs = useRef(0);
   const nativeSession = useRef<NativeBrowserSession | null>(null);
 
   const [strategy, setStrategy] = useState<ReaderStrategy | null>(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [readerContent, setReaderContent] = useState<ReaderModeContent | null>(null);
+  const [readerLoading, setReaderLoading] = useState(false);
   const [scrollPercent, setScrollPercent] = useState(0);
   const [reachedEnd, setReachedEnd] = useState(false);
   const [engaged, setEngaged] = useState(false);
@@ -389,7 +397,7 @@ function MissionReaderView({
           setReachedEnd(true);
         }
       } catch {
-        if (!done) setStrategy("popup"); // native plugin unavailable → web fallback
+        if (!done) setStrategy(nextFallback("native-browser")); // no native browser → reader mode
       }
     })();
     return () => {
@@ -399,21 +407,56 @@ function MissionReaderView({
     };
   }, [strategy, reader.url]);
 
-  // Popup fallback: open the original article in a new tab.
+  // Popup fallback: open the original article in a new tab. If the browser
+  // blocks the popup, fall through to the in-app Reader Mode automatically.
   useEffect(() => {
     if (strategy !== "popup") return;
-    openPopup(reader.url);
+    const win = openPopup(reader.url);
+    if (!win) setStrategy("reader");
   }, [strategy, reader.url]);
 
-  // Iframe safety net: if it never loads (blocked by future XFO/CSP changes),
-  // switch automatically to the popup strategy without breaking the mission.
+  // Iframe safety net: if it never loads (blocked by XFO/CSP), advance to the
+  // next fallback strategy automatically without breaking the mission.
   useEffect(() => {
     if (strategy !== "iframe") return;
     const t = setTimeout(() => {
-      if (!iframeLoaded) setStrategy("popup");
+      if (!iframeLoaded) setStrategy(nextFallback("iframe"));
     }, 8000);
     return () => clearTimeout(t);
   }, [strategy, iframeLoaded]);
+
+  // Reader Mode (third fallback): fetch the sanitized article HTML on demand.
+  useEffect(() => {
+    if (strategy !== "reader" || readerContent || readerLoading) return;
+    let cancelled = false;
+    setReaderLoading(true);
+    (async () => {
+      try {
+        const res = await fetchReader({ data: { missionId: reader.missionId } });
+        if (!cancelled) setReaderContent(res);
+      } catch {
+        if (!cancelled) toast.error("Não foi possível carregar o modo leitor.");
+      } finally {
+        if (!cancelled) setReaderLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [strategy, readerContent, readerLoading, fetchReader, reader.missionId]);
+
+  // Reader Mode scroll tracking: the in-app reader is same-origin so we can
+  // measure real scroll depth and completion precisely.
+  const onReaderScroll = useCallback(() => {
+    const el = readerRef.current;
+    if (!el) return;
+    const max = el.scrollHeight - el.clientHeight;
+    const pct = max > 0 ? Math.round((el.scrollTop / max) * 100) : 100;
+    setScrollPercent((p) => Math.max(p, Math.min(100, pct)));
+    setEngaged(true);
+    if (pct >= 95) setReachedEnd(true);
+  }, []);
+
 
   // Reading-time counter. Embedded → count while the app is visible; external
   // (popup/native) → count while the user is away reading the article.
@@ -523,7 +566,9 @@ function MissionReaderView({
       ? "Leitor nativo"
       : strategy === "popup"
         ? "Aba do navegador"
-        : "Leitura no app";
+        : strategy === "reader"
+          ? "Modo leitor"
+          : "Leitura no app";
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background">
@@ -579,6 +624,24 @@ function MissionReaderView({
             sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
             className="h-[68vh] w-full max-w-full border-0 bg-white"
           />
+        ) : strategy === "reader" ? (
+          <div
+            ref={readerRef}
+            onScroll={onReaderScroll}
+            className="reader-mode mx-auto h-[68vh] w-full max-w-2xl overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-6"
+          >
+            {readerLoading || !readerContent ? (
+              <div className="flex h-full items-center justify-center text-muted-foreground">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Carregando modo leitor...
+              </div>
+            ) : (
+              <article className="prose-reader">
+                <h1 className="mb-4 text-xl font-bold leading-snug sm:text-2xl">{readerContent.title}</h1>
+                {/* Sanitized server-side (whitelist of structural tags only). */}
+                <div dangerouslySetInnerHTML={{ __html: readerContent.html }} />
+              </article>
+            )}
+          </div>
         ) : (
           <div className="mx-auto max-w-md p-6 text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -607,6 +670,13 @@ function MissionReaderView({
               }
             >
               <ExternalLink className="mr-2 h-4 w-4" /> Reabrir artigo
+            </Button>
+            <Button
+              className="mt-2 w-full max-w-full"
+              variant="ghost"
+              onClick={() => setStrategy("reader")}
+            >
+              <BookOpen className="mr-2 h-4 w-4" /> Ler aqui no modo leitor
             </Button>
           </div>
         )}

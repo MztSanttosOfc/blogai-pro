@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { makeSummary, htmlToPlainText } from "@/lib/sanitize-text";
 
 // ---- Public-facing types (no correct answers leak to the client) ----------
 
@@ -80,9 +81,16 @@ export const getRewardData = createServerFn({ method: "GET" })
       supabase.rpc("reward_config"),
       supabase.rpc("reward_list_missions"),
     ]);
+    // Defensive: guarantee no raw HTML/entities ever reach a mission card,
+    // even for rows imported before the clean-summary pipeline existed.
+    const cleanMissions = ((missions ?? []) as unknown as RewardMission[]).map((m) => ({
+      ...m,
+      title: htmlToPlainText(m.title) || m.title,
+      excerpt: makeSummary(m.excerpt),
+    }));
     return {
       config: (config ?? null) as RewardConfig | null,
-      missions: (missions ?? []) as unknown as RewardMission[],
+      missions: cleanMissions,
     };
   });
 
@@ -215,6 +223,46 @@ export const openMission = createServerFn({ method: "POST" })
       credits: Number(mission.credits ?? 0),
       questions,
     };
+  });
+
+export interface ReaderModeContent {
+  title: string;
+  html: string;
+  url: string;
+}
+
+/**
+ * Reader Mode (third fallback): fetch the article and return a SANITIZED HTML
+ * fragment so the mission still works when the blog blocks iframe embedding and
+ * no native/system browser is available. Preserves headings, paragraphs, lists
+ * and images; strips all scripts and unsafe attributes.
+ */
+export const getMissionReaderMode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => MissionIdInput.parse(input))
+  .handler(async ({ data, context }): Promise<ReaderModeContent> => {
+    const { supabase } = context;
+    const { data: missionRaw } = await supabase.rpc("reward_get_mission", {
+      p_id: data.missionId,
+    });
+    const mission = missionRaw as Record<string, unknown> | null;
+    if (!mission) throw new Error("Missão não encontrada ou indisponível.");
+    const url = String(mission.url ?? "");
+
+    const { fetchReaderHtml } = await import("./rewards.server");
+    const reader = url ? await fetchReaderHtml(url) : null;
+    if (reader) return { title: reader.title, html: reader.html, url };
+
+    // Last-resort: render the stored plain-text content as paragraphs so the
+    // mission never dead-ends even if the live page can't be re-fetched.
+    const text = String(mission.content ?? "");
+    const paragraphs = text
+      .split(/\n{2,}|(?<=\.)\s{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => `<p>${p.replace(/[<>]/g, " ")}</p>`)
+      .join("");
+    return { title: String(mission.title ?? "Artigo"), html: paragraphs || "<p></p>", url };
   });
 
 const SubmitInput = z.object({
@@ -413,7 +461,10 @@ export const syncRewardMissions = createServerFn({ method: "POST" })
       estimateReadSeconds,
       computeDifficulty,
       creditsForMission,
+      generateSummary,
     } = await import("./rewards.server");
+
+    const apiKey = process.env.LOVABLE_API_KEY;
 
     const blogUrl = cfg.blog_url;
     const discovered = await discoverArticles(blogUrl, 30);
@@ -439,13 +490,19 @@ export const syncRewardMissions = createServerFn({ method: "POST" })
       );
       const status = cfg.auto_approve ? "approved" : "pending";
 
+      // Clean, attractive card description: AI-optimized when possible, always
+      // falling back to a sanitized plain-text summary (never raw HTML).
+      let summary = "";
+      if (apiKey) summary = await generateSummary(apiKey, article.title, article.content);
+      if (!summary) summary = makeSummary(item.excerpt || article.excerpt || article.content);
+
       const { error } = await supabase.rpc("reward_upsert_mission", {
         p: {
           source: "official",
           url: item.url,
           external_id: normalizeUrl(item.url),
-          title: item.title || article.title,
-          excerpt: item.excerpt || article.excerpt,
+          title: htmlToPlainText(item.title || article.title) || article.title,
+          excerpt: summary,
           category: article.category,
           difficulty,
           word_count: article.wordCount,
