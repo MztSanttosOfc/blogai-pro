@@ -624,6 +624,24 @@ function MissionReaderView({
             sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
             className="h-[68vh] w-full max-w-full border-0 bg-white"
           />
+        ) : strategy === "reader" ? (
+          <div
+            ref={readerRef}
+            onScroll={onReaderScroll}
+            className="reader-mode mx-auto h-[68vh] w-full max-w-2xl overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-6"
+          >
+            {readerLoading || !readerContent ? (
+              <div className="flex h-full items-center justify-center text-muted-foreground">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Carregando modo leitor...
+              </div>
+            ) : (
+              <article className="prose-reader">
+                <h1 className="mb-4 text-xl font-bold leading-snug sm:text-2xl">{readerContent.title}</h1>
+                {/* Sanitized server-side (whitelist of structural tags only). */}
+                <div dangerouslySetInnerHTML={{ __html: readerContent.html }} />
+              </article>
+            )}
+          </div>
         ) : (
           <div className="mx-auto max-w-md p-6 text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
