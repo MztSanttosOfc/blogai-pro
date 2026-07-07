@@ -28,6 +28,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
+import { Route as ApiPublicHooksPublishScheduledRouteImport } from './routes/api/public/hooks/publish-scheduled'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -130,6 +131,12 @@ const ApiPublicWebhooksSyncpayRoute =
     path: '/api/public/webhooks/syncpay',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksPublishScheduledRoute =
+  ApiPublicHooksPublishScheduledRouteImport.update({
+    id: '/api/public/hooks/publish-scheduled',
+    path: '/api/public/hooks/publish-scheduled',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
 }
 export interface FileRoutesByTo {
@@ -169,6 +177,7 @@ export interface FileRoutesByTo {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
 }
 export interface FileRoutesById {
@@ -191,6 +200,7 @@ export interface FileRoutesById {
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
 }
 export interface FileRouteTypes {
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
+    | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
+    | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
   id:
     | '__root__'
@@ -254,6 +266,7 @@ export interface FileRouteTypes {
     | '/_authenticated/verificar-blog'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
+    | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
   fileRoutesById: FileRoutesById
 }
@@ -262,6 +275,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicHooksPublishScheduledRoute: typeof ApiPublicHooksPublishScheduledRoute
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
 }
 
@@ -400,6 +414,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksSyncpayRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/publish-scheduled': {
+      id: '/api/public/hooks/publish-scheduled'
+      path: '/api/public/hooks/publish-scheduled'
+      fullPath: '/api/public/hooks/publish-scheduled'
+      preLoaderRoute: typeof ApiPublicHooksPublishScheduledRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -455,6 +476,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicHooksPublishScheduledRoute: ApiPublicHooksPublishScheduledRoute,
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
 }
 export const routeTree = rootRouteImport
