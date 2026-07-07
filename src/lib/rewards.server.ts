@@ -155,10 +155,7 @@ function parseFeed(xml: string): DiscoveredArticle[] {
     const title = decodeEntities(tagInner(block, "title").replace(/<[^>]+>/g, "")).trim();
     const url = decodeEntities(tagInner(block, "link")).trim();
     const published = tagInner(block, "pubDate") || null;
-    const excerpt = decodeEntities(tagInner(block, "description").replace(/<[^>]+>/g, " "))
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 280);
+    const excerpt = makeSummary(tagInner(block, "description"));
     if (url && title) out.push({ url, title, publishedAt: published, excerpt });
   }
 
