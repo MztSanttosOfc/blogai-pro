@@ -280,9 +280,9 @@ function MissionCard({
           </Badge>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{mission.title}</h3>
+      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{makeSummary(mission.title, 60, 140) || mission.title}</h3>
       {mission.excerpt && (
-        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{mission.excerpt}</p>
+        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{makeSummary(mission.excerpt)}</p>
       )}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
