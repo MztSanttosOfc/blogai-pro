@@ -490,13 +490,19 @@ export const syncRewardMissions = createServerFn({ method: "POST" })
       );
       const status = cfg.auto_approve ? "approved" : "pending";
 
+      // Clean, attractive card description: AI-optimized when possible, always
+      // falling back to a sanitized plain-text summary (never raw HTML).
+      let summary = "";
+      if (apiKey) summary = await generateSummary(apiKey, article.title, article.content);
+      if (!summary) summary = makeSummary(item.excerpt || article.excerpt || article.content);
+
       const { error } = await supabase.rpc("reward_upsert_mission", {
         p: {
           source: "official",
           url: item.url,
           external_id: normalizeUrl(item.url),
-          title: item.title || article.title,
-          excerpt: item.excerpt || article.excerpt,
+          title: htmlToPlainText(item.title || article.title) || article.title,
+          excerpt: summary,
           category: article.category,
           difficulty,
           word_count: article.wordCount,
