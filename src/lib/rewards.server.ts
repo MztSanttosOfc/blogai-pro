@@ -143,10 +143,7 @@ function parseFeed(xml: string): DiscoveredArticle[] {
     const published =
       tagInner(block, "published") || tagInner(block, "updated") || null;
     const summaryRaw = tagInner(block, "summary") || tagInner(block, "content");
-    const excerpt = decodeEntities(summaryRaw.replace(/<[^>]+>/g, " "))
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 280);
+    const excerpt = makeSummary(summaryRaw);
     if (url && title) out.push({ url, title, publishedAt: published, excerpt });
   }
 
