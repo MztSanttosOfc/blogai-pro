@@ -54,31 +54,6 @@ export const UPCOMING_UPDATES: RoadmapEntry[] = [
     eta: "Q3 2026",
     highlight: true,
   },
-  {
-    id: "agendamento-posts",
-    title: "Agendamento de publicações",
-    description:
-      "Programe artigos para serem publicados automaticamente no Blogger em datas e horários definidos.",
-    status: "planejado",
-    eta: "Q3 2026",
-  },
-  {
-    id: "clusters-conteudo",
-    title: "Planejador de clusters de conteúdo",
-    description:
-      "Sugestão automática de pautas, pilares e links internos para construir autoridade de tópico.",
-    status: "planejado",
-    eta: "Q4 2026",
-    highlight: true,
-  },
-  {
-    id: "analytics-seo",
-    title: "Painel de desempenho SEO",
-    description:
-      "Acompanhamento de posições, cliques e impressões integrado para medir o impacto dos artigos publicados.",
-    status: "planejado",
-    eta: "Q4 2026",
-  },
 ];
 
 /** Histórico das últimas atualizações já liberadas. */
