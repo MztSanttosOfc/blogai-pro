@@ -30,6 +30,7 @@ import {
   getRewardData,
   openMission,
   submitMission,
+  probeEmbeddable,
   getRewardAdminData,
   updateRewardSettings,
   setMissionStatus,
@@ -40,6 +41,14 @@ import {
   type RewardAdminMission,
   type RewardAdminStats,
 } from "@/lib/rewards.functions";
+import {
+  resolveStrategy,
+  isCapacitorNative,
+  openNativeBrowser,
+  openPopup,
+  type ReaderStrategy,
+  type NativeBrowserSession,
+} from "@/lib/reader-strategy";
 
 export const Route = createFileRoute("/_authenticated/recompensas")({
   head: () => ({
