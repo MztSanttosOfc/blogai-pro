@@ -280,7 +280,7 @@ function MissionCard({
           </Badge>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{makeSummary(mission.title, 60, 140) || mission.title}</h3>
+      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{htmlToPlainText(mission.title) || mission.title}</h3>
       {mission.excerpt && (
         <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{makeSummary(mission.excerpt)}</p>
       )}
