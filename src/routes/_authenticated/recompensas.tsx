@@ -566,7 +566,9 @@ function MissionReaderView({
       ? "Leitor nativo"
       : strategy === "popup"
         ? "Aba do navegador"
-        : "Leitura no app";
+        : strategy === "reader"
+          ? "Modo leitor"
+          : "Leitura no app";
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background">
