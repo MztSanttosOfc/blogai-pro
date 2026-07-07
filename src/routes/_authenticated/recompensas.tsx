@@ -671,6 +671,13 @@ function MissionReaderView({
             >
               <ExternalLink className="mr-2 h-4 w-4" /> Reabrir artigo
             </Button>
+            <Button
+              className="mt-2 w-full max-w-full"
+              variant="ghost"
+              onClick={() => setStrategy("reader")}
+            >
+              <BookOpen className="mr-2 h-4 w-4" /> Ler aqui no modo leitor
+            </Button>
           </div>
         )}
 
