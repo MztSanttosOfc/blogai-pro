@@ -88,6 +88,74 @@ export const getRewardData = createServerFn({ method: "GET" })
 
 const MissionIdInput = z.object({ missionId: z.string().uuid() });
 
+const ProbeInput = z.object({ url: z.string().url().max(500) });
+
+export interface EmbedProbe {
+  embeddable: boolean;
+  reason?: "x-frame-options" | "csp-frame-ancestors" | "fetch-failed";
+}
+
+/**
+ * Server-side probe that inspects the article's response headers to decide
+ * whether it can be safely embedded in an <iframe>. This is more reliable and
+ * future-proof than guessing from client-side iframe load events (a blocked
+ * frame may still fire `load` on the error page). The client uses the result
+ * to pick the iframe strategy or fall back to a popup / native browser.
+ */
+export const probeEmbeddable = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => ProbeInput.parse(input))
+  .handler(async ({ data }): Promise<EmbedProbe> => {
+    const { assertPublicHttpUrl } = await import("./ssrf-guard");
+    let target: URL;
+    try {
+      target = assertPublicHttpUrl(data.url);
+    } catch {
+      return { embeddable: false, reason: "fetch-failed" };
+    }
+
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 6000);
+      let res: Response;
+      try {
+        res = await fetch(target.toString(), {
+          method: "GET",
+          redirect: "follow",
+          headers: {
+            "user-agent": "Mozilla/5.0 (compatible; BlogAIProBot/1.0)",
+            accept: "text/html",
+          },
+          signal: ctrl.signal,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+
+      const xfo = (res.headers.get("x-frame-options") || "").toLowerCase();
+      if (xfo.includes("deny") || xfo.includes("sameorigin")) {
+        return { embeddable: false, reason: "x-frame-options" };
+      }
+
+      const csp = (res.headers.get("content-security-policy") || "").toLowerCase();
+      const fa = csp.match(/frame-ancestors([^;]*)/);
+      if (fa) {
+        const val = fa[1].trim();
+        // 'none'/'self' block cross-origin embedding; a bare directive with no
+        // wildcard/scheme host also effectively blocks us.
+        if (/'none'|'self'/.test(val) || !/\*|https?:\/\//.test(val)) {
+          return { embeddable: false, reason: "csp-frame-ancestors" };
+        }
+      }
+
+      return { embeddable: true };
+    } catch {
+      // Network/timeout: don't confirm blocking — assume embeddable and let the
+      // client fall back automatically if the iframe never loads.
+      return { embeddable: true, reason: "fetch-failed" };
+    }
+  });
+
 /**
  * Open a mission for reading: returns the article text plus an adaptive quiz
  * (generated and cached on first access). Correct answers are NEVER returned.
