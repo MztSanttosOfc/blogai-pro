@@ -225,7 +225,47 @@ export const openMission = createServerFn({ method: "POST" })
     };
   });
 
-const SubmitInput = z.object({
+export interface ReaderModeContent {
+  title: string;
+  html: string;
+  url: string;
+}
+
+/**
+ * Reader Mode (third fallback): fetch the article and return a SANITIZED HTML
+ * fragment so the mission still works when the blog blocks iframe embedding and
+ * no native/system browser is available. Preserves headings, paragraphs, lists
+ * and images; strips all scripts and unsafe attributes.
+ */
+export const getMissionReaderMode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => MissionIdInput.parse(input))
+  .handler(async ({ data, context }): Promise<ReaderModeContent> => {
+    const { supabase } = context;
+    const { data: missionRaw } = await supabase.rpc("reward_get_mission", {
+      p_id: data.missionId,
+    });
+    const mission = missionRaw as Record<string, unknown> | null;
+    if (!mission) throw new Error("Missão não encontrada ou indisponível.");
+    const url = String(mission.url ?? "");
+
+    const { fetchReaderHtml } = await import("./rewards.server");
+    const reader = url ? await fetchReaderHtml(url) : null;
+    if (reader) return { title: reader.title, html: reader.html, url };
+
+    // Last-resort: render the stored plain-text content as paragraphs so the
+    // mission never dead-ends even if the live page can't be re-fetched.
+    const text = String(mission.content ?? "");
+    const paragraphs = text
+      .split(/\n{2,}|(?<=\.)\s{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => `<p>${p.replace(/[<>]/g, " ")}</p>`)
+      .join("");
+    return { title: String(mission.title ?? "Artigo"), html: paragraphs || "<p></p>", url };
+  });
+
+
   missionId: z.string().uuid(),
   readSeconds: z.number().int().min(0).max(60 * 60 * 4),
   scrollPercent: z.number().int().min(0).max(100),
