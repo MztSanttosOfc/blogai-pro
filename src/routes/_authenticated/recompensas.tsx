@@ -183,8 +183,8 @@ function PlayerView() {
   const remainingCredits = Math.max(0, config.daily_credit_limit - config.today_credits);
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="w-full space-y-6 overflow-x-hidden">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatBox icon={<Coins className="h-4 w-4" />} label="Créditos hoje" value={`${config.today_credits}/${config.daily_credit_limit}`} />
         <StatBox icon={<Trophy className="h-4 w-4" />} label="Missões hoje" value={`${config.today_missions}/${config.daily_mission_limit}`} />
         <StatBox icon={<ShieldCheck className="h-4 w-4" />} label="Rolagem mínima" value={`${config.min_scroll_percent}%`} />
@@ -197,7 +197,7 @@ function PlayerView() {
       )}
 
       {missions.length === 0 ? (
-        <Card className="flex flex-col items-center gap-3 p-10 text-center">
+        <Card className="flex flex-col items-center gap-3 p-6 text-center sm:p-10">
           <BookOpen className="h-8 w-8 text-muted-foreground" />
           <h3 className="text-lg font-semibold">Nenhuma missão disponível</h3>
           <p className="max-w-md text-sm text-muted-foreground">
@@ -206,7 +206,7 @@ function PlayerView() {
           </p>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {missions.map((m) => (
             <MissionCard
               key={m.id}
