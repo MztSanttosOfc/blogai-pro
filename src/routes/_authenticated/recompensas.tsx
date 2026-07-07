@@ -407,21 +407,56 @@ function MissionReaderView({
     };
   }, [strategy, reader.url]);
 
-  // Popup fallback: open the original article in a new tab.
+  // Popup fallback: open the original article in a new tab. If the browser
+  // blocks the popup, fall through to the in-app Reader Mode automatically.
   useEffect(() => {
     if (strategy !== "popup") return;
-    openPopup(reader.url);
+    const win = openPopup(reader.url);
+    if (!win) setStrategy("reader");
   }, [strategy, reader.url]);
 
-  // Iframe safety net: if it never loads (blocked by future XFO/CSP changes),
-  // switch automatically to the popup strategy without breaking the mission.
+  // Iframe safety net: if it never loads (blocked by XFO/CSP), advance to the
+  // next fallback strategy automatically without breaking the mission.
   useEffect(() => {
     if (strategy !== "iframe") return;
     const t = setTimeout(() => {
-      if (!iframeLoaded) setStrategy("popup");
+      if (!iframeLoaded) setStrategy(nextFallback("iframe"));
     }, 8000);
     return () => clearTimeout(t);
   }, [strategy, iframeLoaded]);
+
+  // Reader Mode (third fallback): fetch the sanitized article HTML on demand.
+  useEffect(() => {
+    if (strategy !== "reader" || readerContent || readerLoading) return;
+    let cancelled = false;
+    setReaderLoading(true);
+    (async () => {
+      try {
+        const res = await fetchReader({ data: { missionId: reader.missionId } });
+        if (!cancelled) setReaderContent(res);
+      } catch {
+        if (!cancelled) toast.error("Não foi possível carregar o modo leitor.");
+      } finally {
+        if (!cancelled) setReaderLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [strategy, readerContent, readerLoading, fetchReader, reader.missionId]);
+
+  // Reader Mode scroll tracking: the in-app reader is same-origin so we can
+  // measure real scroll depth and completion precisely.
+  const onReaderScroll = useCallback(() => {
+    const el = readerRef.current;
+    if (!el) return;
+    const max = el.scrollHeight - el.clientHeight;
+    const pct = max > 0 ? Math.round((el.scrollTop / max) * 100) : 100;
+    setScrollPercent((p) => Math.max(p, Math.min(100, pct)));
+    setEngaged(true);
+    if (pct >= 95) setReachedEnd(true);
+  }, []);
+
 
   // Reading-time counter. Embedded → count while the app is visible; external
   // (popup/native) → count while the user is away reading the article.
