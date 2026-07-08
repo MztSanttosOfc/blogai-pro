@@ -216,7 +216,11 @@ function ArticleDetailPage() {
                 Cancelar
               </Button>
               <Button variant="hero" size="sm" onClick={handleSave} disabled={saving}>
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}{" "}
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}{" "}
                 Salvar alterações
               </Button>
             </>
@@ -225,12 +229,7 @@ function ArticleDetailPage() {
               <Pencil className="h-4 w-4" /> Editar
             </Button>
           )}
-          <Button
-            variant="hero"
-            size="sm"
-            onClick={handlePublishToBlogger}
-            disabled={publishing}
-          >
+          <Button variant="hero" size="sm" onClick={handlePublishToBlogger} disabled={publishing}>
             {publishing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -303,7 +302,8 @@ function ArticleDetailPage() {
                 <Label>Conteúdo do artigo</Label>
                 <RichTextEditor value={content} onChange={setContent} />
                 <p className="text-xs text-muted-foreground">
-                  Use a barra de ferramentas para formatar negrito, itálico, títulos, listas e links.
+                  Use a barra de ferramentas para formatar negrito, itálico, títulos, listas e
+                  links.
                 </p>
               </div>
             ) : (
@@ -326,7 +326,9 @@ function ArticleDetailPage() {
                 {headings.map((h, i) => (
                   <li
                     key={i}
-                    className={h.type === "h3" ? "ml-5 text-sm text-muted-foreground" : "font-medium"}
+                    className={
+                      h.type === "h3" ? "ml-5 text-sm text-muted-foreground" : "font-medium"
+                    }
                   >
                     <span className="mr-2 text-xs uppercase text-primary">{h.type}</span>
                     {h.text}
@@ -364,7 +366,9 @@ function ArticleDetailPage() {
                       value={f.question}
                       placeholder="Pergunta"
                       onChange={(e) =>
-                        setFaq(faq.map((x, idx) => (idx === i ? { ...x, question: e.target.value } : x)))
+                        setFaq(
+                          faq.map((x, idx) => (idx === i ? { ...x, question: e.target.value } : x)),
+                        )
                       }
                     />
                     <Textarea
@@ -372,7 +376,9 @@ function ArticleDetailPage() {
                       placeholder="Resposta"
                       rows={3}
                       onChange={(e) =>
-                        setFaq(faq.map((x, idx) => (idx === i ? { ...x, answer: e.target.value } : x)))
+                        setFaq(
+                          faq.map((x, idx) => (idx === i ? { ...x, answer: e.target.value } : x)),
+                        )
                       }
                     />
                   </div>

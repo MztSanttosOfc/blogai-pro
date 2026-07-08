@@ -7,11 +7,7 @@
  * updates the scheduling status. Uses the service-role client (RLS bypassed)
  * because it runs without a user session.
  */
-import {
-  getValidBloggerToken,
-  createBloggerPost,
-  markdownToHtml,
-} from "./blogger.server";
+import { getValidBloggerToken, createBloggerPost, markdownToHtml } from "./blogger.server";
 
 interface RunResult {
   processed: number;

@@ -1,7 +1,9 @@
 import { Fragment, type ReactNode } from "react";
 
 /** Parse the attributes of a raw <img ...> tag into a props object. */
-function parseImgTag(tag: string): { src: string; alt: string; width?: number; height?: number } | null {
+function parseImgTag(
+  tag: string,
+): { src: string; alt: string; width?: number; height?: number } | null {
   const src = tag.match(/\bsrc\s*=\s*"([^"]*)"/i)?.[1];
   if (!src) return null;
   const alt = tag.match(/\balt\s*=\s*"([^"]*)"/i)?.[1] ?? "";

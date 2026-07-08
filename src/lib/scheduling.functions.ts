@@ -127,10 +127,7 @@ export const deleteScheduledPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => IdInput.parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("scheduled_posts")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("scheduled_posts").delete().eq("id", data.id);
     if (error) throw new Error("Não foi possível excluir o agendamento.");
     return { ok: true };
   });

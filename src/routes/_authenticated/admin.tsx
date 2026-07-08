@@ -3,16 +3,7 @@ import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  Shield,
-  Users,
-  BarChart3,
-  ScrollText,
-  Search,
-  Loader2,
-  Lock,
-  Coins,
-} from "lucide-react";
+import { Shield, Users, BarChart3, ScrollText, Search, Loader2, Lock, Coins } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,9 +76,7 @@ function AdminPage() {
             <Lock className="h-7 w-7" />
           </div>
           <h2 className="text-xl font-bold">Acesso restrito</h2>
-          <p className="text-muted-foreground">
-            Esta área é exclusiva para administradores.
-          </p>
+          <p className="text-muted-foreground">Esta área é exclusiva para administradores.</p>
         </Card>
       </div>
     );
@@ -270,10 +259,7 @@ function UsersTab() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Select
-                      value={u.plan}
-                      onValueChange={(v) => handleSetPlan(u.id, v as PlanId)}
-                    >
+                    <Select value={u.plan} onValueChange={(v) => handleSetPlan(u.id, v as PlanId)}>
                       <SelectTrigger className="h-8 w-28">
                         <SelectValue />
                       </SelectTrigger>
@@ -285,9 +271,7 @@ function UsersTab() {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell>
-                    {u.credits >= 999999 ? "∞" : u.credits}
-                  </TableCell>
+                  <TableCell>{u.credits >= 999999 ? "∞" : u.credits}</TableCell>
                   <TableCell>
                     <Badge variant={u.subscription_status === "active" ? "default" : "outline"}>
                       {u.subscription_status}
@@ -347,7 +331,9 @@ function CreditsDialog({
     }
     setSaving(true);
     try {
-      await adjust({ data: { userId: user.id, mode, amount: n, reason: reason.trim() || undefined } });
+      await adjust({
+        data: { userId: user.id, mode, amount: n, reason: reason.trim() || undefined },
+      });
       toast.success("Créditos atualizados.");
       onDone();
       onClose();
@@ -438,7 +424,9 @@ function LogsTab() {
         <TableBody>
           {logs.map((l) => (
             <TableRow key={l.id}>
-              <TableCell className="whitespace-nowrap text-xs">{formatDate(l.created_at)}</TableCell>
+              <TableCell className="whitespace-nowrap text-xs">
+                {formatDate(l.created_at)}
+              </TableCell>
               <TableCell>
                 <Badge variant="outline">{l.action}</Badge>
               </TableCell>

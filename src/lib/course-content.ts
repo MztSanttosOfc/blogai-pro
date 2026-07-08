@@ -50,8 +50,7 @@ export const COURSE_MODULES: CourseModule[] = [
     id: "mod-3",
     number: 3,
     title: "Gerador automático de páginas obrigatórias",
-    summary:
-      "Gere automaticamente as páginas essenciais que todo blog profissional deve ter.",
+    summary: "Gere automaticamente as páginas essenciais que todo blog profissional deve ter.",
     topics: ["Política de Privacidade", "Termos de Uso", "Sobre", "Contato"],
     hasPageGenerator: true,
     lessons: [
@@ -65,9 +64,15 @@ export const COURSE_MODULES: CourseModule[] = [
     id: "mod-4",
     number: 4,
     title: "Estrutura recomendada para artigos",
-    summary:
-      "Boas práticas de formatação que melhoram a leitura e a experiência do usuário.",
-    topics: ["Títulos", "Subtítulos", "SEO", "Escaneabilidade", "Imagens", "Experiência do usuário"],
+    summary: "Boas práticas de formatação que melhoram a leitura e a experiência do usuário.",
+    topics: [
+      "Títulos",
+      "Subtítulos",
+      "SEO",
+      "Escaneabilidade",
+      "Imagens",
+      "Experiência do usuário",
+    ],
     lessons: [
       { key: "mod4-l1", text: "Uso títulos e subtítulos hierárquicos (H2/H3)" },
       { key: "mod4-l2", text: "Escrevo parágrafos curtos e escaneáveis" },
@@ -91,7 +96,12 @@ export const COURSE_MODULES: CourseModule[] = [
     number: 6,
     title: "Criação de conteúdo útil e original",
     summary: "Como produzir conteúdo autoral que atende à intenção de busca do leitor.",
-    topics: ["Conteúdo autoral", "Intenção de busca", "Qualidade editorial", "Atualização de conteúdo"],
+    topics: [
+      "Conteúdo autoral",
+      "Intenção de busca",
+      "Qualidade editorial",
+      "Atualização de conteúdo",
+    ],
     lessons: [
       { key: "mod6-l1", text: "Produzo conteúdo autoral e original" },
       { key: "mod6-l2", text: "Atendo à intenção de busca do leitor" },
@@ -140,7 +150,10 @@ export const COURSE_MODULES: CourseModule[] = [
     lessons: [
       { key: "final-1", text: "Nicho definido e validado" },
       { key: "final-2", text: "Domínio profissional configurado" },
-      { key: "final-3", text: "Páginas obrigatórias publicadas (Privacidade, Termos, Sobre, Contato)" },
+      {
+        key: "final-3",
+        text: "Páginas obrigatórias publicadas (Privacidade, Termos, Sobre, Contato)",
+      },
       { key: "final-4", text: "Estrutura de artigos otimizada para leitura e SEO" },
       { key: "final-5", text: "Sitemap enviado e páginas indexadas" },
       { key: "final-6", text: "Conteúdo original e útil em volume consistente" },

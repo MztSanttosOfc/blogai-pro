@@ -22,7 +22,9 @@ export function StatCard({ label, value, icon: Icon, hint, accent = "primary" }:
     <Card className="flex flex-col gap-3 p-5 shadow-soft transition-shadow hover:shadow-elegant">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">{label}</span>
-        <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg", accentMap[accent])}>
+        <div
+          className={cn("flex h-9 w-9 items-center justify-center rounded-lg", accentMap[accent])}
+        >
           <Icon className="h-4.5 w-4.5" />
         </div>
       </div>

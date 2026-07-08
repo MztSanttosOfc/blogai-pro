@@ -250,4 +250,3 @@ export async function updateBloggerPage(
   const data = (await res.json()) as { id: string; url: string };
   return { id: data.id, url: data.url };
 }
-

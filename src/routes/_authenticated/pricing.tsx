@@ -98,9 +98,7 @@ function PricingPage() {
           variant="outline"
           size="sm"
           className="mt-3"
-          onClick={() =>
-            setCheckout({ planId: "teste", name: "Teste", price: "R$ 1,00" })
-          }
+          onClick={() => setCheckout({ planId: "teste", name: "Teste", price: "R$ 1,00" })}
         >
           Testar pagamento (R$ 1,00)
         </Button>

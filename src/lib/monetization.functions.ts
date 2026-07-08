@@ -63,7 +63,8 @@ export const generateRequiredPage = createServerFn({ method: "POST" })
       }),
     });
 
-    if (response.status === 429) throw new Error("Limite de requisições atingido. Tente novamente em instantes.");
+    if (response.status === 429)
+      throw new Error("Limite de requisições atingido. Tente novamente em instantes.");
     if (response.status === 402) throw new Error("Créditos de IA do workspace esgotados.");
     if (!response.ok) throw new Error("Falha ao gerar a página. Tente novamente.");
 

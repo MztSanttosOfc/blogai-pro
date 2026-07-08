@@ -42,14 +42,11 @@ const clampedStringArray = (maxItem: number, maxItems: number) =>
 const GenerateInput = z.object({
   keyword: clampedRequired(2, 120),
   title: clampedString(160),
-  wordCount: z.preprocess(
-    (v) => {
-      const n = Number(v);
-      if (!Number.isFinite(n)) return 800;
-      return Math.min(3000, Math.max(300, Math.round(n)));
-    },
-    z.number().int().min(300).max(3000).default(800),
-  ),
+  wordCount: z.preprocess((v) => {
+    const n = Number(v);
+    if (!Number.isFinite(n)) return 800;
+    return Math.min(3000, Math.max(300, Math.round(n)));
+  }, z.number().int().min(300).max(3000).default(800)),
   tone: z.preprocess(
     (v) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 40) : "Profissional"),
     z.string().min(2).max(40).default("Profissional"),
@@ -149,8 +146,8 @@ function parseFaq(block: string): { question: string; answer: string }[] {
 
   for (const rawLine of block.split("\n")) {
     const line = rawLine.trim();
-    const q = line.match(/^(?:P|Q|Pergunta|Question)\s*[:\-]\s*(.*)$/i);
-    const a = line.match(/^(?:R|A|Resposta|Answer)\s*[:\-]\s*(.*)$/i);
+    const q = line.match(/^(?:P|Q|Pergunta|Question)\s*[:-]\s*(.*)$/i);
+    const a = line.match(/^(?:R|A|Resposta|Answer)\s*[:-]\s*(.*)$/i);
     if (q) {
       flush();
       current = { question: q[1].trim(), answer: [] };
@@ -272,8 +269,7 @@ function parseJsonObject(raw: string): Record<string, unknown> {
   return JSON.parse(text.slice(start, end + 1)) as Record<string, unknown>;
 }
 
-const asStr = (v: unknown, fallback = ""): string =>
-  typeof v === "string" ? v.trim() : fallback;
+const asStr = (v: unknown, fallback = ""): string => (typeof v === "string" ? v.trim() : fallback);
 const asStrArr = (v: unknown): string[] =>
   Array.isArray(v)
     ? v.map((x) => (typeof x === "string" ? x.trim() : String(x))).filter(Boolean)
@@ -415,9 +411,7 @@ export const generateArticle = createServerFn({ method: "POST" })
       .from("user_roles")
       .select("role")
       .eq("user_id", userId);
-    const isAdmin = (roleRows ?? []).some(
-      (r) => r.role === "owner" || r.role === "admin",
-    );
+    const isAdmin = (roleRows ?? []).some((r) => r.role === "owner" || r.role === "admin");
 
     const unlimited = isAdmin || profile.plan === "premium";
     if (!unlimited && profile.credits <= 0) {
@@ -552,9 +546,8 @@ export const generateArticle = createServerFn({ method: "POST" })
     // must not break article creation, so everything is best-effort.
     let finalArticle = inserted;
     try {
-      const { generateArticleImages, embedImagesInContent } = await import(
-        "./article-images.server"
-      );
+      const { generateArticleImages, embedImagesInContent } =
+        await import("./article-images.server");
       const { featured, internal } = await generateArticleImages({
         apiKey,
         articleId: inserted.id,
@@ -567,10 +560,11 @@ export const generateArticle = createServerFn({ method: "POST" })
 
       if (featured || internal.length > 0) {
         const contentWithImages = embedImagesInContent(parsed.content, featured, internal);
-        const imagesMeta = [
-          ...(featured ? [featured] : []),
-          ...internal,
-        ].map((img) => ({ url: img.url, alt: img.alt, context: img.context }));
+        const imagesMeta = [...(featured ? [featured] : []), ...internal].map((img) => ({
+          url: img.url,
+          alt: img.alt,
+          context: img.context,
+        }));
         const { data: updated, error: updateError } = await supabase
           .from("articles")
           .update({

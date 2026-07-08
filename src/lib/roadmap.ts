@@ -1,8 +1,4 @@
-export type RoadmapStatus =
-  | "planejado"
-  | "em-desenvolvimento"
-  | "em-testes"
-  | "concluido";
+export type RoadmapStatus = "planejado" | "em-desenvolvimento" | "em-testes" | "concluido";
 
 export interface RoadmapEntry {
   id: string;
@@ -70,8 +66,7 @@ export const RELEASED_UPDATES: RoadmapEntry[] = [
   {
     id: "central-atualizacoes",
     title: "Central de Atualizações Futuras",
-    description:
-      "Nova área para acompanhar o roadmap e o histórico de melhorias do BlogAI Pro.",
+    description: "Nova área para acompanhar o roadmap e o histórico de melhorias do BlogAI Pro.",
     status: "concluido",
     releasedAt: "2026-06-16",
   },

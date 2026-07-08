@@ -116,10 +116,7 @@ function Toolbar({ editor }: { editor: Editor }) {
       <ToolbarButton label="Inserir link" active={editor.isActive("link")} onClick={setLink}>
         <LinkIcon className="h-4 w-4" />
       </ToolbarButton>
-      <ToolbarButton
-        label="Remover link"
-        onClick={() => editor.chain().focus().unsetLink().run()}
-      >
+      <ToolbarButton label="Remover link" onClick={() => editor.chain().focus().unsetLink().run()}>
         <Unlink className="h-4 w-4" />
       </ToolbarButton>
     </div>
@@ -151,8 +148,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
     content: markdownToHtml(value),
     editorProps: {
       attributes: {
-        class:
-          "prose-editor min-h-[20rem] max-w-none px-4 py-4 focus:outline-none",
+        class: "prose-editor min-h-[20rem] max-w-none px-4 py-4 focus:outline-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -171,9 +167,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   }, [value, editor]);
 
   if (!editor) {
-    return (
-      <div className="min-h-[24rem] rounded-md border border-border bg-background" />
-    );
+    return <div className="min-h-[24rem] rounded-md border border-border bg-background" />;
   }
 
   return (

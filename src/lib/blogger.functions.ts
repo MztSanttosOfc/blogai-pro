@@ -187,9 +187,7 @@ export const disconnectBlogger = createServerFn({ method: "POST" })
 /** Publish a saved article directly to the user's selected Blogger blog. */
 export const publishArticleToBlogger = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z.object({ articleId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ articleId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 

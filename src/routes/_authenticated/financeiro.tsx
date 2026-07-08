@@ -16,7 +16,10 @@ export const Route = createFileRoute("/_authenticated/financeiro")({
   loader: ({ context }) => context.queryClient.ensureQueryData(financialQueryOptions),
   component: FinancialPage,
   errorComponent: ({ error }) => (
-    <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-sm">
+    <div
+      role="alert"
+      className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-sm"
+    >
       Não foi possível carregar os dados financeiros: {error.message}
     </div>
   ),
@@ -26,9 +29,14 @@ const BRL = (cents: number) =>
   (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const fmtDate = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+  iso
+    ? new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })
+    : "—";
 
-const PAYMENT_STATUS: Record<string, { label: string; variant: "default" | "secondary" | "destructive" }> = {
+const PAYMENT_STATUS: Record<
+  string,
+  { label: string; variant: "default" | "secondary" | "destructive" }
+> = {
   paid: { label: "Pago", variant: "default" },
   pending: { label: "Pendente", variant: "secondary" },
   failed: { label: "Falhou", variant: "destructive" },
@@ -96,11 +104,16 @@ function FinancialPage() {
         ) : (
           <div className="divide-y">
             {payments.map((p) => {
-              const st = PAYMENT_STATUS[p.status] ?? { label: p.status, variant: "secondary" as const };
+              const st = PAYMENT_STATUS[p.status] ?? {
+                label: p.status,
+                variant: "secondary" as const,
+              };
               return (
                 <div key={p.id} className="flex items-center justify-between gap-4 p-4">
                   <div className="min-w-0">
-                    <p className="font-medium">Plano {PLAN_LABELS[(p.plan_id as PlanId) ?? "free"]}</p>
+                    <p className="font-medium">
+                      Plano {PLAN_LABELS[(p.plan_id as PlanId) ?? "free"]}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       {fmtDate(p.created_at)} · {p.method.toUpperCase()}
                     </p>
@@ -122,7 +135,9 @@ function FinancialPage() {
           <h2 className="font-semibold">Extrato de créditos</h2>
         </div>
         {credits.length === 0 ? (
-          <p className="p-6 text-sm text-muted-foreground">Nenhuma movimentação de crédito ainda.</p>
+          <p className="p-6 text-sm text-muted-foreground">
+            Nenhuma movimentação de crédito ainda.
+          </p>
         ) : (
           <div className="divide-y">
             {credits.map((c) => (
@@ -134,7 +149,9 @@ function FinancialPage() {
                 <div className="flex items-center gap-3 text-right">
                   <span
                     className={
-                      c.amount >= 0 ? "font-semibold text-success" : "font-semibold text-destructive"
+                      c.amount >= 0
+                        ? "font-semibold text-success"
+                        : "font-semibold text-destructive"
                     }
                   >
                     {c.amount >= 0 ? "+" : ""}

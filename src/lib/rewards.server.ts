@@ -22,11 +22,26 @@ export const REWARD_CATEGORIES: { name: string; keywords: string[] }[] = [
   { name: "SEO", keywords: ["seo", "ranquea", "palavra-chave", "serp", "backlink", "indexa"] },
   { name: "Blogger", keywords: ["blogger", "blogspot", "blog do google"] },
   { name: "Google AdSense", keywords: ["adsense", "anúncio", "anuncio", "cpc", "rpm", "ecpm"] },
-  { name: "Monetização", keywords: ["monetiza", "ganhar dinheiro", "renda", "receita", "afiliado"] },
-  { name: "Inteligência Artificial", keywords: ["inteligência artificial", "ia ", "chatgpt", "gemini", "machine learning", "prompt"] },
-  { name: "Desenvolvimento Web", keywords: ["html", "css", "javascript", "react", "desenvolvimento web", "código", "api"] },
-  { name: "Marketing Digital", keywords: ["marketing", "tráfego", "trafego", "conversão", "funil", "leads", "redes sociais"] },
-  { name: "Atualizações do BlogAI Pro", keywords: ["blogai", "atualização", "novidade", "lançamento"] },
+  {
+    name: "Monetização",
+    keywords: ["monetiza", "ganhar dinheiro", "renda", "receita", "afiliado"],
+  },
+  {
+    name: "Inteligência Artificial",
+    keywords: ["inteligência artificial", "ia ", "chatgpt", "gemini", "machine learning", "prompt"],
+  },
+  {
+    name: "Desenvolvimento Web",
+    keywords: ["html", "css", "javascript", "react", "desenvolvimento web", "código", "api"],
+  },
+  {
+    name: "Marketing Digital",
+    keywords: ["marketing", "tráfego", "trafego", "conversão", "funil", "leads", "redes sociais"],
+  },
+  {
+    name: "Atualizações do BlogAI Pro",
+    keywords: ["blogai", "atualização", "novidade", "lançamento"],
+  },
   { name: "Tutoriais", keywords: ["tutorial", "passo a passo", "como fazer"] },
   { name: "Guias", keywords: ["guia", "guide", "completo"] },
   { name: "Conteúdos educacionais", keywords: ["aprenda", "curso", "educa", "dicas"] },
@@ -140,8 +155,7 @@ function parseFeed(xml: string): DiscoveredArticle[] {
     const alt = block.match(/<link[^>]*rel=["']alternate["'][^>]*href=["']([^"']+)["']/i);
     const anyHref = block.match(/<link[^>]*href=["']([^"']+)["']/i);
     url = (alt?.[1] || anyHref?.[1] || tagInner(block, "id") || "").trim();
-    const published =
-      tagInner(block, "published") || tagInner(block, "updated") || null;
+    const published = tagInner(block, "published") || tagInner(block, "updated") || null;
     const summaryRaw = tagInner(block, "summary") || tagInner(block, "content");
     const excerpt = makeSummary(summaryRaw);
     if (url && title) out.push({ url, title, publishedAt: published, excerpt });
@@ -250,7 +264,9 @@ export function normalizeUrl(u: string): string {
 export function extractContainer(html: string): string {
   const article = html.match(/<article[\s>][\s\S]*?<\/article>/i);
   const postBody = html.match(/<div[^>]+class=["'][^"']*post-body[^"']*["'][\s\S]*?<\/div>/i);
-  const entry = html.match(/<div[^>]+class=["'][^"']*(entry-content|post-content)[^"']*["'][\s\S]*?<\/div>/i);
+  const entry = html.match(
+    /<div[^>]+class=["'][^"']*(entry-content|post-content)[^"']*["'][\s\S]*?<\/div>/i,
+  );
   const main = html.match(/<main[\s>][\s\S]*?<\/main>/i);
   return article?.[0] || postBody?.[0] || entry?.[0] || main?.[0] || html;
 }
@@ -260,7 +276,12 @@ function extractTitle(html: string): string {
   const titleTag = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
   return decodeEntities(
-    (ogTitle?.[1] || (titleTag ? titleTag[1] : "") || (h1 ? h1[1].replace(/<[^>]+>/g, "") : "") || "Artigo")
+    (
+      ogTitle?.[1] ||
+      (titleTag ? titleTag[1] : "") ||
+      (h1 ? h1[1].replace(/<[^>]+>/g, "") : "") ||
+      "Artigo"
+    )
       .replace(/<[^>]+>/g, "")
       .replace(/\s+/g, " "),
   ).trim();
@@ -314,9 +335,38 @@ export async function fetchReaderHtml(
 }
 
 const ALLOWED_TAGS = new Set([
-  "p", "br", "hr", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li",
-  "strong", "b", "em", "i", "u", "blockquote", "img", "figure", "figcaption",
-  "a", "pre", "code", "table", "thead", "tbody", "tr", "td", "th", "span", "div",
+  "p",
+  "br",
+  "hr",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "ul",
+  "ol",
+  "li",
+  "strong",
+  "b",
+  "em",
+  "i",
+  "u",
+  "blockquote",
+  "img",
+  "figure",
+  "figcaption",
+  "a",
+  "pre",
+  "code",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "td",
+  "th",
+  "span",
+  "div",
 ]);
 
 /** Whitelist-based HTML sanitizer for trusted own-blog content. */
@@ -336,7 +386,10 @@ export function sanitizeArticleHtml(input: string, baseUrl: string): string {
   };
 
   let s = input
-    .replace(/<(script|style|noscript|iframe|form|svg|button|input|nav|footer|header)[\s\S]*?<\/\1>/gi, " ")
+    .replace(
+      /<(script|style|noscript|iframe|form|svg|button|input|nav|footer|header)[\s\S]*?<\/\1>/gi,
+      " ",
+    )
     .replace(/<!--[\s\S]*?-->/g, " ");
 
   s = s.replace(/<(\/?)([a-z0-9]+)([^>]*?)(\/?)>/gi, (_m, slash, tagRaw, attrs, selfClose) => {
@@ -345,7 +398,9 @@ export function sanitizeArticleHtml(input: string, baseUrl: string): string {
     if (slash) return `</${tag}>`;
 
     if (tag === "img") {
-      const src = attrs.match(/\ssrc=["']([^"']+)["']/i)?.[1] || attrs.match(/\sdata-src=["']([^"']+)["']/i)?.[1];
+      const src =
+        attrs.match(/\ssrc=["']([^"']+)["']/i)?.[1] ||
+        attrs.match(/\sdata-src=["']([^"']+)["']/i)?.[1];
       const alt = attrs.match(/\salt=["']([^"']*)["']/i)?.[1] || "";
       const resolved = src ? resolve(src) : "";
       if (!resolved || !/^https?:/i.test(resolved)) return " ";
@@ -361,7 +416,10 @@ export function sanitizeArticleHtml(input: string, baseUrl: string): string {
   });
 
   // Collapse empty wrappers and excess whitespace.
-  return s.replace(/\s+/g, " ").replace(/(<p>\s*<\/p>|<div>\s*<\/div>|<span>\s*<\/span>)/gi, " ").trim();
+  return s
+    .replace(/\s+/g, " ")
+    .replace(/(<p>\s*<\/p>|<div>\s*<\/div>|<span>\s*<\/span>)/gi, " ")
+    .trim();
 }
 
 /**
@@ -405,7 +463,6 @@ export async function generateSummary(
     return makeSummary(content);
   }
 }
-
 
 export function guessCategory(text: string): string {
   const low = text.toLowerCase();
@@ -498,8 +555,7 @@ export async function generateQuiz(
 
   if (response.status === 429)
     throw new Error("Limite de requisições atingido. Tente novamente em instantes.");
-  if (response.status === 402)
-    throw new Error("Créditos de IA do workspace esgotados.");
+  if (response.status === 402) throw new Error("Créditos de IA do workspace esgotados.");
   if (!response.ok) throw new Error("Não foi possível gerar o quiz. Tente novamente.");
 
   const completion = await response.json();
@@ -525,14 +581,16 @@ export async function generateQuiz(
     const obj = q as { question?: unknown; options?: unknown; correct?: unknown };
     const question = typeof obj.question === "string" ? obj.question.trim() : "";
     const options = Array.isArray(obj.options)
-      ? obj.options.map((o) => String(o).trim()).filter(Boolean).slice(0, 4)
+      ? obj.options
+          .map((o) => String(o).trim())
+          .filter(Boolean)
+          .slice(0, 4)
       : [];
     let correct = Number(obj.correct);
     if (!Number.isInteger(correct) || correct < 0 || correct >= options.length) correct = 0;
     if (question && options.length === 4) questions.push({ question, options, correct });
   }
 
-  if (questions.length === 0)
-    throw new Error("O quiz não pôde ser gerado para este artigo.");
+  if (questions.length === 0) throw new Error("O quiz não pôde ser gerado para este artigo.");
   return questions;
 }

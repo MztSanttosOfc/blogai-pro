@@ -163,8 +163,8 @@ function LandingPage() {
               <span className="text-gradient">inteligência artificial</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-              O BlogAI Pro escreve, otimiza para SEO, publica no Blogger e ajuda você a
-              monetizar — tudo de forma automatizada, em minutos.
+              O BlogAI Pro escreve, otimiza para SEO, publica no Blogger e ajuda você a monetizar —
+              tudo de forma automatizada, em minutos.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button variant="hero" size="lg" className="w-full sm:w-auto" onClick={handleStart}>
@@ -194,9 +194,7 @@ function LandingPage() {
       {/* Features */}
       <section id="recursos" className="mx-auto max-w-6xl px-4 py-20 md:px-6">
         <div className="mx-auto mb-14 max-w-2xl text-center">
-          <h2 className="font-display text-3xl font-bold md:text-4xl">
-            Tudo que seu blog precisa
-          </h2>
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Tudo que seu blog precisa</h2>
           <p className="mt-4 text-muted-foreground">
             Uma plataforma completa para produzir conteúdo de qualidade em escala.
           </p>
@@ -232,9 +230,7 @@ function LandingPage() {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n} className="relative">
-                <span className="font-display text-5xl font-extrabold text-primary/20">
-                  {s.n}
-                </span>
+                <span className="font-display text-5xl font-extrabold text-primary/20">{s.n}</span>
                 <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
                 <p className="mt-2 text-muted-foreground">{s.desc}</p>
               </div>
@@ -286,11 +282,7 @@ function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Button
-                asChild
-                variant={plan.highlight ? "hero" : "outline"}
-                className="mt-6 w-full"
-              >
+              <Button asChild variant={plan.highlight ? "hero" : "outline"} className="mt-6 w-full">
                 <Link to="/signup">Começar</Link>
               </Button>
             </div>

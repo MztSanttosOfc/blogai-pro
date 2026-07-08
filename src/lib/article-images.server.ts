@@ -59,7 +59,10 @@ async function generateImageB64(
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
-      console.error("[article-image:gateway-error]", { status: res.status, errText: errText.slice(0, 400) });
+      console.error("[article-image:gateway-error]", {
+        status: res.status,
+        errText: errText.slice(0, 400),
+      });
       return null;
     }
 
@@ -158,7 +161,8 @@ export async function generateArticleImages(opts: {
     const b64 = sectionB64s[i];
     if (!b64) continue;
     const url = await uploadAndSign(articleId, `section-${i + 1}`, b64);
-    if (url) internal.push({ url, alt: sections[i], context: sections[i], width: 1024, height: 1024 });
+    if (url)
+      internal.push({ url, alt: sections[i], context: sections[i], width: 1024, height: 1024 });
   }
 
   return { featured, internal };
