@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /$
+Allow: /login
+Allow: /signup
+Disallow: /dashboard
+Disallow: /generate
+Disallow: /library
+Disallow: /admin
+Disallow: /connections
+Disallow: /financeiro
+Disallow: /monetizacao
+Disallow: /paginas
+Disallow: /pricing
+Disallow: /recompensas
+Disallow: /agendamentos
+Disallow: /clusters
+Disallow: /desempenho
+Disallow: /verificar-blog
+Disallow: /atualizacoes
+Disallow: /blogger
+
+Sitemap: https://monzart.com.br/sitemap.xml
