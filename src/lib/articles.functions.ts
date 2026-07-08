@@ -146,8 +146,8 @@ function parseFaq(block: string): { question: string; answer: string }[] {
 
   for (const rawLine of block.split("\n")) {
     const line = rawLine.trim();
-    const q = line.match(/^(?:P|Q|Pergunta|Question)\s*[:\-]\s*(.*)$/i);
-    const a = line.match(/^(?:R|A|Resposta|Answer)\s*[:\-]\s*(.*)$/i);
+    const q = line.match(/^(?:P|Q|Pergunta|Question)\s*[:-]\s*(.*)$/i);
+    const a = line.match(/^(?:R|A|Resposta|Answer)\s*[:-]\s*(.*)$/i);
     if (q) {
       flush();
       current = { question: q[1].trim(), answer: [] };
