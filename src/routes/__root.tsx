@@ -89,26 +89,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
       {
         property: "og:description",
-        content: "Gere artigos otimizados para SEO em minutos e publique no Blogger.",
+        content:
+          "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@BlogAIPro" },
       { name: "twitter:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
       {
-        name: "description",
-        content:
-          "BlogAI Pro is a SaaS application that automates blog creation, optimization, and publishing for Blogger users.",
-      },
-      {
-        property: "og:description",
-        content:
-          "BlogAI Pro is a SaaS application that automates blog creation, optimization, and publishing for Blogger users.",
-      },
-      {
         name: "twitter:description",
         content:
-          "BlogAI Pro is a SaaS application that automates blog creation, optimization, and publishing for Blogger users.",
+          "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
       },
       {
         property: "og:image",
