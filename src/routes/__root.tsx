@@ -89,8 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
       {
         property: "og:description",
-        content:
-          "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
+        content: "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -98,8 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
       {
         name: "twitter:description",
-        content:
-          "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
+        content: "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
       },
       {
         property: "og:image",
