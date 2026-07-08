@@ -67,9 +67,13 @@ function ClusterView({ c }: { c: GeneratedCluster }) {
               <p className="mt-1 break-words text-xs text-muted-foreground">{s.angle}</p>
               <div className="mt-2 flex flex-wrap gap-1">
                 {s.keyword && (
-                  <Badge variant="secondary" className="text-xs">{s.keyword}</Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {s.keyword}
+                  </Badge>
                 )}
-                <Badge variant="outline" className="text-xs">{s.searchIntent}</Badge>
+                <Badge variant="outline" className="text-xs">
+                  {s.searchIntent}
+                </Badge>
               </div>
             </Card>
           ))}
@@ -83,7 +87,9 @@ function ClusterView({ c }: { c: GeneratedCluster }) {
           </div>
           <div className="flex flex-wrap gap-1">
             {c.primaryKeywords.map((k) => (
-              <Badge key={k} className="border-0 bg-primary/15 text-primary">{k}</Badge>
+              <Badge key={k} className="border-0 bg-primary/15 text-primary">
+                {k}
+              </Badge>
             ))}
           </div>
         </Card>
@@ -93,7 +99,9 @@ function ClusterView({ c }: { c: GeneratedCluster }) {
           </div>
           <div className="flex flex-wrap gap-1">
             {c.secondaryKeywords.map((k) => (
-              <Badge key={k} variant="secondary" className="text-xs">{k}</Badge>
+              <Badge key={k} variant="secondary" className="text-xs">
+                {k}
+              </Badge>
             ))}
           </div>
         </Card>

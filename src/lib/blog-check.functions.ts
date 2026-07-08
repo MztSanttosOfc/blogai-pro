@@ -244,10 +244,7 @@ function getTitle(raw: string): string {
 
 function getMeta(raw: string, key: string): string {
   // Matches name="key" or property="key" regardless of attribute order.
-  const re = new RegExp(
-    `<meta[^>]+(?:name|property)\\s*=\\s*["']${key}["'][^>]*>`,
-    "i",
-  );
+  const re = new RegExp(`<meta[^>]+(?:name|property)\\s*=\\s*["']${key}["'][^>]*>`, "i");
   const tag = raw.match(re);
   if (!tag) return "";
   const c = tag[0].match(/content\s*=\s*["']([\s\S]*?)["']/i);
@@ -298,7 +295,10 @@ function isLikelyArticleUrl(u: string): boolean {
     /\/20\d{2}\//.test(u) ||
     /\.html?($|\?)/i.test(u) ||
     /\/(post|artigo|blog|p)\//i.test(u) ||
-    u.replace(/^https?:\/\/[^/]+/, "").split("/").filter(Boolean).length >= 2
+    u
+      .replace(/^https?:\/\/[^/]+/, "")
+      .split("/")
+      .filter(Boolean).length >= 2
   );
 }
 
@@ -323,9 +323,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       .from("user_roles")
       .select("role")
       .eq("user_id", userId);
-    const isAdmin = (roleRows ?? []).some(
-      (r) => r.role === "owner" || r.role === "admin",
-    );
+    const isAdmin = (roleRows ?? []).some((r) => r.role === "owner" || r.role === "admin");
     if (!isAdmin && profile?.plan !== "premium") {
       throw new Error("Recurso exclusivo do plano Premium.");
     }
@@ -346,8 +344,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
 
     if (!page || !page.ok) {
       throw new Error(
-        lastError?.message ??
-          "Não foi possível acessar a URL informada. Verifique o endereço.",
+        lastError?.message ?? "Não foi possível acessar a URL informada. Verifique o endereço.",
       );
     }
 
@@ -359,7 +356,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
 
     // --- Sub-resources -----------------------------------------------------
     const robotsHtml = await fetchSubResource(`${origin}/robots.txt`);
-    let sitemapXml =
+    const sitemapXml =
       (await fetchSubResource(`${origin}/sitemap.xml`)) ??
       (await fetchSubResource(`${origin}/sitemap-index.xml`)) ??
       (await fetchSubResource(`${origin}/sitemap`));
@@ -374,8 +371,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       const isIndex = /<sitemapindex/i.test(sitemapXml);
       if (isIndex && locs.length) {
         // Prefer a sub-sitemap that looks like it holds posts.
-        const sub =
-          locs.find((u) => /post|article|blog/i.test(u)) ?? locs[0];
+        const sub = locs.find((u) => /post|article|blog/i.test(u)) ?? locs[0];
         const subXml = await fetchSubResource(sub);
         if (subXml) {
           locs = extractLocs(subXml);
@@ -412,9 +408,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
     }
     const avgWords =
       articleStats.length > 0
-        ? Math.round(
-            articleStats.reduce((s, a) => s + a.words, 0) / articleStats.length,
-          )
+        ? Math.round(articleStats.reduce((s, a) => s + a.words, 0) / articleStats.length)
         : plainTextWordCount(raw); // fallback to homepage when no sample
 
     // --- Homepage signals --------------------------------------------------
@@ -454,9 +448,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
     let lastPostLabel = "sem dados de data";
     if (lastmods.length) {
       const now = Date.now();
-      postsPer90 = lastmods.filter(
-        (d) => now - d.getTime() <= 90 * 24 * 3600 * 1000,
-      ).length;
+      postsPer90 = lastmods.filter((d) => now - d.getTime() <= 90 * 24 * 3600 * 1000).length;
       const newest = lastmods.reduce((a, b) => (a > b ? a : b));
       const days = Math.round((now - newest.getTime()) / (24 * 3600 * 1000));
       lastPostLabel = days <= 1 ? "hoje" : `há ${days} dia(s)`;
@@ -467,9 +459,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
     const scriptCount = countMatches(raw, /<script\b/gi);
 
     const isBlogger =
-      html.includes("blogger") ||
-      html.includes("blogspot") ||
-      origin.includes("blogspot.com");
+      html.includes("blogger") || html.includes("blogspot") || origin.includes("blogspot.com");
     const isWordPress = html.includes("wp-content") || html.includes("wp-json");
 
     // --- Weighted criteria -------------------------------------------------
@@ -489,7 +479,8 @@ export const analyzeBlog = createServerFn({ method: "POST" })
           ].filter(Boolean).length / 4,
         ),
         ok: false,
-        detail: "Sobre, Contato, Privacidade e Termos aumentam a confiança e ajudam na monetização.",
+        detail:
+          "Sobre, Contato, Privacidade e Termos aumentam a confiança e ajudam na monetização.",
       },
       {
         label: "Quantidade de artigos",
@@ -574,7 +565,9 @@ export const analyzeBlog = createServerFn({ method: "POST" })
         label: "Headings (H1/H2/H3)",
         category: "SEO Técnico",
         weight: 7,
-        score: clamp((h1 === 1 ? 0.4 : h1 > 1 ? 0.2 : 0) + (h2 >= 1 ? 0.4 : 0) + (h3 >= 1 ? 0.2 : 0)),
+        score: clamp(
+          (h1 === 1 ? 0.4 : h1 > 1 ? 0.2 : 0) + (h2 >= 1 ? 0.4 : 0) + (h3 >= 1 ? 0.2 : 0),
+        ),
         ok: h1 >= 1 && h2 >= 1,
         detail: `H1: ${h1} · H2: ${h2} · H3: ${h3}. Ideal: 1 H1 e vários H2/H3.`,
       },
@@ -632,9 +625,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
         weight: 3,
         score: robotsHtml && robotsHtml.length > 0 ? 1 : 0,
         ok: !!robotsHtml && robotsHtml.length > 0,
-        detail: robotsHtml
-          ? "robots.txt acessível."
-          : "robots.txt não encontrado.",
+        detail: robotsHtml ? "robots.txt acessível." : "robots.txt não encontrado.",
       },
 
       // Performance
@@ -652,7 +643,9 @@ export const analyzeBlog = createServerFn({ method: "POST" })
         label: "Performance básica",
         category: "Performance",
         weight: 5,
-        score: clamp(1 - Math.max(0, htmlKb - 100) / 400) * clamp(1 - Math.max(0, scriptCount - 10) / 30),
+        score:
+          clamp(1 - Math.max(0, htmlKb - 100) / 400) *
+          clamp(1 - Math.max(0, scriptCount - 10) / 30),
         ok: htmlKb <= 250 && scriptCount <= 25,
         detail: `HTML ~${htmlKb}KB · ${scriptCount} scripts na home.`,
       },
@@ -670,11 +663,7 @@ export const analyzeBlog = createServerFn({ method: "POST" })
       .sort((a, b) => b.weight - a.weight)
       .map((i) => `[${i.category}] ${i.label}: ${i.detail}`);
 
-    const platform = isBlogger
-      ? "Blogger"
-      : isWordPress
-        ? "WordPress"
-        : "CMS/personalizado";
+    const platform = isBlogger ? "Blogger" : isWordPress ? "WordPress" : "CMS/personalizado";
 
     const report = {
       items,

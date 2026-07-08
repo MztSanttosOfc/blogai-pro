@@ -97,7 +97,10 @@ export async function openNativeBrowser(url: string): Promise<NativeBrowserSessi
   try {
     const mod = await import("@capacitor/inappbrowser").catch(() => null);
     const InAppBrowser = (mod as { InAppBrowser?: Record<string, unknown> } | null)?.InAppBrowser;
-    if (InAppBrowser && typeof (InAppBrowser as { openInWebView?: unknown }).openInWebView === "function") {
+    if (
+      InAppBrowser &&
+      typeof (InAppBrowser as { openInWebView?: unknown }).openInWebView === "function"
+    ) {
       const iab = InAppBrowser as {
         openInWebView: (opts: unknown) => Promise<void>;
         addListener: (ev: string, cb: () => void) => Promise<{ remove: () => Promise<void> }>;

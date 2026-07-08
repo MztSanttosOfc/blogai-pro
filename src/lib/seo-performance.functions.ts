@@ -66,11 +66,8 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
       const match = blogs.find((b) => b.id === conn.selected_blog_id);
       blogUrl = match?.url ?? blogs[0]?.url ?? "";
 
-      const {
-        fetchSearchConsoleSites,
-        matchSite,
-        querySearchAnalytics,
-      } = await import("./seo-performance.server");
+      const { fetchSearchConsoleSites, matchSite, querySearchAnalytics } =
+        await import("./seo-performance.server");
 
       const sites = await fetchSearchConsoleSites(token);
       const siteUrl = matchSite(sites, blogUrl);

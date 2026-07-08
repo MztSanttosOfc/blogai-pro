@@ -126,8 +126,7 @@ function SchedulingPage() {
     setDialogOpen(true);
   };
 
-  const refresh = () =>
-    queryClient.invalidateQueries({ queryKey: ["scheduled-posts", user?.id] });
+  const refresh = () => queryClient.invalidateQueries({ queryKey: ["scheduled-posts", user?.id] });
 
   const handleSave = async () => {
     if (!editId && !articleId) {
@@ -206,8 +205,8 @@ function SchedulingPage() {
           <Clock className="h-10 w-10 text-muted-foreground" />
           <h3 className="text-lg font-semibold">Nenhum agendamento ainda</h3>
           <p className="max-w-md text-sm text-muted-foreground">
-            Agende seus artigos para serem publicados automaticamente no Blogger na
-            data e horário que você definir.
+            Agende seus artigos para serem publicados automaticamente no Blogger na data e horário
+            que você definir.
           </p>
           <Button onClick={openNew}>
             <Plus className="mr-1 h-4 w-4" /> Criar primeiro agendamento
@@ -314,11 +313,7 @@ function SchedulingPage() {
             )}
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Data e horário</label>
-              <Input
-                type="datetime-local"
-                value={when}
-                onChange={(e) => setWhen(e.target.value)}
-              />
+              <Input type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
             </div>
           </div>
           <DialogFooter>

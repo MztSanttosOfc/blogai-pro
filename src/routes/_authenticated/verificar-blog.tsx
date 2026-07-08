@@ -57,14 +57,9 @@ function scoreColor(score: number) {
 }
 
 function ItemRow({ item }: { item: BlogCheckItem }) {
-  const Icon =
-    item.score >= 0.7 ? CheckCircle2 : item.score >= 0.4 ? MinusCircle : XCircle;
+  const Icon = item.score >= 0.7 ? CheckCircle2 : item.score >= 0.4 ? MinusCircle : XCircle;
   const color =
-    item.score >= 0.7
-      ? "text-success"
-      : item.score >= 0.4
-        ? "text-warning"
-        : "text-destructive";
+    item.score >= 0.7 ? "text-success" : item.score >= 0.4 ? "text-warning" : "text-destructive";
   return (
     <div className="flex items-start gap-3 p-4">
       <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${color}`} />
@@ -133,9 +128,9 @@ function VerifyBlogPage() {
           </Button>
         </form>
         <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
-          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          A análise inspeciona sitemap, artigos recentes, headings, meta tags e mais.
-          É orientativa e não garante aprovação em programas de monetização.
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />A análise inspeciona sitemap,
+          artigos recentes, headings, meta tags e mais. É orientativa e não garante aprovação em
+          programas de monetização.
         </p>
       </Card>
 
@@ -150,9 +145,7 @@ function VerifyBlogPage() {
             </div>
             <Progress value={result.score} />
             <div className="flex flex-wrap gap-2 pt-1">
-              {result.platform && (
-                <Badge variant="secondary">Plataforma: {result.platform}</Badge>
-              )}
+              {result.platform && <Badge variant="secondary">Plataforma: {result.platform}</Badge>}
               {typeof result.articleCount === "number" && (
                 <Badge variant="secondary" className="gap-1">
                   <FileText className="h-3 w-3" /> {result.articleCount} artigos

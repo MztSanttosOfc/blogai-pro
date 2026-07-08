@@ -5,19 +5,9 @@
  * internal/metadata names. Returns a sanitized origin for sub-path fetches.
  */
 
-const BLOCKED_HOST_SUFFIXES = [
-  ".local",
-  ".internal",
-  ".localhost",
-  ".lan",
-  ".home",
-];
+const BLOCKED_HOST_SUFFIXES = [".local", ".internal", ".localhost", ".lan", ".home"];
 
-const BLOCKED_HOSTNAMES = new Set([
-  "localhost",
-  "metadata.google.internal",
-  "metadata",
-]);
+const BLOCKED_HOSTNAMES = new Set(["localhost", "metadata.google.internal", "metadata"]);
 
 function isPrivateIpv4(host: string): boolean {
   const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);

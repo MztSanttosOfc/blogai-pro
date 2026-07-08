@@ -56,7 +56,6 @@ const premiumItems = [
   { title: "Verificar Meu Blog", url: "/verificar-blog", icon: ShieldCheck },
 ];
 
-
 export function AppSidebar() {
   const navigate = useNavigate();
   const { profile, user, signOut, isAdmin } = useAuth();
@@ -86,12 +85,15 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
-                const active =
-                  currentPath === item.url || currentPath.startsWith(item.url + "/");
+                const active = currentPath === item.url || currentPath.startsWith(item.url + "/");
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <Link to={item.url} className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                      <Link
+                        to={item.url}
+                        className="flex items-center gap-3"
+                        onClick={closeMobileSidebar}
+                      >
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
@@ -108,12 +110,15 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {premiumItems.map((item) => {
-                const active =
-                  currentPath === item.url || currentPath.startsWith(item.url + "/");
+                const active = currentPath === item.url || currentPath.startsWith(item.url + "/");
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <Link to={item.url} className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                      <Link
+                        to={item.url}
+                        className="flex items-center gap-3"
+                        onClick={closeMobileSidebar}
+                      >
                         <item.icon className="h-4 w-4 text-primary" />
                         <span>{item.title}</span>
                       </Link>
@@ -135,7 +140,11 @@ export function AppSidebar() {
                     asChild
                     isActive={currentPath === "/admin" || currentPath.startsWith("/admin/")}
                   >
-                    <Link to="/admin" className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                    <Link
+                      to="/admin"
+                      className="flex items-center gap-3"
+                      onClick={closeMobileSidebar}
+                    >
                       <Shield className="h-4 w-4 text-primary" />
                       <span>Administração</span>
                     </Link>
@@ -145,8 +154,6 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-
-
 
         <SidebarGroup>
           <SidebarGroupContent>

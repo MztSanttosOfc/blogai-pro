@@ -50,9 +50,13 @@ const EMPTY_SETTINGS: SiteSettings = {
 /** Build the personalization context block injected into every prompt. */
 function settingsBlock(s: SiteSettings): string {
   const lines: string[] = [];
-  lines.push(`- Nome do blog/site: ${s.blog_name || "(não informado — use um nome genérico como 'nosso site')"}`);
+  lines.push(
+    `- Nome do blog/site: ${s.blog_name || "(não informado — use um nome genérico como 'nosso site')"}`,
+  );
   lines.push(`- Proprietário/Responsável: ${s.owner_name || "(não informado)"}`);
-  lines.push(`- E-mail de contato: ${s.contact_email || "(não informado — peça que o leitor entre em contato pelo formulário)"}`);
+  lines.push(
+    `- E-mail de contato: ${s.contact_email || "(não informado — peça que o leitor entre em contato pelo formulário)"}`,
+  );
   lines.push(`- Domínio: ${s.domain || "(não informado)"}`);
   lines.push(`- Nicho/Assunto: ${s.niche || "(não informado — conteúdo geral)"}`);
   return lines.join("\n");
@@ -248,7 +252,11 @@ export const listSitePages = createServerFn({ method: "GET" })
 export const generateSitePage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ type: z.enum(["sobre", "contato", "privacidade", "termos", "disclaimer", "cookies"]) }).parse(input),
+    z
+      .object({
+        type: z.enum(["sobre", "contato", "privacidade", "termos", "disclaimer", "cookies"]),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const settings = await loadSettings(context.userId);
@@ -304,7 +312,11 @@ export const saveSitePage = createServerFn({ method: "POST" })
 export const deleteSitePage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ type: z.enum(["sobre", "contato", "privacidade", "termos", "disclaimer", "cookies"]) }).parse(input),
+    z
+      .object({
+        type: z.enum(["sobre", "contato", "privacidade", "termos", "disclaimer", "cookies"]),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -322,14 +334,17 @@ export const deleteSitePage = createServerFn({ method: "POST" })
 export const publishSitePageToBlogger = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ type: z.enum(["sobre", "contato", "privacidade", "termos", "disclaimer", "cookies"]) }).parse(input),
+    z
+      .object({
+        type: z.enum(["sobre", "contato", "privacidade", "termos", "disclaimer", "cookies"]),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { getValidBloggerToken, createBloggerPage, updateBloggerPage, markdownToHtml } = await import(
-      "./blogger.server"
-    );
+    const { getValidBloggerToken, createBloggerPage, updateBloggerPage, markdownToHtml } =
+      await import("./blogger.server");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: page } = await (supabaseAdmin as any)

@@ -2,12 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Rocket, Star, History, Sparkles, CalendarClock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  UPCOMING_UPDATES,
-  RELEASED_UPDATES,
-  STATUS_META,
-  type RoadmapEntry,
-} from "@/lib/roadmap";
+import { UPCOMING_UPDATES, RELEASED_UPDATES, STATUS_META, type RoadmapEntry } from "@/lib/roadmap";
 
 export const Route = createFileRoute("/_authenticated/atualizacoes")({
   head: () => ({
@@ -80,8 +75,8 @@ function EmptyState() {
       </div>
       <h3 className="text-lg font-semibold">Nenhuma atualização pendente no momento</h3>
       <p className="max-w-md text-sm text-muted-foreground">
-        Estamos trabalhando em novas melhorias para o BlogAI Pro. Volte em breve
-        para conferir as novidades.
+        Estamos trabalhando em novas melhorias para o BlogAI Pro. Volte em breve para conferir as
+        novidades.
       </p>
     </Card>
   );

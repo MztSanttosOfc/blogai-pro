@@ -116,7 +116,6 @@ function LibraryPage() {
     }
   };
 
-
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -154,7 +153,10 @@ function LibraryPage() {
       ) : (
         <div className="grid gap-3">
           {filtered.map((a) => (
-            <Card key={a.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <Card
+              key={a.id}
+              className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
+            >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <h3 className="truncate font-semibold">{a.title || a.keyword}</h3>
@@ -193,7 +195,12 @@ function LibraryPage() {
                   )}
                   Publicar
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => handleDuplicate(a)} aria-label="Duplicar">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleDuplicate(a)}
+                  aria-label="Duplicar"
+                >
                   <Copy className="h-4 w-4" />
                 </Button>
                 <Button

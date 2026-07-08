@@ -57,7 +57,10 @@ function MonetizationPage() {
       if (value) {
         await supabase
           .from("course_progress")
-          .upsert({ user_id: user.id, lesson_key: key, completed: true }, { onConflict: "user_id,lesson_key" });
+          .upsert(
+            { user_id: user.id, lesson_key: key, completed: true },
+            { onConflict: "user_id,lesson_key" },
+          );
       } else {
         await supabase
           .from("course_progress")
@@ -115,8 +118,8 @@ function MonetizationPage() {
       <Card className="flex items-start gap-3 border-warning/40 bg-warning/5 p-4">
         <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
         <p className="text-sm text-muted-foreground">
-          Estas são recomendações educativas. Não garantimos aprovação no Google AdSense
-          ou em qualquer programa de monetização — a decisão é sempre das plataformas.
+          Estas são recomendações educativas. Não garantimos aprovação no Google AdSense ou em
+          qualquer programa de monetização — a decisão é sempre das plataformas.
         </p>
       </Card>
 
@@ -192,8 +195,7 @@ function PageGenerator() {
   const [email, setEmail] = useState("");
 
   const mutation = useMutation({
-    mutationFn: () =>
-      generate({ data: { pageType, blogName, blogUrl, email } }),
+    mutationFn: () => generate({ data: { pageType, blogName, blogUrl, email } }),
     onError: (e: Error) => toast.error(e.message || "Falha ao gerar a página."),
   });
 
@@ -243,7 +245,12 @@ function PageGenerator() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="blogUrl">URL do blog</Label>
-          <Input id="blogUrl" value={blogUrl} onChange={(e) => setBlogUrl(e.target.value)} placeholder="https://seublog.com" />
+          <Input
+            id="blogUrl"
+            value={blogUrl}
+            onChange={(e) => setBlogUrl(e.target.value)}
+            placeholder="https://seublog.com"
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="email">E-mail de contato</Label>

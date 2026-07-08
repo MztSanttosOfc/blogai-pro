@@ -31,12 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { getSeoPerformance, type SeoTableRow } from "@/lib/seo-performance.functions";
 
@@ -54,15 +49,7 @@ export const Route = createFileRoute("/_authenticated/desempenho")({
   component: SeoPage,
 });
 
-function StatBox({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof Eye;
-  label: string;
-  value: string;
-}) {
+function StatBox({ icon: Icon, label, value }: { icon: typeof Eye; label: string; value: string }) {
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 text-muted-foreground">
@@ -93,7 +80,9 @@ function DataTable({ rows, label }: { rows: SeoTableRow[]; label: string }) {
         <tbody>
           {rows.map((r, i) => (
             <tr key={i} className="border-b border-border/50">
-              <td className="max-w-[240px] truncate py-2 pr-2" title={r.key}>{r.key}</td>
+              <td className="max-w-[240px] truncate py-2 pr-2" title={r.key}>
+                {r.key}
+              </td>
               <td className="py-2 px-2 text-right">{r.clicks}</td>
               <td className="py-2 px-2 text-right">{r.impressions}</td>
               <td className="py-2 px-2 text-right">{(r.ctr * 100).toFixed(1)}%</td>
@@ -163,7 +152,11 @@ function SeoPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatBox icon={MousePointerClick} label="Cliques" value={String(data.totals?.clicks ?? 0)} />
+            <StatBox
+              icon={MousePointerClick}
+              label="Cliques"
+              value={String(data.totals?.clicks ?? 0)}
+            />
             <StatBox icon={Eye} label="Impressões" value={String(data.totals?.impressions ?? 0)} />
             <StatBox
               icon={Percent}

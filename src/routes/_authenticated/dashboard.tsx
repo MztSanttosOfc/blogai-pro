@@ -38,9 +38,7 @@ function DashboardPage() {
         <h1 className="text-2xl font-bold md:text-3xl">
           Olá, {profile?.full_name?.split(" ")[0] ?? "blogueiro"} 👋
         </h1>
-        <p className="text-muted-foreground">
-          Aqui está um resumo da sua produção de conteúdo.
-        </p>
+        <p className="text-muted-foreground">Aqui está um resumo da sua produção de conteúdo.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

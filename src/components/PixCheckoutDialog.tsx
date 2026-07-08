@@ -140,9 +140,7 @@ export function PixCheckoutDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {paid ? "Plano ativado!" : `Assinar plano ${planName}`}
-          </DialogTitle>
+          <DialogTitle>{paid ? "Plano ativado!" : `Assinar plano ${planName}`}</DialogTitle>
           <DialogDescription>
             {paid
               ? "Seu pagamento foi confirmado e os créditos já estão disponíveis."

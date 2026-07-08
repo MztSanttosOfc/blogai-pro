@@ -180,7 +180,13 @@ function PlayerView() {
   }
 
   if (active) {
-    return <MissionReaderView reader={active} onClose={() => setActive(null)} onCompleted={onCompleted} />;
+    return (
+      <MissionReaderView
+        reader={active}
+        onClose={() => setActive(null)}
+        onCompleted={onCompleted}
+      />
+    );
   }
 
   const remainingMissions = Math.max(0, config.daily_mission_limit - config.today_missions);
@@ -189,9 +195,21 @@ function PlayerView() {
   return (
     <div className="w-full space-y-6 overflow-x-hidden">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-        <StatBox icon={<Coins className="h-4 w-4" />} label="Créditos hoje" value={`${config.today_credits}/${config.daily_credit_limit}`} />
-        <StatBox icon={<Trophy className="h-4 w-4" />} label="Missões hoje" value={`${config.today_missions}/${config.daily_mission_limit}`} />
-        <StatBox icon={<ShieldCheck className="h-4 w-4" />} label="Rolagem mínima" value={`${config.min_scroll_percent}%`} />
+        <StatBox
+          icon={<Coins className="h-4 w-4" />}
+          label="Créditos hoje"
+          value={`${config.today_credits}/${config.daily_credit_limit}`}
+        />
+        <StatBox
+          icon={<Trophy className="h-4 w-4" />}
+          label="Missões hoje"
+          value={`${config.today_missions}/${config.daily_mission_limit}`}
+        />
+        <StatBox
+          icon={<ShieldCheck className="h-4 w-4" />}
+          label="Rolagem mínima"
+          value={`${config.min_scroll_percent}%`}
+        />
       </div>
 
       {remainingMissions === 0 && (
@@ -271,18 +289,26 @@ function MissionCard({
     <Card className={`flex min-w-0 flex-col p-4 sm:p-5 ${mission.completed ? "opacity-70" : ""}`}>
       <div className="flex flex-wrap items-center gap-2">
         {mission.category && (
-          <Badge variant="secondary" className="max-w-full truncate">{mission.category}</Badge>
+          <Badge variant="secondary" className="max-w-full truncate">
+            {mission.category}
+          </Badge>
         )}
-        <Badge variant="outline">{DIFFICULTY_LABEL[mission.difficulty] ?? mission.difficulty}</Badge>
+        <Badge variant="outline">
+          {DIFFICULTY_LABEL[mission.difficulty] ?? mission.difficulty}
+        </Badge>
         {mission.completed && (
           <Badge className="gap-1 border-0 bg-green-500/15 text-green-600">
             <CheckCircle2 className="h-3 w-3" /> Concluída
           </Badge>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 break-words font-semibold">{htmlToPlainText(mission.title) || mission.title}</h3>
+      <h3 className="mt-3 line-clamp-2 break-words font-semibold">
+        {htmlToPlainText(mission.title) || mission.title}
+      </h3>
       {mission.excerpt && (
-        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">{makeSummary(mission.excerpt)}</p>
+        <p className="mt-1 line-clamp-2 break-words text-sm text-muted-foreground">
+          {makeSummary(mission.excerpt)}
+        </p>
       )}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
@@ -300,11 +326,15 @@ function MissionCard({
         onClick={handleStart}
       >
         {loading ? (
-          <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Preparando...</>
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Preparando...
+          </>
         ) : mission.completed ? (
           "Recompensa recebida"
         ) : (
-          <><BookOpen className="mr-2 h-4 w-4" /> Iniciar leitura</>
+          <>
+            <BookOpen className="mr-2 h-4 w-4" /> Iniciar leitura
+          </>
         )}
       </Button>
     </Card>
@@ -457,7 +487,6 @@ function MissionReaderView({
     if (pct >= 95) setReachedEnd(true);
   }, []);
 
-
   // Reading-time counter. Embedded → count while the app is visible; external
   // (popup/native) → count while the user is away reading the article.
   useEffect(() => {
@@ -578,7 +607,9 @@ function MissionReaderView({
           <ArrowLeft className="h-4 w-4 sm:mr-1" />
           <span className="hidden sm:inline">Voltar</span>
         </Button>
-        <h2 className="min-w-0 flex-1 truncate text-sm font-semibold sm:text-base">{reader.title}</h2>
+        <h2 className="min-w-0 flex-1 truncate text-sm font-semibold sm:text-base">
+          {reader.title}
+        </h2>
         <Badge variant="outline" className="hidden shrink-0 gap-1 sm:inline-flex">
           {strategy === "native-browser" ? (
             <Smartphone className="h-3 w-3" />
@@ -636,7 +667,9 @@ function MissionReaderView({
               </div>
             ) : (
               <article className="prose-reader">
-                <h1 className="mb-4 text-xl font-bold leading-snug sm:text-2xl">{readerContent.title}</h1>
+                <h1 className="mb-4 text-xl font-bold leading-snug sm:text-2xl">
+                  {readerContent.title}
+                </h1>
                 {/* Sanitized server-side (whitelist of structural tags only). */}
                 <div dangerouslySetInnerHTML={{ __html: readerContent.html }} />
               </article>
@@ -736,7 +769,9 @@ function MissionReaderView({
               {result && (
                 <div
                   className={`flex items-start gap-2 rounded-lg p-3 text-sm ${
-                    result.ok ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"
+                    result.ok
+                      ? "bg-green-500/10 text-green-600"
+                      : "bg-destructive/10 text-destructive"
                   }`}
                 >
                   {result.ok ? (
@@ -806,8 +841,7 @@ function AdminView() {
     load();
   }, [load]);
 
-  const update = (patch: Partial<RewardConfig>) =>
-    setConfig((c) => (c ? { ...c, ...patch } : c));
+  const update = (patch: Partial<RewardConfig>) => setConfig((c) => (c ? { ...c, ...patch } : c));
 
   const handleSave = async () => {
     if (!config) return;
@@ -839,7 +873,9 @@ function AdminView() {
     setSyncing(true);
     try {
       const res = await sync();
-      toast.success(`Sincronização concluída: ${res.imported} novo(s) de ${res.scanned} encontrados.`);
+      toast.success(
+        `Sincronização concluída: ${res.imported} novo(s) de ${res.scanned} encontrados.`,
+      );
       load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Falha na sincronização.");
@@ -904,18 +940,24 @@ function AdminView() {
                   {stats.top_missions.map((t) => (
                     <li key={t.title} className="flex justify-between gap-2">
                       <span className="truncate">{t.title}</span>
-                      <span className="shrink-0 text-muted-foreground">{t.read_count} leituras</span>
+                      <span className="shrink-0 text-muted-foreground">
+                        {t.read_count} leituras
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <p className="mb-2 text-xs font-semibold text-muted-foreground">Usuários mais ativos</p>
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                  Usuários mais ativos
+                </p>
                 <ul className="space-y-1 text-sm">
                   {stats.top_users.map((u) => (
                     <li key={u.email} className="flex justify-between gap-2">
                       <span className="truncate">{u.email}</span>
-                      <span className="shrink-0 text-muted-foreground">{u.completions} missões</span>
+                      <span className="shrink-0 text-muted-foreground">
+                        {u.completions} missões
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -935,7 +977,9 @@ function AdminView() {
         <div className="flex items-center justify-between rounded-lg border p-3">
           <div>
             <p className="text-sm font-medium">Central de Recompensas ativa</p>
-            <p className="text-xs text-muted-foreground">Liga ou desliga o recurso para os usuários.</p>
+            <p className="text-xs text-muted-foreground">
+              Liga ou desliga o recurso para os usuários.
+            </p>
           </div>
           <Switch checked={config.enabled} onCheckedChange={(v) => update({ enabled: v })} />
         </div>
@@ -947,7 +991,10 @@ function AdminView() {
               Se desligado, novos artigos importados ficam pendentes de aprovação.
             </p>
           </div>
-          <Switch checked={config.auto_approve} onCheckedChange={(v) => update({ auto_approve: v })} />
+          <Switch
+            checked={config.auto_approve}
+            onCheckedChange={(v) => update({ auto_approve: v })}
+          />
         </div>
 
         <div className="space-y-1">
@@ -977,7 +1024,11 @@ function AdminView() {
           {numField("Limite diário de créditos", "daily_credit_limit")}
           {numField("Limite diário de missões", "daily_mission_limit")}
           {numField("Rolagem mínima (%)", "min_scroll_percent")}
-          {numField("Segundos por 100 palavras", "seconds_per_100_words", "Tempo de leitura proporcional")}
+          {numField(
+            "Segundos por 100 palavras",
+            "seconds_per_100_words",
+            "Tempo de leitura proporcional",
+          )}
           {numField("Nota mínima do quiz (%)", "pass_threshold")}
         </div>
 
@@ -1034,15 +1085,27 @@ function AdminView() {
                           : "bg-destructive/15 text-destructive"
                     }`}
                   >
-                    {m.status === "approved" ? "Aprovado" : m.status === "pending" ? "Pendente" : "Reprovado"}
+                    {m.status === "approved"
+                      ? "Aprovado"
+                      : m.status === "pending"
+                        ? "Pendente"
+                        : "Reprovado"}
                   </Badge>
                   {m.status !== "approved" && (
-                    <Button size="sm" variant="outline" onClick={() => handleStatus(m.id, "approved")}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleStatus(m.id, "approved")}
+                    >
                       Aprovar
                     </Button>
                   )}
                   {m.status !== "rejected" && (
-                    <Button size="sm" variant="ghost" onClick={() => handleStatus(m.id, "rejected")}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleStatus(m.id, "rejected")}
+                    >
                       Reprovar
                     </Button>
                   )}

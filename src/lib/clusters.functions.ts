@@ -110,8 +110,7 @@ export const generateCluster = createServerFn({ method: "POST" })
 
     if (response.status === 429)
       throw new Error("Limite de requisições atingido. Tente novamente em instantes.");
-    if (response.status === 402)
-      throw new Error("Créditos de IA do workspace esgotados.");
+    if (response.status === 402) throw new Error("Créditos de IA do workspace esgotados.");
     if (!response.ok) {
       const errText = await response.text().catch(() => "");
       console.error("[cluster-ai:gateway-error]", { status: response.status, errText });
@@ -132,20 +131,24 @@ export const generateCluster = createServerFn({ method: "POST" })
     };
 
     const satellites: ClusterSatellite[] = Array.isArray(obj.satellites)
-      ? (obj.satellites as Record<string, unknown>[]).map((s) => ({
-          title: asStr(s.title),
-          angle: asStr(s.angle),
-          keyword: asStr(s.keyword),
-          searchIntent: asStr(s.searchIntent, "informacional"),
-        })).filter((s) => s.title)
+      ? (obj.satellites as Record<string, unknown>[])
+          .map((s) => ({
+            title: asStr(s.title),
+            angle: asStr(s.angle),
+            keyword: asStr(s.keyword),
+            searchIntent: asStr(s.searchIntent, "informacional"),
+          }))
+          .filter((s) => s.title)
       : [];
 
     const internalLinks: ClusterInternalLink[] = Array.isArray(obj.internalLinks)
-      ? (obj.internalLinks as Record<string, unknown>[]).map((l) => ({
-          from: asStr(l.from),
-          to: asStr(l.to),
-          anchor: asStr(l.anchor),
-        })).filter((l) => l.from && l.to)
+      ? (obj.internalLinks as Record<string, unknown>[])
+          .map((l) => ({
+            from: asStr(l.from),
+            to: asStr(l.to),
+            anchor: asStr(l.anchor),
+          }))
+          .filter((l) => l.from && l.to)
       : [];
 
     return {
@@ -177,9 +180,7 @@ const SaveInput = z.object({
   ),
   primaryKeywords: z.array(z.string()),
   secondaryKeywords: z.array(z.string()),
-  internalLinks: z.array(
-    z.object({ from: z.string(), to: z.string(), anchor: z.string() }),
-  ),
+  internalLinks: z.array(z.object({ from: z.string(), to: z.string(), anchor: z.string() })),
 });
 
 /** Persist a generated cluster for later reference. */
@@ -233,10 +234,7 @@ export const deleteCluster = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("content_clusters")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("content_clusters").delete().eq("id", data.id);
     if (error) throw new Error("Não foi possível excluir o cluster.");
     return { ok: true };
   });

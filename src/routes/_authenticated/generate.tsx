@@ -234,7 +234,13 @@ function SmartMode({ disabled }: { disabled: boolean }) {
               </Select>
             </div>
           </div>
-          <Button type="submit" variant="hero" size="lg" className="w-full" disabled={analyzing || disabled}>
+          <Button
+            type="submit"
+            variant="hero"
+            size="lg"
+            className="w-full"
+            disabled={analyzing || disabled}
+          >
             {analyzing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" /> Analisando tema...
@@ -355,8 +361,16 @@ function SmartMode({ disabled }: { disabled: boolean }) {
           )}
 
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-            {analysis.category && <span>Categoria: <strong>{analysis.category}</strong></span>}
-            {analysis.slug && <span>· Slug: <strong>{analysis.slug}</strong></span>}
+            {analysis.category && (
+              <span>
+                Categoria: <strong>{analysis.category}</strong>
+              </span>
+            )}
+            {analysis.slug && (
+              <span>
+                · Slug: <strong>{analysis.slug}</strong>
+              </span>
+            )}
           </div>
 
           <Button
@@ -485,7 +499,13 @@ function AutoMode({ disabled }: { disabled: boolean }) {
             <Loader2 className="h-4 w-4 animate-spin" /> {step}
           </p>
         )}
-        <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading || disabled}>
+        <Button
+          type="submit"
+          variant="hero"
+          size="lg"
+          className="w-full"
+          disabled={loading || disabled}
+        >
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" /> Gerando...
@@ -671,7 +691,13 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
           </div>
         </div>
 
-        <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading || disabled}>
+        <Button
+          type="submit"
+          variant="hero"
+          size="lg"
+          className="w-full"
+          disabled={loading || disabled}
+        >
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" /> Gerando artigo...

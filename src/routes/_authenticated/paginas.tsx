@@ -167,7 +167,11 @@ function PaginasPage() {
     setSavingPage(true);
     try {
       await runSavePage({
-        data: { type: selectedType, title: editorTitle.trim() || PAGE_TITLES[selectedType], content: editorContent },
+        data: {
+          type: selectedType,
+          title: editorTitle.trim() || PAGE_TITLES[selectedType],
+          content: editorContent,
+        },
       });
       await queryClient.invalidateQueries({ queryKey: ["site-pages"] });
       toast.success("Página salva.");
@@ -212,7 +216,8 @@ function PaginasPage() {
           <FileText className="h-6 w-6 text-primary" /> Páginas Essenciais
         </h1>
         <p className="text-muted-foreground">
-          Gere páginas profissionais prontas para a aprovação no Google AdSense e compatíveis com a LGPD.
+          Gere páginas profissionais prontas para a aprovação no Google AdSense e compatíveis com a
+          LGPD.
         </p>
       </div>
 
@@ -276,7 +281,11 @@ function PaginasPage() {
           </div>
         </div>
         <Button onClick={handleSaveSettings} disabled={savingSettings} variant="secondary">
-          {savingSettings ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          {savingSettings ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
           Salvar dados
         </Button>
       </Card>
@@ -296,7 +305,11 @@ function PaginasPage() {
           disabled={kitLoading}
           className="bg-card text-foreground hover:bg-card/90"
         >
-          {kitLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {kitLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="h-4 w-4" />
+          )}
           {kitLoading ? "Gerando kit..." : "Gerar kit"}
         </Button>
       </Card>
@@ -349,7 +362,11 @@ function PaginasPage() {
                       onClick={() => handlePublish(type)}
                       disabled={publishing}
                     >
-                      {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                      {publishing ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
                       {page.status === "published" ? "Atualizar" : "Publicar"}
                     </Button>
                     <Button
@@ -403,7 +420,11 @@ function PaginasPage() {
           <RichTextEditor value={editorContent} onChange={setEditorContent} />
           <div className="flex flex-wrap gap-2">
             <Button onClick={handleSavePage} disabled={savingPage}>
-              {savingPage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {savingPage ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
               Salvar
             </Button>
             <Button
