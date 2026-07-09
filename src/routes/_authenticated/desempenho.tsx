@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -12,6 +12,12 @@ import {
   Loader2,
   Info,
   Globe,
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  Minus,
 } from "lucide-react";
 import {
   LineChart,
@@ -32,8 +38,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
-import { getSeoPerformance, type SeoTableRow } from "@/lib/seo-performance.functions";
+import {
+  getSeoPerformance,
+  type SeoTableRow,
+  type SeoTotals,
+  type SeoSeriesPoint,
+} from "@/lib/seo-performance.functions";
 
 export const Route = createFileRoute("/_authenticated/desempenho")({
   head: () => ({
@@ -42,26 +54,117 @@ export const Route = createFileRoute("/_authenticated/desempenho")({
       {
         name: "description",
         content:
-          "Acompanhe cliques, impressões, CTR e posição média do seu blog com dados do Google Search Console.",
+          "Painel de Search Console integrado: cliques, impressões, CTR, posição, páginas, consultas, países e dispositivos do seu blog.",
       },
     ],
   }),
   component: SeoPage,
 });
 
-function StatBox({ icon: Icon, label, value }: { icon: typeof Eye; label: string; value: string }) {
+const PERIODS = [
+  { value: "7", label: "Últimos 7 dias" },
+  { value: "28", label: "Últimos 28 dias" },
+  { value: "90", label: "Últimos 3 meses" },
+  { value: "180", label: "Últimos 6 meses" },
+  { value: "365", label: "Últimos 12 meses" },
+] as const;
+
+const COUNTRY_NAMES: Record<string, string> = {
+  bra: "Brasil",
+  usa: "Estados Unidos",
+  prt: "Portugal",
+  esp: "Espanha",
+  arg: "Argentina",
+  mex: "México",
+  gbr: "Reino Unido",
+  fra: "França",
+  deu: "Alemanha",
+  ita: "Itália",
+  ind: "Índia",
+  can: "Canadá",
+  ago: "Angola",
+  moz: "Moçambique",
+  col: "Colômbia",
+  chl: "Chile",
+  jpn: "Japão",
+};
+
+const DEVICE_NAMES: Record<string, string> = {
+  DESKTOP: "Desktop",
+  MOBILE: "Celular",
+  TABLET: "Tablet",
+};
+
+function fmtInt(n: number): string {
+  return new Intl.NumberFormat("pt-BR").format(Math.round(n));
+}
+
+function DeltaBadge({ current, previous, invert = false }: { current: number; previous: number | undefined; invert?: boolean }) {
+  if (previous === undefined || previous === null) return null;
+  const diff = current - previous;
+  const pct = previous !== 0 ? (diff / previous) * 100 : current > 0 ? 100 : 0;
+  if (Math.abs(pct) < 0.05) {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
+        <Minus className="h-3 w-3" /> 0%
+      </span>
+    );
+  }
+  // For position, a lower value is better, so invert the "good" direction.
+  const good = invert ? diff < 0 : diff > 0;
+  const Icon = diff > 0 ? ArrowUpRight : ArrowDownRight;
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+        good ? "text-emerald-500" : "text-red-500"
+      }`}
+    >
+      <Icon className="h-3 w-3" />
+      {Math.abs(pct).toFixed(1)}%
+    </span>
+  );
+}
+
+function StatBox({
+  icon: Icon,
+  label,
+  value,
+  current,
+  previous,
+  invert,
+}: {
+  icon: typeof Eye;
+  label: string;
+  value: string;
+  current: number;
+  previous?: number;
+  invert?: boolean;
+}) {
   return (
     <Card className="p-4">
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <Icon className="h-4 w-4 text-primary" />
-        <span className="text-xs">{label}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Icon className="h-4 w-4 text-primary" />
+          <span className="text-xs">{label}</span>
+        </div>
+        <DeltaBadge current={current} previous={previous} invert={invert} />
       </div>
       <p className="mt-2 text-2xl font-bold">{value}</p>
     </Card>
   );
 }
 
-function DataTable({ rows, label }: { rows: SeoTableRow[]; label: string }) {
+function DataTable({
+  rows,
+  label,
+  format,
+  showDelta,
+}: {
+  rows: SeoTableRow[];
+  label: string;
+  format?: (key: string) => string;
+  showDelta?: boolean;
+}) {
   if (rows.length === 0) {
     return <p className="py-6 text-center text-sm text-muted-foreground">Sem dados no período.</p>;
   }
@@ -71,6 +174,7 @@ function DataTable({ rows, label }: { rows: SeoTableRow[]; label: string }) {
         <thead>
           <tr className="border-b border-border text-left text-xs text-muted-foreground">
             <th className="py-2 pr-2">{label}</th>
+            {showDelta && <th className="py-2 px-2 text-right">Δ Cliques</th>}
             <th className="py-2 px-2 text-right">Cliques</th>
             <th className="py-2 px-2 text-right">Impr.</th>
             <th className="py-2 px-2 text-right">CTR</th>
@@ -81,10 +185,26 @@ function DataTable({ rows, label }: { rows: SeoTableRow[]; label: string }) {
           {rows.map((r, i) => (
             <tr key={i} className="border-b border-border/50">
               <td className="max-w-[240px] truncate py-2 pr-2" title={r.key}>
-                {r.key}
+                {format ? format(r.key) : r.key}
               </td>
-              <td className="py-2 px-2 text-right">{r.clicks}</td>
-              <td className="py-2 px-2 text-right">{r.impressions}</td>
+              {showDelta && (
+                <td className="py-2 px-2 text-right">
+                  <span
+                    className={
+                      (r.deltaClicks ?? 0) > 0
+                        ? "text-emerald-500"
+                        : (r.deltaClicks ?? 0) < 0
+                          ? "text-red-500"
+                          : "text-muted-foreground"
+                    }
+                  >
+                    {(r.deltaClicks ?? 0) > 0 ? "+" : ""}
+                    {fmtInt(r.deltaClicks ?? 0)}
+                  </span>
+                </td>
+              )}
+              <td className="py-2 px-2 text-right">{fmtInt(r.clicks)}</td>
+              <td className="py-2 px-2 text-right">{fmtInt(r.impressions)}</td>
               <td className="py-2 px-2 text-right">{(r.ctr * 100).toFixed(1)}%</td>
               <td className="py-2 pl-2 text-right">{r.position.toFixed(1)}</td>
             </tr>
@@ -95,19 +215,70 @@ function DataTable({ rows, label }: { rows: SeoTableRow[]; label: string }) {
   );
 }
 
+type Grouping = "day" | "week" | "month";
+
+function aggregateSeries(series: SeoSeriesPoint[], grouping: Grouping): SeoSeriesPoint[] {
+  if (grouping === "day") return series;
+  const buckets = new Map<string, { clicks: number; impressions: number; label: string }>();
+  for (const p of series) {
+    const d = new Date(p.date);
+    let key: string;
+    if (grouping === "week") {
+      const onejan = new Date(d.getFullYear(), 0, 1);
+      const week = Math.ceil(((d.getTime() - onejan.getTime()) / 86_400_000 + onejan.getDay() + 1) / 7);
+      key = `${d.getFullYear()}-S${String(week).padStart(2, "0")}`;
+    } else {
+      key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    }
+    const b = buckets.get(key) ?? { clicks: 0, impressions: 0, label: key };
+    b.clicks += p.clicks;
+    b.impressions += p.impressions;
+    buckets.set(key, b);
+  }
+  return Array.from(buckets.values()).map((b) => ({
+    date: b.label,
+    clicks: b.clicks,
+    impressions: b.impressions,
+    ctr: 0,
+    position: 0,
+  }));
+}
+
 function SeoPage() {
   const { user } = useAuth();
-  const [days, setDays] = useState(28);
+  const [period, setPeriod] = useState<string>("28");
+  const [blogId, setBlogId] = useState<string | undefined>(undefined);
+  const [grouping, setGrouping] = useState<Grouping>("day");
+  const [refreshKey, setRefreshKey] = useState(0);
   const perfFn = useServerFn(getSeoPerformance);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["seo-performance", user?.id, days],
-    queryFn: () => perfFn({ data: { days } }),
+  const { data, isLoading, isFetching, refetch } = useQuery({
+    queryKey: ["seo-performance", user?.id, period, blogId, refreshKey],
+    queryFn: () =>
+      perfFn({
+        data: { days: Number(period), blogId, refresh: refreshKey > 0 },
+      }),
     enabled: !!user,
+    staleTime: 3 * 60 * 60 * 1000,
   });
 
+  const totals: SeoTotals | undefined = data?.totals;
+  const prev = data?.previous;
+
+  const chartData = useMemo(
+    () => aggregateSeries(data?.series ?? [], grouping),
+    [data?.series, grouping],
+  );
+
+  const handleRefresh = () => {
+    setRefreshKey((k) => k + 1);
+    setTimeout(() => refetch(), 0);
+  };
+
+  const blogs = data?.blogs ?? [];
+
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="mx-auto w-full max-w-6xl space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -116,20 +287,42 @@ function SeoPage() {
           <div className="min-w-0">
             <h1 className="text-2xl font-bold md:text-3xl">Desempenho SEO</h1>
             <p className="text-sm text-muted-foreground">
-              Dados do Google Search Console do seu blog.
+              Google Search Console integrado ao BlogAI Pro.
             </p>
           </div>
         </div>
-        <Select value={String(days)} onValueChange={(v) => setDays(Number(v))}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7">Últimos 7 dias</SelectItem>
-            <SelectItem value="28">Últimos 28 dias</SelectItem>
-            <SelectItem value="90">Últimos 90 dias</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-wrap items-center gap-2">
+          {blogs.length > 1 && (
+            <Select value={data?.activeBlogId} onValueChange={(v) => setBlogId(v)}>
+              <SelectTrigger className="w-44">
+                <SelectValue placeholder="Selecionar blog" />
+              </SelectTrigger>
+              <SelectContent>
+                {blogs.map((b) => (
+                  <SelectItem key={b.id} value={b.id} disabled={!b.siteUrl}>
+                    {b.name}
+                    {!b.siteUrl ? " (sem GSC)" : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <Select value={period} onValueChange={setPeriod}>
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PERIODS.map((p) => (
+                <SelectItem key={p.value} value={p.value}>
+                  {p.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isFetching} title="Atualizar">
+            <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          </Button>
+        </div>
       </header>
 
       {isLoading ? (
@@ -145,36 +338,70 @@ function SeoPage() {
           <p className="max-w-md text-muted-foreground">{data?.message}</p>
           <Button asChild variant="hero">
             <Link to="/connections">
-              <Globe className="mr-1 h-4 w-4" /> Ir para conexão com o Blogger
+              <Globe className="mr-1 h-4 w-4" /> Ir para conexão com o Google
             </Link>
           </Button>
         </Card>
       ) : (
         <>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <Badge variant="secondary" className="font-normal">
+              {data.siteUrl}
+            </Badge>
+            {data.range && (
+              <span>
+                {data.range.startDate} → {data.range.endDate} ({data.range.days} dias)
+              </span>
+            )}
+            {data.cached && <Badge variant="outline">cache</Badge>}
+          </div>
+
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <StatBox
               icon={MousePointerClick}
               label="Cliques"
-              value={String(data.totals?.clicks ?? 0)}
+              value={fmtInt(totals?.clicks ?? 0)}
+              current={totals?.clicks ?? 0}
+              previous={prev?.clicks}
             />
-            <StatBox icon={Eye} label="Impressões" value={String(data.totals?.impressions ?? 0)} />
+            <StatBox
+              icon={Eye}
+              label="Impressões"
+              value={fmtInt(totals?.impressions ?? 0)}
+              current={totals?.impressions ?? 0}
+              previous={prev?.impressions}
+            />
             <StatBox
               icon={Percent}
               label="CTR médio"
-              value={`${((data.totals?.ctr ?? 0) * 100).toFixed(1)}%`}
+              value={`${((totals?.ctr ?? 0) * 100).toFixed(1)}%`}
+              current={totals?.ctr ?? 0}
+              previous={prev?.ctr}
             />
             <StatBox
               icon={Gauge}
               label="Posição média"
-              value={(data.totals?.position ?? 0).toFixed(1)}
+              value={(totals?.position ?? 0).toFixed(1)}
+              current={totals?.position ?? 0}
+              previous={prev?.position}
+              invert
             />
           </div>
 
           <Card className="p-4">
-            <h3 className="mb-3 text-sm font-semibold">Evolução (cliques e impressões)</h3>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold">Evolução (cliques e impressões)</h3>
+              <Tabs value={grouping} onValueChange={(v) => setGrouping(v as Grouping)}>
+                <TabsList>
+                  <TabsTrigger value="day">Diária</TabsTrigger>
+                  <TabsTrigger value="week">Semanal</TabsTrigger>
+                  <TabsTrigger value="month">Mensal</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data.series ?? []}>
+                <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
@@ -204,13 +431,17 @@ function SeoPage() {
           </Card>
 
           <Tabs defaultValue="queries">
-            <TabsList>
-              <TabsTrigger value="queries">Palavras-chave</TabsTrigger>
+            <TabsList className="flex-wrap">
+              <TabsTrigger value="queries">Consultas</TabsTrigger>
               <TabsTrigger value="pages">Páginas</TabsTrigger>
+              <TabsTrigger value="countries">Países</TabsTrigger>
+              <TabsTrigger value="devices">Dispositivos</TabsTrigger>
+              <TabsTrigger value="appearance">Aparência</TabsTrigger>
+              <TabsTrigger value="trends">Tendências</TabsTrigger>
             </TabsList>
             <TabsContent value="queries">
               <Card className="p-4">
-                <DataTable rows={data.queries ?? []} label="Consulta" />
+                <DataTable rows={data.queries ?? []} label="Palavra-chave" />
               </Card>
             </TabsContent>
             <TabsContent value="pages">
@@ -218,7 +449,60 @@ function SeoPage() {
                 <DataTable rows={data.pages ?? []} label="Página" />
               </Card>
             </TabsContent>
+            <TabsContent value="countries">
+              <Card className="p-4">
+                <DataTable
+                  rows={data.countries ?? []}
+                  label="País"
+                  format={(k) => COUNTRY_NAMES[k] ?? k.toUpperCase()}
+                />
+              </Card>
+            </TabsContent>
+            <TabsContent value="devices">
+              <Card className="p-4">
+                <DataTable
+                  rows={data.devices ?? []}
+                  label="Dispositivo"
+                  format={(k) => DEVICE_NAMES[k] ?? k}
+                />
+              </Card>
+            </TabsContent>
+            <TabsContent value="appearance">
+              <Card className="p-4">
+                {(data.appearance?.length ?? 0) === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">
+                    Nenhum dado de aparência na pesquisa (Discover, Rich Results, Vídeo) disponível
+                    para este período.
+                  </p>
+                ) : (
+                  <DataTable rows={data.appearance ?? []} label="Aparência" />
+                )}
+              </Card>
+            </TabsContent>
+            <TabsContent value="trends">
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card className="p-4">
+                  <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-500">
+                    <TrendingUp className="h-4 w-4" /> Páginas que mais cresceram
+                  </h3>
+                  <DataTable rows={data.gainers ?? []} label="Página" showDelta />
+                </Card>
+                <Card className="p-4">
+                  <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-red-500">
+                    <TrendingDown className="h-4 w-4" /> Páginas que perderam tráfego
+                  </h3>
+                  <DataTable rows={data.losers ?? []} label="Página" showDelta />
+                </Card>
+              </div>
+            </TabsContent>
           </Tabs>
+
+          {data.fetchedAt && (
+            <p className="text-center text-xs text-muted-foreground">
+              Atualizado em {new Date(data.fetchedAt).toLocaleString("pt-BR")} · comparado ao período
+              anterior de mesma duração.
+            </p>
+          )}
         </>
       )}
     </div>
