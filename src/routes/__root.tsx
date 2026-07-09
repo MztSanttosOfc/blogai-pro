@@ -92,6 +92,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "BlogAI Pro" },
+      { property: "og:locale", content: "pt_BR" },
+      { property: "og:url", content: "https://monzart.com.br/" },
+      { property: "og:image", content: "https://monzart.com.br/og-image.jpg" },
+      { property: "og:image:secure_url", content: "https://monzart.com.br/og-image.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:type", content: "image/jpeg" },
+      {
+        property: "og:image:alt",
+        content: "BlogAI Pro — Crie, otimize e publique blogs com IA",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@BlogAIPro" },
       { name: "twitter:title", content: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
@@ -99,15 +111,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "twitter:description",
         content: "Gere artigos otimizados para SEO em minutos e publique diretamente no Blogger.",
       },
+      { name: "twitter:image", content: "https://monzart.com.br/og-image.jpg" },
       {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0ee8039b-b79c-4804-877a-24fd759efd9b/id-preview-f089d33d--0dae3068-b99c-4b0b-b98f-4a360ed5f653.lovable.app-1780371391555.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0ee8039b-b79c-4804-877a-24fd759efd9b/id-preview-f089d33d--0dae3068-b99c-4b0b-b98f-4a360ed5f653.lovable.app-1780371391555.png",
+        name: "twitter:image:alt",
+        content: "BlogAI Pro — Crie, otimize e publique blogs com IA",
       },
     ],
     links: [
