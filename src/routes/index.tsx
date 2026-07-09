@@ -35,7 +35,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Gere artigos otimizados para SEO em minutos e publique no Blogger.",
       },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://monzart.com.br/" },
+      { rel: "canonical", href: "https://monzart.com.br/" },
     ],
     scripts: [
       {
