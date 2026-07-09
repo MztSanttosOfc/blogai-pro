@@ -674,6 +674,39 @@ export type Database = {
           },
         ];
       };
+      seo_cache: {
+        Row: {
+          cache_key: string;
+          created_at: string;
+          expires_at: string;
+          id: string;
+          payload: Json;
+          site_url: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          cache_key: string;
+          created_at?: string;
+          expires_at: string;
+          id?: string;
+          payload: Json;
+          site_url?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          cache_key?: string;
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          payload?: Json;
+          site_url?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       site_pages: {
         Row: {
           blogger_post_id: string | null;
