@@ -142,7 +142,10 @@ export async function readSeoCache(userId: string, key: string): Promise<CachedE
     .maybeSingle();
   if (error || !data) return null;
   if (new Date(data.expires_at as string).getTime() < Date.now()) return null;
-  return { payload: data.payload, fetchedAt: (data.updated_at as string) ?? new Date().toISOString() };
+  return {
+    payload: data.payload,
+    fetchedAt: (data.updated_at as string) ?? new Date().toISOString(),
+  };
 }
 
 export async function writeSeoCache(

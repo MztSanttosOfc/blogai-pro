@@ -99,7 +99,15 @@ function fmtInt(n: number): string {
   return new Intl.NumberFormat("pt-BR").format(Math.round(n));
 }
 
-function DeltaBadge({ current, previous, invert = false }: { current: number; previous: number | undefined; invert?: boolean }) {
+function DeltaBadge({
+  current,
+  previous,
+  invert = false,
+}: {
+  current: number;
+  previous: number | undefined;
+  invert?: boolean;
+}) {
   if (previous === undefined || previous === null) return null;
   const diff = current - previous;
   const pct = previous !== 0 ? (diff / previous) * 100 : current > 0 ? 100 : 0;
@@ -225,7 +233,9 @@ function aggregateSeries(series: SeoSeriesPoint[], grouping: Grouping): SeoSerie
     let key: string;
     if (grouping === "week") {
       const onejan = new Date(d.getFullYear(), 0, 1);
-      const week = Math.ceil(((d.getTime() - onejan.getTime()) / 86_400_000 + onejan.getDay() + 1) / 7);
+      const week = Math.ceil(
+        ((d.getTime() - onejan.getTime()) / 86_400_000 + onejan.getDay() + 1) / 7,
+      );
       key = `${d.getFullYear()}-S${String(week).padStart(2, "0")}`;
     } else {
       key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -319,7 +329,13 @@ function SeoPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isFetching} title="Atualizar">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isFetching}
+            title="Atualizar"
+          >
             <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -499,8 +515,8 @@ function SeoPage() {
 
           {data.fetchedAt && (
             <p className="text-center text-xs text-muted-foreground">
-              Atualizado em {new Date(data.fetchedAt).toLocaleString("pt-BR")} · comparado ao período
-              anterior de mesma duração.
+              Atualizado em {new Date(data.fetchedAt).toLocaleString("pt-BR")} · comparado ao
+              período anterior de mesma duração.
             </p>
           )}
         </>

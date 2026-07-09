@@ -58,8 +58,14 @@ export interface SeoPerformance {
 
 const Input = z.object({
   days: z.number().int().min(1).max(365).optional(),
-  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  startDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   blogId: z.string().max(60).optional(),
   refresh: z.boolean().optional(),
 });
@@ -72,7 +78,9 @@ function diffDays(a: string, b: string): number {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000) + 1;
 }
 
-function rowToTotals(rows: { clicks: number; impressions: number; ctr: number; position: number }[]): SeoTotals {
+function rowToTotals(
+  rows: { clicks: number; impressions: number; ctr: number; position: number }[],
+): SeoTotals {
   const r = rows[0];
   return r
     ? { clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position }
@@ -184,7 +192,13 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         const cached = await readSeoCache(userId, cacheKey);
         if (cached) {
           const payload = cached.payload as SeoPerformance;
-          return { ...payload, blogs, activeBlogId: activeBlog.id, cached: true, fetchedAt: cached.fetchedAt };
+          return {
+            ...payload,
+            blogs,
+            activeBlogId: activeBlog.id,
+            cached: true,
+            fetchedAt: cached.fetchedAt,
+          };
         }
       }
 
@@ -222,7 +236,13 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         }).catch(() => []),
       ]);
 
-      const toRow = (r: { keys?: string[]; clicks: number; impressions: number; ctr: number; position: number }): SeoTableRow => ({
+      const toRow = (r: {
+        keys?: string[];
+        clicks: number;
+        impressions: number;
+        ctr: number;
+        position: number;
+      }): SeoTableRow => ({
         key: r.keys?.[0] ?? "",
         clicks: r.clicks,
         impressions: r.impressions,
@@ -240,7 +260,14 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
       const currentPageKeys = new Set(pagesWithDelta.map((p) => p.key));
       for (const [key, clicks] of prevByPage) {
         if (!currentPageKeys.has(key) && clicks > 0) {
-          pagesWithDelta.push({ key, clicks: 0, impressions: 0, ctr: 0, position: 0, deltaClicks: -clicks });
+          pagesWithDelta.push({
+            key,
+            clicks: 0,
+            impressions: 0,
+            ctr: 0,
+            position: 0,
+            deltaClicks: -clicks,
+          });
         }
       }
       const gainers = [...pagesWithDelta]
