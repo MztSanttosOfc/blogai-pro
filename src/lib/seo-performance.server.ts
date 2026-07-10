@@ -20,18 +20,64 @@ export interface GscSite {
   permissionLevel: string;
 }
 
+/** Distinguishable Google Search Console failure codes surfaced to the UI. */
+export type GscErrorCode = "scope-missing" | "api-disabled" | "no-permission" | "error";
+
+export class GscError extends Error {
+  code: GscErrorCode;
+  constructor(code: GscErrorCode, message: string) {
+    super(message);
+    this.code = code;
+    this.name = "GscError";
+  }
+}
+
+/**
+ * Turn a Google 403/4xx response body into an actionable error.
+ * A 403 can mean three very different things — never collapse them all into
+ * "reconnect your account", which is the classic misleading symptom.
+ */
+export function classifyGscError(status: number, body: string): GscError {
+  const lower = body.toLowerCase();
+  if (
+    lower.includes("has not been used in project") ||
+    lower.includes("service_disabled") ||
+    lower.includes("it is disabled") ||
+    lower.includes("accessnotconfigured")
+  ) {
+    return new GscError(
+      "api-disabled",
+      "A API do Google Search Console ainda não está ativada no projeto do Google Cloud desta integração.",
+    );
+  }
+  if (
+    lower.includes("insufficient authentication scopes") ||
+    lower.includes("insufficientpermissions") ||
+    lower.includes("insufficient permission")
+  ) {
+    return new GscError(
+      "scope-missing",
+      "Reconecte sua conta do Google em Conexões para conceder acesso de leitura ao Search Console.",
+    );
+  }
+  if (status === 403) {
+    return new GscError(
+      "no-permission",
+      "A conta do Google conectada não tem acesso de leitura a esta propriedade no Search Console.",
+    );
+  }
+  return new GscError("error", `Falha ao acessar o Search Console (${status}).`);
+}
+
 /** List Search Console properties the connected account can access. */
 export async function fetchSearchConsoleSites(accessToken: string): Promise<GscSite[]> {
   const res = await fetch(`${WEBMASTERS_API}/sites`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  if (res.status === 403) {
-    throw new Error("SCOPE_MISSING");
-  }
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     console.error("[gsc] list sites failed", res.status, body);
-    throw new Error(`Falha ao listar propriedades do Search Console (${res.status}).`);
+    throw classifyGscError(res.status, body);
   }
   const data = (await res.json()) as { siteEntry?: GscSite[] };
   return data.siteEntry ?? [];
