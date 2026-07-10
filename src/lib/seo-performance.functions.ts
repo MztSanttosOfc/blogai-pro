@@ -36,7 +36,13 @@ export interface SeoBlogOption {
 
 export interface SeoPerformance {
   available: boolean;
-  reason?: "not-connected" | "scope-missing" | "no-site" | "error";
+  reason?:
+    | "not-connected"
+    | "scope-missing"
+    | "api-disabled"
+    | "no-permission"
+    | "no-site"
+    | "error";
   message?: string;
   blogs?: SeoBlogOption[];
   activeBlogId?: string;
