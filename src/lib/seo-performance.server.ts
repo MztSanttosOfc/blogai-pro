@@ -155,11 +155,10 @@ export async function querySearchAnalytics(
       body: JSON.stringify(body),
     },
   );
-  if (res.status === 403) throw new Error("SCOPE_MISSING");
   if (!res.ok) {
     const errBody = await res.text().catch(() => "");
     console.error("[gsc] search analytics failed", res.status, errBody);
-    throw new Error(`Falha ao consultar o Search Console (${res.status}).`);
+    throw classifyGscError(res.status, errBody);
   }
   const data = (await res.json()) as { rows?: GscRow[] };
   return data.rows ?? [];
