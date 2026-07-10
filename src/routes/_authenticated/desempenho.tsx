@@ -350,13 +350,74 @@ function SeoPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <Info className="h-7 w-7" />
           </div>
-          <h2 className="text-xl font-bold">Dados indisponíveis</h2>
+          <h2 className="text-xl font-bold">
+            {data?.reason === "api-disabled"
+              ? "Ative a API do Search Console"
+              : data?.reason === "no-site"
+                ? "Propriedade não encontrada"
+                : "Dados indisponíveis"}
+          </h2>
           <p className="max-w-md text-muted-foreground">{data?.message}</p>
-          <Button asChild variant="hero">
-            <Link to="/connections">
-              <Globe className="mr-1 h-4 w-4" /> Ir para conexão com o Google
-            </Link>
-          </Button>
+
+          {data?.reason === "api-disabled" && (
+            <div className="max-w-md rounded-lg border border-border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
+              <p className="mb-2 font-medium text-foreground">Como resolver (leva 1 minuto):</p>
+              <ol className="list-decimal space-y-1 pl-4">
+                <li>
+                  Abra o{" "}
+                  <a
+                    href="https://console.cloud.google.com/apis/library/searchconsole.googleapis.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Google Cloud Console
+                  </a>{" "}
+                  com a mesma conta Google conectada.
+                </li>
+                <li>
+                  Selecione o projeto das suas credenciais e clique em{" "}
+                  <span className="font-medium text-foreground">Ativar</span> na API
+                  &quot;Google Search Console API&quot;.
+                </li>
+                <li>Aguarde 1–2 minutos e volte aqui para atualizar.</li>
+              </ol>
+            </div>
+          )}
+
+          {data?.reason === "no-site" && (
+            <p className="max-w-md text-sm text-muted-foreground">
+              Verifique a propriedade do seu blog no{" "}
+              <a
+                href="https://search.google.com/search-console"
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary hover:underline"
+              >
+                Google Search Console
+              </a>{" "}
+              usando a mesma conta Google conectada.
+            </p>
+          )}
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
+              <RefreshCw className={`mr-1 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+              Atualizar
+            </Button>
+            {(data?.reason === "not-connected" ||
+              data?.reason === "scope-missing" ||
+              data?.reason === "no-permission") && (
+              <Button asChild variant="hero">
+                <Link to="/connections">
+                  <Globe className="mr-1 h-4 w-4" />
+                  {data?.reason === "not-connected"
+                    ? "Conectar conta Google"
+                    : "Reconectar conta Google"}
+                </Link>
+              </Button>
+            )}
+          </div>
         </Card>
       ) : (
         <>

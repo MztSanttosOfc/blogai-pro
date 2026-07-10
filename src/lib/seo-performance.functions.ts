@@ -36,7 +36,13 @@ export interface SeoBlogOption {
 
 export interface SeoPerformance {
   available: boolean;
-  reason?: "not-connected" | "scope-missing" | "no-site" | "error";
+  reason?:
+    | "not-connected"
+    | "scope-missing"
+    | "api-disabled"
+    | "no-permission"
+    | "no-site"
+    | "error";
   message?: string;
   blogs?: SeoBlogOption[];
   activeBlogId?: string;
@@ -308,15 +314,11 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
 
       return { ...payload, blogs, activeBlogId: activeBlog.id };
     } catch (err) {
-      const message = err instanceof Error ? err.message : "";
-      if (message === "SCOPE_MISSING") {
-        return {
-          available: false,
-          reason: "scope-missing",
-          message:
-            "Reconecte sua conta do Google em Conexões para conceder acesso de leitura ao Search Console.",
-        };
+      const { GscError } = await import("./seo-performance.server");
+      if (err instanceof GscError) {
+        return { available: false, reason: err.code, message: err.message };
       }
+      const message = err instanceof Error ? err.message : "";
       console.error("[seo-performance]", message);
       return {
         available: false,
