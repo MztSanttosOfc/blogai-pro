@@ -709,6 +709,8 @@ function SeoPage() {
               período anterior de mesma duração.
             </p>
           )}
+
+          {data.diagnostics && <DiagnosticsPanel steps={data.diagnostics} />}
         </>
       )}
     </div>
