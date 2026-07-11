@@ -18,6 +18,11 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Minus,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Stethoscope,
+  ShieldCheck,
 } from "lucide-react";
 import {
   LineChart,
@@ -45,6 +50,7 @@ import {
   type SeoTableRow,
   type SeoTotals,
   type SeoSeriesPoint,
+  type SeoDiagnosticStep,
 } from "@/lib/seo-performance.functions";
 
 export const Route = createFileRoute("/_authenticated/desempenho")({
@@ -223,6 +229,70 @@ function DataTable({
   );
 }
 
+const DIAG_ICON = {
+  ok: CheckCircle2,
+  warn: AlertTriangle,
+  fail: XCircle,
+  skip: Minus,
+} as const;
+
+const DIAG_COLOR = {
+  ok: "text-emerald-500",
+  warn: "text-amber-500",
+  fail: "text-red-500",
+  skip: "text-muted-foreground",
+} as const;
+
+function DiagnosticsPanel({ steps }: { steps: SeoDiagnosticStep[] }) {
+  const [open, setOpen] = useState(false);
+  if (!steps || steps.length === 0) return null;
+  const failing = steps.filter((s) => s.status === "fail").length;
+  const warning = steps.filter((s) => s.status === "warn").length;
+  const summary =
+    failing > 0
+      ? `${failing} problema(s) identificado(s)`
+      : warning > 0
+        ? `${warning} aviso(s)`
+        : "Todos os testes passaram";
+  return (
+    <Card className="p-0">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-2 p-4 text-left"
+      >
+        <span className="flex items-center gap-2 text-sm font-semibold">
+          <Stethoscope className="h-4 w-4 text-primary" />
+          Diagnóstico automático
+        </span>
+        <span
+          className={`text-xs font-medium ${
+            failing > 0 ? "text-red-500" : warning > 0 ? "text-amber-500" : "text-emerald-500"
+          }`}
+        >
+          {summary} {open ? "▲" : "▼"}
+        </span>
+      </button>
+      {open && (
+        <ul className="space-y-3 border-t border-border p-4">
+          {steps.map((s) => {
+            const Icon = DIAG_ICON[s.status];
+            return (
+              <li key={s.id} className="flex items-start gap-2">
+                <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${DIAG_COLOR[s.status]}`} />
+                <div className="min-w-0">
+                  <p className="text-sm font-medium">{s.label}</p>
+                  <p className="text-xs text-muted-foreground">{s.detail}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
 type Grouping = "day" | "week" | "month";
 
 function aggregateSeries(series: SeoSeriesPoint[], grouping: Grouping): SeoSeriesPoint[] {
@@ -311,7 +381,7 @@ function SeoPage() {
                 {blogs.map((b) => (
                   <SelectItem key={b.id} value={b.id} disabled={!b.siteUrl}>
                     {b.name}
-                    {!b.siteUrl ? " (sem GSC)" : ""}
+                    {!b.siteUrl ? " (sem propriedade)" : !b.verified ? " (não verificado)" : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -346,79 +416,138 @@ function SeoPage() {
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
       ) : !data?.available ? (
-        <Card className="flex flex-col items-center gap-4 p-8 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Info className="h-7 w-7" />
-          </div>
-          <h2 className="text-xl font-bold">
-            {data?.reason === "api-disabled"
-              ? "Ative a API do Search Console"
-              : data?.reason === "no-site"
-                ? "Propriedade não encontrada"
-                : "Dados indisponíveis"}
-          </h2>
-          <p className="max-w-md text-muted-foreground">{data?.message}</p>
+        <div className="space-y-4">
+          <Card className="flex flex-col items-center gap-4 p-8 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
 
-          {data?.reason === "api-disabled" && (
-            <div className="max-w-md rounded-lg border border-border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
-              <p className="mb-2 font-medium text-foreground">Como resolver (leva 1 minuto):</p>
-              <ol className="list-decimal space-y-1 pl-4">
-                <li>
-                  Abra o{" "}
-                  <a
-                    href="https://console.cloud.google.com/apis/library/searchconsole.googleapis.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    Google Cloud Console
-                  </a>{" "}
-                  com a mesma conta Google conectada.
-                </li>
-                <li>
-                  Selecione o projeto das suas credenciais e clique em{" "}
-                  <span className="font-medium text-foreground">Ativar</span> na API
-                  &quot;Google Search Console API&quot;.
-                </li>
-                <li>Aguarde 1–2 minutos e volte aqui para atualizar.</li>
-              </ol>
+              {data?.reason === "unverified" ? (
+                <ShieldCheck className="h-7 w-7" />
+              ) : (
+                <Info className="h-7 w-7" />
+              )}
             </div>
-          )}
+            <h2 className="text-xl font-bold">
+              {data?.reason === "api-disabled"
+                ? "Ative a API do Search Console"
+                : data?.reason === "no-site"
+                  ? "Propriedade não encontrada"
+                  : data?.reason === "unverified"
+                    ? "Propriedade ainda não verificada"
+                    : data?.reason === "scope-missing"
+                      ? "Libere o acesso ao Search Console"
+                      : data?.reason === "not-connected"
+                        ? "Conecte sua conta Google"
+                        : data?.reason === "no-permission"
+                          ? "Sem permissão nesta propriedade"
+                          : "Não foi possível carregar agora"}
+            </h2>
+            <p className="max-w-md text-muted-foreground">{data?.message}</p>
 
-          {data?.reason === "no-site" && (
-            <p className="max-w-md text-sm text-muted-foreground">
-              Verifique a propriedade do seu blog no{" "}
-              <a
-                href="https://search.google.com/search-console"
-                target="_blank"
-                rel="noreferrer"
-                className="text-primary hover:underline"
-              >
-                Google Search Console
-              </a>{" "}
-              usando a mesma conta Google conectada.
+            {data?.problemSite && (
+              <Badge variant="outline" className="font-normal">
+                {data.problemSite}
+              </Badge>
+            )}
+
+            {data?.reason === "api-disabled" && (
+              <div className="max-w-md rounded-lg border border-border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
+                <p className="mb-2 font-medium text-foreground">Como resolver (leva 1 minuto):</p>
+                <ol className="list-decimal space-y-1 pl-4">
+                  <li>
+                    Abra o{" "}
+                    <a
+                      href="https://console.cloud.google.com/apis/library/searchconsole.googleapis.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Google Cloud Console
+                    </a>{" "}
+                    com a mesma conta Google conectada.
+                  </li>
+                  <li>
+                    Selecione o projeto das suas credenciais e clique em{" "}
+                    <span className="font-medium text-foreground">Ativar</span> na API
+                    &quot;Google Search Console API&quot;.
+                  </li>
+                  <li>Aguarde 1–2 minutos e volte aqui para atualizar.</li>
+                </ol>
+              </div>
+            )}
+
+            {(data?.reason === "unverified" || data?.reason === "no-permission") && (
+              <div className="max-w-md rounded-lg border border-border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
+                <p className="mb-2 font-medium text-foreground">Como resolver:</p>
+                <ol className="list-decimal space-y-1 pl-4">
+                  <li>
+                    Abra o{" "}
+                    <a
+                      href="https://search.google.com/search-console"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Google Search Console
+                    </a>{" "}
+                    com a mesma conta Google conectada aqui.
+                  </li>
+                  <li>
+                    Selecione a propriedade{" "}
+                    <span className="font-medium text-foreground">
+                      {data.problemSite ?? "do seu blog"}
+                    </span>{" "}
+                    e conclua a <span className="font-medium text-foreground">verificação de propriedade</span>.
+                  </li>
+                  <li>
+                    Se a propriedade for de outra pessoa, peça para ela adicionar seu e-mail como
+                    usuário em <span className="font-medium text-foreground">Configurações → Usuários e permissões</span>.
+                  </li>
+                  <li>Depois volte aqui e clique em Atualizar — nenhuma reconexão é necessária.</li>
+                </ol>
+              </div>
+            )}
+
+            {data?.reason === "no-site" && (
+              <p className="max-w-md text-sm text-muted-foreground">
+                Adicione o site como propriedade no{" "}
+                <a
+                  href="https://search.google.com/search-console"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Google Search Console
+                </a>{" "}
+                usando a mesma conta Google conectada.
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
+                <RefreshCw className={`mr-1 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+                Atualizar
+              </Button>
+              {(data?.reason === "not-connected" || data?.reason === "scope-missing") && (
+                <Button asChild variant="hero">
+                  <Link to="/connections">
+                    <Globe className="mr-1 h-4 w-4" />
+                    {data?.reason === "not-connected"
+                      ? "Conectar conta Google"
+                      : "Reconectar conta Google"}
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </Card>
+
+          {blogs.length > 1 && (
+            <p className="text-center text-xs text-muted-foreground">
+              Dica: use o seletor de blog acima para escolher um blog com propriedade já verificada.
             </p>
           )}
 
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
-              <RefreshCw className={`mr-1 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
-              Atualizar
-            </Button>
-            {(data?.reason === "not-connected" ||
-              data?.reason === "scope-missing" ||
-              data?.reason === "no-permission") && (
-              <Button asChild variant="hero">
-                <Link to="/connections">
-                  <Globe className="mr-1 h-4 w-4" />
-                  {data?.reason === "not-connected"
-                    ? "Conectar conta Google"
-                    : "Reconectar conta Google"}
-                </Link>
-              </Button>
-            )}
-          </div>
-        </Card>
+          {data?.diagnostics && <DiagnosticsPanel steps={data.diagnostics} />}
+        </div>
       ) : (
         <>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -580,6 +709,8 @@ function SeoPage() {
               período anterior de mesma duração.
             </p>
           )}
+
+          {data.diagnostics && <DiagnosticsPanel steps={data.diagnostics} />}
         </>
       )}
     </div>

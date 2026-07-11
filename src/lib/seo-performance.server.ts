@@ -21,7 +21,12 @@ export interface GscSite {
 }
 
 /** Distinguishable Google Search Console failure codes surfaced to the UI. */
-export type GscErrorCode = "scope-missing" | "api-disabled" | "no-permission" | "error";
+export type GscErrorCode =
+  | "scope-missing"
+  | "api-disabled"
+  | "no-permission"
+  | "unverified"
+  | "error";
 
 export class GscError extends Error {
   code: GscErrorCode;
@@ -34,7 +39,7 @@ export class GscError extends Error {
 
 /**
  * Turn a Google 403/4xx response body into an actionable error.
- * A 403 can mean three very different things — never collapse them all into
+ * A 403 can mean several very different things — never collapse them all into
  * "reconnect your account", which is the classic misleading symptom.
  */
 export function classifyGscError(status: number, body: string): GscError {
@@ -62,8 +67,8 @@ export function classifyGscError(status: number, body: string): GscError {
   }
   if (status === 403) {
     return new GscError(
-      "no-permission",
-      "A conta do Google conectada não tem acesso de leitura a esta propriedade no Search Console.",
+      "unverified",
+      "A conta do Google conectada ainda não é proprietária verificada desta propriedade no Search Console.",
     );
   }
   return new GscError("error", `Falha ao acessar o Search Console (${status}).`);
@@ -84,10 +89,28 @@ export async function fetchSearchConsoleSites(accessToken: string): Promise<GscS
 }
 
 /**
- * Pick the Search Console property that best matches a blog URL.
- * Handles both URL-prefix properties and sc-domain properties.
+ * A Search Console property is only queryable when the connected account is a
+ * verified owner/user. `siteUnverifiedUser` means the account "sees" the
+ * property but Google will 403 every searchAnalytics call — the true cause of
+ * the "Dados indisponíveis" symptom.
  */
-export function matchSite(sites: GscSite[], blogUrl: string): string | null {
+export function isVerifiedPermission(level: string | undefined | null): boolean {
+  return !!level && level !== "siteUnverifiedUser";
+}
+
+export interface SiteMatch {
+  siteUrl: string;
+  permissionLevel: string;
+  verified: boolean;
+}
+
+/**
+ * Pick the Search Console property that best matches a blog URL, preferring
+ * verified properties. Handles URL-prefix and sc-domain properties. Returns the
+ * match plus whether the account is a verified owner of it, so callers can give
+ * an exact diagnosis instead of a generic "reconnect".
+ */
+export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch | null {
   if (!blogUrl) return null;
   let host = "";
   try {
@@ -96,26 +119,50 @@ export function matchSite(sites: GscSite[], blogUrl: string): string | null {
     return null;
   }
   const rootDomain = host.split(".").slice(-2).join(".");
+  // Multi-tenant suffixes: only an exact host match is valid, never the shared
+  // root (e.g. two different *.blogspot.com blogs must not cross-match).
+  const sharedSuffix = /^(blogspot\.com|wordpress\.com|wixsite\.com|weebly\.com)$/i.test(rootDomain);
 
-  // 1) exact URL-prefix match
-  const prefix = sites.find((s) => {
-    try {
-      return new URL(s.siteUrl).hostname.replace(/^www\./, "") === host;
-    } catch {
-      return false;
+  const candidates: { site: GscSite; score: number }[] = [];
+  for (const s of sites) {
+    let score = 0;
+    if (s.siteUrl.startsWith("sc-domain:")) {
+      const scHost = s.siteUrl.slice("sc-domain:".length).replace(/^www\./, "");
+      if (scHost === host) score = 95;
+      else if (!sharedSuffix && scHost === rootDomain) score = 75;
+      else if (!sharedSuffix && host.endsWith("." + scHost)) score = 55;
+    } else {
+      try {
+        const sh = new URL(s.siteUrl).hostname.replace(/^www\./, "");
+        if (sh === host) score = 100;
+        else if (!sharedSuffix && sh === rootDomain) score = 60;
+        else if (!sharedSuffix && sh.endsWith("." + rootDomain)) score = 40;
+      } catch {
+        // ignore malformed entries
+      }
     }
+    if (score > 0) candidates.push({ site: s, score });
+  }
+  if (candidates.length === 0) return null;
+
+  // Prefer verified properties, then the strongest URL match.
+  candidates.sort((a, b) => {
+    const av = isVerifiedPermission(a.site.permissionLevel) ? 1 : 0;
+    const bv = isVerifiedPermission(b.site.permissionLevel) ? 1 : 0;
+    if (av !== bv) return bv - av;
+    return b.score - a.score;
   });
-  if (prefix) return prefix.siteUrl;
+  const best = candidates[0].site;
+  return {
+    siteUrl: best.siteUrl,
+    permissionLevel: best.permissionLevel,
+    verified: isVerifiedPermission(best.permissionLevel),
+  };
+}
 
-  // 2) sc-domain match
-  const domain = sites.find(
-    (s) => s.siteUrl === `sc-domain:${host}` || s.siteUrl === `sc-domain:${rootDomain}`,
-  );
-  if (domain) return domain.siteUrl;
-
-  // 3) any property containing the root domain
-  const loose = sites.find((s) => s.siteUrl.includes(rootDomain));
-  return loose ? loose.siteUrl : null;
+/** Back-compat thin wrapper: best matching property URL regardless of verification. */
+export function matchSite(sites: GscSite[], blogUrl: string): string | null {
+  return matchSiteDetailed(sites, blogUrl)?.siteUrl ?? null;
 }
 
 export interface AnalyticsQuery {
