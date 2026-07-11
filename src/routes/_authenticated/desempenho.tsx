@@ -50,6 +50,7 @@ import {
   type SeoTableRow,
   type SeoTotals,
   type SeoSeriesPoint,
+  type SeoDiagnosticStep,
 } from "@/lib/seo-performance.functions";
 
 export const Route = createFileRoute("/_authenticated/desempenho")({
