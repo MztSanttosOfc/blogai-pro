@@ -229,6 +229,70 @@ function DataTable({
   );
 }
 
+const DIAG_ICON = {
+  ok: CheckCircle2,
+  warn: AlertTriangle,
+  fail: XCircle,
+  skip: Minus,
+} as const;
+
+const DIAG_COLOR = {
+  ok: "text-emerald-500",
+  warn: "text-amber-500",
+  fail: "text-red-500",
+  skip: "text-muted-foreground",
+} as const;
+
+function DiagnosticsPanel({ steps }: { steps: SeoDiagnosticStep[] }) {
+  const [open, setOpen] = useState(false);
+  if (!steps || steps.length === 0) return null;
+  const failing = steps.filter((s) => s.status === "fail").length;
+  const warning = steps.filter((s) => s.status === "warn").length;
+  const summary =
+    failing > 0
+      ? `${failing} problema(s) identificado(s)`
+      : warning > 0
+        ? `${warning} aviso(s)`
+        : "Todos os testes passaram";
+  return (
+    <Card className="p-0">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-2 p-4 text-left"
+      >
+        <span className="flex items-center gap-2 text-sm font-semibold">
+          <Stethoscope className="h-4 w-4 text-primary" />
+          Diagnóstico automático
+        </span>
+        <span
+          className={`text-xs font-medium ${
+            failing > 0 ? "text-red-500" : warning > 0 ? "text-amber-500" : "text-emerald-500"
+          }`}
+        >
+          {summary} {open ? "▲" : "▼"}
+        </span>
+      </button>
+      {open && (
+        <ul className="space-y-3 border-t border-border p-4">
+          {steps.map((s) => {
+            const Icon = DIAG_ICON[s.status];
+            return (
+              <li key={s.id} className="flex items-start gap-2">
+                <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${DIAG_COLOR[s.status]}`} />
+                <div className="min-w-0">
+                  <p className="text-sm font-medium">{s.label}</p>
+                  <p className="text-xs text-muted-foreground">{s.detail}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
 type Grouping = "day" | "week" | "month";
 
 function aggregateSeries(series: SeoSeriesPoint[], grouping: Grouping): SeoSeriesPoint[] {
