@@ -18,6 +18,11 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Minus,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Stethoscope,
+  ShieldCheck,
 } from "lucide-react";
 import {
   LineChart,
