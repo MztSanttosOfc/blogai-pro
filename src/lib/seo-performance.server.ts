@@ -119,6 +119,9 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
     return null;
   }
   const rootDomain = host.split(".").slice(-2).join(".");
+  // Multi-tenant suffixes: only an exact host match is valid, never the shared
+  // root (e.g. two different *.blogspot.com blogs must not cross-match).
+  const sharedSuffix = /^(blogspot\.com|wordpress\.com|wixsite\.com|weebly\.com)$/i.test(rootDomain);
 
   const candidates: { site: GscSite; score: number }[] = [];
   for (const s of sites) {
@@ -126,15 +129,14 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
     if (s.siteUrl.startsWith("sc-domain:")) {
       const scHost = s.siteUrl.slice("sc-domain:".length).replace(/^www\./, "");
       if (scHost === host) score = 95;
-      else if (scHost === rootDomain) score = 75;
-      else if (host.endsWith("." + scHost)) score = 55;
-      else if (scHost.includes(rootDomain)) score = 25;
+      else if (!sharedSuffix && scHost === rootDomain) score = 75;
+      else if (!sharedSuffix && host.endsWith("." + scHost)) score = 55;
     } else {
       try {
         const sh = new URL(s.siteUrl).hostname.replace(/^www\./, "");
         if (sh === host) score = 100;
-        else if (sh === rootDomain) score = 60;
-        else if (sh.endsWith("." + rootDomain)) score = 40;
+        else if (!sharedSuffix && sh === rootDomain) score = 60;
+        else if (!sharedSuffix && sh.endsWith("." + rootDomain)) score = 40;
       } catch {
         // ignore malformed entries
       }
