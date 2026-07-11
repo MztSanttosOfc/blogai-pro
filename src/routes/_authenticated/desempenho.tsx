@@ -381,7 +381,7 @@ function SeoPage() {
                 {blogs.map((b) => (
                   <SelectItem key={b.id} value={b.id} disabled={!b.siteUrl}>
                     {b.name}
-                    {!b.siteUrl ? " (sem GSC)" : ""}
+                    {!b.siteUrl ? " (sem propriedade)" : !b.verified ? " (não verificado)" : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
