@@ -203,6 +203,91 @@ export async function getValidBloggerToken(userId: string): Promise<string> {
   return refreshed.access_token;
 }
 
+const TOKENINFO_URL = "https://www.googleapis.com/oauth2/v3/tokeninfo";
+
+export interface BloggerTokenDiagnostics {
+  /** A valid (refreshed if needed) access token. */
+  token: string;
+  /** Space-separated scopes granted to the token, when discoverable. */
+  scopes: string[];
+  /** Whether we had to refresh the access token on this call. */
+  refreshed: boolean;
+  /** Whether a refresh token is stored (needed for silent renewal). */
+  hasRefreshToken: boolean;
+  /** Whether the granted scopes include Search Console read access. */
+  hasSearchConsoleScope: boolean;
+}
+
+const WEBMASTERS_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
+
+/** Fetch the scopes a live access token carries (best-effort, never throws). */
+async function fetchTokenScopes(accessToken: string): Promise<string[]> {
+  try {
+    const res = await fetch(`${TOKENINFO_URL}?access_token=${encodeURIComponent(accessToken)}`);
+    if (!res.ok) return [];
+    const data = (await res.json()) as { scope?: string };
+    return data.scope ? data.scope.split(/\s+/).filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Return a valid access token PLUS the diagnostic context the SEO panel needs:
+ * whether the token was refreshed, whether a refresh token exists, and which
+ * OAuth scopes were actually granted. This lets the panel self-diagnose instead
+ * of showing a generic error.
+ */
+export async function getBloggerTokenDiagnostics(
+  userId: string,
+): Promise<BloggerTokenDiagnostics> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: conn, error } = await supabaseAdmin
+    .from("blogger_connections")
+    .select("access_token, refresh_token, token_expires_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error || !conn) {
+    throw new Error("Conta do Blogger não conectada. Conecte sua conta Google primeiro.");
+  }
+
+  const hasRefreshToken = Boolean(conn.refresh_token);
+  const expiresAt = conn.token_expires_at ? new Date(conn.token_expires_at).getTime() : 0;
+  let token = conn.access_token ?? "";
+  let refreshed = false;
+  let scopes: string[] = [];
+
+  const stillValid = expiresAt > Date.now() + 60_000 && !!conn.access_token;
+  if (!stillValid) {
+    if (!conn.refresh_token) {
+      throw new Error("Sessão do Google expirada. Reconecte sua conta.");
+    }
+    const r = await refreshAccessToken(conn.refresh_token);
+    token = r.access_token;
+    refreshed = true;
+    if (r.scope) scopes = r.scope.split(/\s+/).filter(Boolean);
+    const newExpiry = new Date(Date.now() + r.expires_in * 1000).toISOString();
+    await supabaseAdmin
+      .from("blogger_connections")
+      .update({ access_token: token, token_expires_at: newExpiry })
+      .eq("user_id", userId);
+  }
+
+  if (scopes.length === 0) {
+    scopes = await fetchTokenScopes(token);
+  }
+
+  return {
+    token,
+    scopes,
+    refreshed,
+    hasRefreshToken,
+    hasSearchConsoleScope: scopes.length === 0 ? true : scopes.includes(WEBMASTERS_SCOPE),
+  };
+}
+
+
 /** Create a static Blogger Page (used for About/Contact/Privacy/Terms etc.). */
 export async function createBloggerPage(
   accessToken: string,
