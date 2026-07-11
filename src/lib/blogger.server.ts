@@ -52,6 +52,7 @@ export interface TokenResult {
   access_token: string;
   refresh_token?: string;
   expires_in: number;
+  scope?: string;
 }
 
 /** Exchange an authorization code for tokens. */
