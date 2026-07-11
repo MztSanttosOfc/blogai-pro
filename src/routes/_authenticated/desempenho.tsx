@@ -418,11 +418,8 @@ function SeoPage() {
       ) : !data?.available ? (
         <div className="space-y-4">
           <Card className="flex flex-col items-center gap-4 p-8 text-center">
-            <div
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
-                data?.reason === "api-data" ? "bg-amber-500/10 text-amber-500" : "bg-primary/10 text-primary"
-              }`}
-            >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+
               {data?.reason === "unverified" ? (
                 <ShieldCheck className="h-7 w-7" />
               ) : (
