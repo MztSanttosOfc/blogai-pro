@@ -370,7 +370,12 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
           diagnostics: diag,
         };
       }
-      step("ownership", "Propriedade verificada", "ok", `Acesso verificado a ${siteUrl}.`);
+      step(
+        "ownership",
+        "Propriedade verificada",
+        "ok",
+        `${describePermission(activeMatch.permissionLevel)} Acesso liberado a ${siteUrl}.`,
+      );
 
       // Smart cache lookup.
       const cacheKey = `perf:${siteUrl}:${startDate}:${endDate}`;
