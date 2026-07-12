@@ -354,3 +354,163 @@ export async function writeSeoCache(
     { onConflict: "user_id,cache_key" },
   );
 }
+
+/* --------------------- Persistent property mapping --------------------- */
+/*
+ * The association Usuário → Blog → Propriedade lives in public.seo_property_map.
+ * It is remembered across sessions so the panel can:
+ *   • load instantly without re-discovering on every request,
+ *   • detect when a property changes, loses verification, or is removed,
+ *   • give an exact before/after diagnosis instead of a generic error.
+ * Written/read exclusively through the service-role client (RLS-blocked).
+ */
+
+export interface StoredMapping {
+  blogId: string;
+  blogUrl: string;
+  siteUrl: string | null;
+  permissionLevel: string | null;
+  verified: boolean;
+  matchedBy: string | null;
+  updatedAt: string;
+}
+
+export interface MappingInput {
+  blogId: string;
+  blogUrl: string;
+  siteUrl: string | null;
+  permissionLevel: string | null;
+  verified: boolean;
+  matchedBy: MatchKind;
+}
+
+/** A single detected change between the stored mapping and a fresh discovery. */
+export interface MappingChange {
+  blogUrl: string;
+  kind: "new" | "property-changed" | "verification-changed" | "property-removed";
+  detail: string;
+}
+
+/** Load every stored blog↔property mapping for a user. */
+export async function readPropertyMap(userId: string): Promise<StoredMapping[]> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const admin = supabaseAdmin as unknown as SupabaseClient;
+  const { data, error } = await admin
+    .from("seo_property_map")
+    .select("blog_id, blog_url, site_url, permission_level, verified, matched_by, updated_at")
+    .eq("user_id", userId);
+  if (error || !data) return [];
+  return data.map((r) => ({
+    blogId: r.blog_id as string,
+    blogUrl: r.blog_url as string,
+    siteUrl: (r.site_url as string) ?? null,
+    permissionLevel: (r.permission_level as string) ?? null,
+    verified: Boolean(r.verified),
+    matchedBy: (r.matched_by as string) ?? null,
+    updatedAt: (r.updated_at as string) ?? new Date().toISOString(),
+  }));
+}
+
+/**
+ * Persist the freshly discovered mappings and return the changes vs. what was
+ * previously stored. This is the "atualização automática" + "detecção de
+ * alteração/remoção" of the association requested by the product.
+ */
+export async function syncPropertyMap(
+  userId: string,
+  fresh: MappingInput[],
+): Promise<MappingChange[]> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const admin = supabaseAdmin as unknown as SupabaseClient;
+
+  const previous = await readPropertyMap(userId);
+  const prevByBlog = new Map(previous.map((m) => [m.blogId, m]));
+  const freshIds = new Set(fresh.map((m) => m.blogId));
+  const changes: MappingChange[] = [];
+  const now = new Date().toISOString();
+
+  for (const m of fresh) {
+    const before = prevByBlog.get(m.blogId);
+    if (!before) {
+      changes.push({
+        blogUrl: m.blogUrl,
+        kind: "new",
+        detail: m.siteUrl
+          ? `Nova associação: ${m.blogUrl} → ${m.siteUrl}.`
+          : `Blog ${m.blogUrl} registrado (ainda sem propriedade correspondente).`,
+      });
+    } else if ((before.siteUrl ?? null) !== (m.siteUrl ?? null)) {
+      changes.push({
+        blogUrl: m.blogUrl,
+        kind: m.siteUrl ? "property-changed" : "property-removed",
+        detail: m.siteUrl
+          ? `Propriedade atualizada: ${before.siteUrl ?? "nenhuma"} → ${m.siteUrl}.`
+          : `A propriedade ${before.siteUrl} não está mais disponível para este blog.`,
+      });
+    } else if (before.verified !== m.verified) {
+      changes.push({
+        blogUrl: m.blogUrl,
+        kind: "verification-changed",
+        detail: m.verified
+          ? `Propriedade ${m.siteUrl} agora está verificada.`
+          : `Propriedade ${m.siteUrl} perdeu a verificação.`,
+      });
+    }
+  }
+
+  // Blogs that disappeared from the account entirely.
+  for (const before of previous) {
+    if (!freshIds.has(before.blogId)) {
+      changes.push({
+        blogUrl: before.blogUrl,
+        kind: "property-removed",
+        detail: `O blog ${before.blogUrl} não está mais presente nesta conta Google.`,
+      });
+    }
+  }
+
+  // Upsert the fresh snapshot (source of truth = live discovery).
+  if (fresh.length > 0) {
+    await admin
+      .from("seo_property_map")
+      .upsert(
+        fresh.map((m) => ({
+          user_id: userId,
+          blog_id: m.blogId,
+          blog_url: m.blogUrl,
+          site_url: m.siteUrl,
+          permission_level: m.permissionLevel,
+          verified: m.verified,
+          matched_by: m.matchedBy,
+          last_seen_at: now,
+          updated_at: now,
+        })),
+        { onConflict: "user_id,blog_id" },
+      )
+      .then(() => undefined, () => undefined);
+  }
+
+  // Remove mappings for blogs no longer in the account.
+  const stale = previous.filter((m) => !freshIds.has(m.blogId)).map((m) => m.blogId);
+  if (stale.length > 0) {
+    await admin
+      .from("seo_property_map")
+      .delete()
+      .eq("user_id", userId)
+      .in("blog_id", stale)
+      .then(() => undefined, () => undefined);
+  }
+
+  return changes;
+}
+
+/** Drop every cached SEO response for a user (used on auto re-sync). */
+export async function clearSeoCacheForUser(userId: string): Promise<void> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const admin = supabaseAdmin as unknown as SupabaseClient;
+  await admin
+    .from("seo_cache")
+    .delete()
+    .eq("user_id", userId)
+    .then(() => undefined, () => undefined);
+}
