@@ -268,6 +268,31 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         `${sites.length} propriedade(s) visível(is); ${verifiedCount} com propriedade verificada e pronta para leitura.`,
       );
 
+      // Persist the association Usuário → Blog → Propriedade and detect any
+      // change vs. the last discovery (property changed / removed / verified).
+      // Failures here never block the dashboard.
+      const changes = await syncPropertyMap(
+        userId,
+        matches.map((m) => ({
+          blogId: m.blog.id,
+          blogUrl: m.blog.url,
+          siteUrl: m.match?.siteUrl ?? null,
+          permissionLevel: m.match?.permissionLevel ?? null,
+          verified: m.match?.verified ?? false,
+          matchedBy: m.match?.matchedBy ?? "none",
+        })),
+      ).catch(() => []);
+      step(
+        "mapping",
+        "Associação salva (blog ↔ propriedade)",
+        "ok",
+        changes.length
+          ? `${changes.length} atualização(ões) detectada(s): ${changes
+              .map((c) => c.detail)
+              .join(" ")}`
+          : "Associação estável — nenhuma mudança de propriedade desde a última sincronização.",
+      );
+
       if (blogs.length === 0) {
         return {
           available: false,
