@@ -89,74 +89,166 @@ export async function fetchSearchConsoleSites(accessToken: string): Promise<GscS
 }
 
 /**
- * A Search Console property is only queryable when the connected account is a
- * verified owner/user. `siteUnverifiedUser` means the account "sees" the
- * property but Google will 403 every searchAnalytics call — the true cause of
- * the "Dados indisponíveis" symptom.
+ * Google Search Console permission levels, from strongest to weakest:
+ *   siteOwner          — full owner (verified). Can read all data.
+ *   siteFullUser       — full user (verified). Can read all data.
+ *   siteRestrictedUser — restricted user (verified). Can read most data.
+ *   siteUnverifiedUser — sees the property but is NOT verified. Google 403s
+ *                        every searchAnalytics call — the true cause of the
+ *                        classic "Dados indisponíveis" symptom.
+ * Anything other than `siteUnverifiedUser` (and non-empty) can read data.
+ */
+export type PermissionClass =
+  | "siteOwner"
+  | "siteFullUser"
+  | "siteRestrictedUser"
+  | "siteUnverifiedUser"
+  | "unknown";
+
+export function classifyPermission(level: string | undefined | null): PermissionClass {
+  switch (level) {
+    case "siteOwner":
+    case "siteFullUser":
+    case "siteRestrictedUser":
+    case "siteUnverifiedUser":
+      return level;
+    default:
+      return "unknown";
+  }
+}
+
+/** Rank used to pick the strongest property when several match a blog. */
+function permissionRank(level: string | undefined | null): number {
+  switch (classifyPermission(level)) {
+    case "siteOwner":
+      return 3;
+    case "siteFullUser":
+      return 2;
+    case "siteRestrictedUser":
+      return 1;
+    default:
+      return 0; // unverified / unknown → not readable
+  }
+}
+
+/**
+ * A property is queryable only when the account is a verified owner/user.
+ * `siteUnverifiedUser` and unknown/empty levels cannot read data.
  */
 export function isVerifiedPermission(level: string | undefined | null): boolean {
-  return !!level && level !== "siteUnverifiedUser";
+  return permissionRank(level) > 0;
 }
+
+/** Human-readable, plain-language description of a permission level. */
+export function describePermission(level: string | undefined | null): string {
+  switch (classifyPermission(level)) {
+    case "siteOwner":
+      return "Proprietário verificado (acesso total).";
+    case "siteFullUser":
+      return "Usuário com acesso total (verificado).";
+    case "siteRestrictedUser":
+      return "Usuário com acesso restrito (verificado).";
+    case "siteUnverifiedUser":
+      return "Conta ainda não verificada nesta propriedade.";
+    default:
+      return "Nível de permissão desconhecido.";
+  }
+}
+
+/** How a blog URL was matched to a Search Console property (for diagnostics). */
+export type MatchKind =
+  | "exact-url"
+  | "exact-domain"
+  | "root-domain"
+  | "subdomain"
+  | "none";
 
 export interface SiteMatch {
   siteUrl: string;
   permissionLevel: string;
   verified: boolean;
+  matchedBy: MatchKind;
 }
 
 /**
- * Pick the Search Console property that best matches a blog URL, preferring
- * verified properties. Handles URL-prefix and sc-domain properties. Returns the
- * match plus whether the account is a verified owner of it, so callers can give
- * an exact diagnosis instead of a generic "reconnect".
+ * Pick the Search Console property that best matches a blog URL.
+ *
+ * Universal matching — works for any account regardless of how the blog is
+ * hosted. It normalizes both sides (drops protocol via URL parsing, strips a
+ * leading `www.`, is case-insensitive) and considers every property type:
+ *   • URL-prefix properties  → `https://example.com/`
+ *   • Domain properties      → `sc-domain:example.com`
+ * and every relationship: exact host, exact domain, root domain, and
+ * subdomain. Shared multi-tenant roots (blogspot.com, wordpress.com, …) only
+ * ever match on the exact host so two tenants never cross-match.
+ *
+ * When several properties match, it prefers the strongest permission first,
+ * then the most specific URL relationship — so the panel defaults to a
+ * property it can actually read.
  */
 export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch | null {
   if (!blogUrl) return null;
   let host = "";
   try {
-    host = new URL(blogUrl).hostname.replace(/^www\./, "");
+    host = new URL(blogUrl).hostname.replace(/^www\./, "").toLowerCase();
   } catch {
     return null;
   }
   const rootDomain = host.split(".").slice(-2).join(".");
   // Multi-tenant suffixes: only an exact host match is valid, never the shared
   // root (e.g. two different *.blogspot.com blogs must not cross-match).
-  const sharedSuffix = /^(blogspot\.com|wordpress\.com|wixsite\.com|weebly\.com)$/i.test(rootDomain);
+  const sharedSuffix =
+    /^(blogspot\.com|wordpress\.com|wixsite\.com|weebly\.com|blogspot\.[a-z.]+)$/i.test(rootDomain);
 
-  const candidates: { site: GscSite; score: number }[] = [];
+  const candidates: { site: GscSite; score: number; kind: MatchKind }[] = [];
   for (const s of sites) {
     let score = 0;
+    let kind: MatchKind = "none";
     if (s.siteUrl.startsWith("sc-domain:")) {
-      const scHost = s.siteUrl.slice("sc-domain:".length).replace(/^www\./, "");
-      if (scHost === host) score = 95;
-      else if (!sharedSuffix && scHost === rootDomain) score = 75;
-      else if (!sharedSuffix && host.endsWith("." + scHost)) score = 55;
+      const scHost = s.siteUrl.slice("sc-domain:".length).replace(/^www\./, "").toLowerCase();
+      if (scHost === host) {
+        score = 95;
+        kind = "exact-domain";
+      } else if (!sharedSuffix && scHost === rootDomain) {
+        score = 75;
+        kind = "root-domain";
+      } else if (!sharedSuffix && host.endsWith("." + scHost)) {
+        score = 55;
+        kind = "subdomain";
+      }
     } else {
       try {
-        const sh = new URL(s.siteUrl).hostname.replace(/^www\./, "");
-        if (sh === host) score = 100;
-        else if (!sharedSuffix && sh === rootDomain) score = 60;
-        else if (!sharedSuffix && sh.endsWith("." + rootDomain)) score = 40;
+        const sh = new URL(s.siteUrl).hostname.replace(/^www\./, "").toLowerCase();
+        if (sh === host) {
+          score = 100;
+          kind = "exact-url";
+        } else if (!sharedSuffix && sh === rootDomain) {
+          score = 60;
+          kind = "root-domain";
+        } else if (!sharedSuffix && sh.endsWith("." + rootDomain)) {
+          score = 40;
+          kind = "subdomain";
+        }
       } catch {
         // ignore malformed entries
       }
     }
-    if (score > 0) candidates.push({ site: s, score });
+    if (score > 0) candidates.push({ site: s, score, kind });
   }
   if (candidates.length === 0) return null;
 
-  // Prefer verified properties, then the strongest URL match.
+  // Prefer readable permission first, then the strongest URL match.
   candidates.sort((a, b) => {
-    const av = isVerifiedPermission(a.site.permissionLevel) ? 1 : 0;
-    const bv = isVerifiedPermission(b.site.permissionLevel) ? 1 : 0;
-    if (av !== bv) return bv - av;
+    const pr = permissionRank(b.site.permissionLevel) - permissionRank(a.site.permissionLevel);
+    if (pr !== 0) return pr;
     return b.score - a.score;
   });
-  const best = candidates[0].site;
+  const best = candidates[0];
   return {
-    siteUrl: best.siteUrl,
-    permissionLevel: best.permissionLevel,
-    verified: isVerifiedPermission(best.permissionLevel),
+    siteUrl: best.site.siteUrl,
+    permissionLevel: best.site.permissionLevel,
+    verified: isVerifiedPermission(best.site.permissionLevel),
+    matchedBy: best.kind,
   };
 }
 
