@@ -187,10 +187,19 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
       const {
         fetchSearchConsoleSites,
         matchSiteDetailed,
+        describePermission,
         querySearchAnalytics,
         readSeoCache,
         writeSeoCache,
+        syncPropertyMap,
+        clearSeoCacheForUser,
       } = await import("./seo-performance.server");
+
+      // Auto-correction: a forced refresh clears the user's cached responses so
+      // the next discovery + matching is fully rebuilt from live Google data.
+      if (data.refresh) {
+        await clearSeoCacheForUser(userId).catch(() => {});
+      }
 
       // Step: token validity + silent refresh + scope check.
       const tokenInfo = await getBloggerTokenDiagnostics(userId);
