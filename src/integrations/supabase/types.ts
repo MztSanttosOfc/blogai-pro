@@ -713,6 +713,48 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_property_map: {
+        Row: {
+          blog_id: string
+          blog_url: string
+          created_at: string
+          id: string
+          last_seen_at: string
+          matched_by: string | null
+          permission_level: string | null
+          site_url: string | null
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }
+        Insert: {
+          blog_id: string
+          blog_url: string
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          matched_by?: string | null
+          permission_level?: string | null
+          site_url?: string | null
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+        }
+        Update: {
+          blog_id?: string
+          blog_url?: string
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          matched_by?: string | null
+          permission_level?: string | null
+          site_url?: string | null
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       site_pages: {
         Row: {
           blogger_post_id: string | null

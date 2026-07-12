@@ -187,10 +187,19 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
       const {
         fetchSearchConsoleSites,
         matchSiteDetailed,
+        describePermission,
         querySearchAnalytics,
         readSeoCache,
         writeSeoCache,
+        syncPropertyMap,
+        clearSeoCacheForUser,
       } = await import("./seo-performance.server");
+
+      // Auto-correction: a forced refresh clears the user's cached responses so
+      // the next discovery + matching is fully rebuilt from live Google data.
+      if (data.refresh) {
+        await clearSeoCacheForUser(userId).catch(() => {});
+      }
 
       // Step: token validity + silent refresh + scope check.
       const tokenInfo = await getBloggerTokenDiagnostics(userId);
@@ -259,6 +268,31 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         `${sites.length} propriedade(s) visível(is); ${verifiedCount} com propriedade verificada e pronta para leitura.`,
       );
 
+      // Persist the association Usuário → Blog → Propriedade and detect any
+      // change vs. the last discovery (property changed / removed / verified).
+      // Failures here never block the dashboard.
+      const changes = await syncPropertyMap(
+        userId,
+        matches.map((m) => ({
+          blogId: m.blog.id,
+          blogUrl: m.blog.url,
+          siteUrl: m.match?.siteUrl ?? null,
+          permissionLevel: m.match?.permissionLevel ?? null,
+          verified: m.match?.verified ?? false,
+          matchedBy: m.match?.matchedBy ?? "none",
+        })),
+      ).catch(() => []);
+      step(
+        "mapping",
+        "Associação salva (blog ↔ propriedade)",
+        "ok",
+        changes.length
+          ? `${changes.length} atualização(ões) detectada(s): ${changes
+              .map((c) => c.detail)
+              .join(" ")}`
+          : "Associação estável — nenhuma mudança de propriedade desde a última sincronização.",
+      );
+
       if (blogs.length === 0) {
         return {
           available: false,
@@ -302,11 +336,18 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         };
       }
 
+      const matchKindLabel: Record<string, string> = {
+        "exact-url": "correspondência exata de URL",
+        "exact-domain": "correspondência exata de domínio",
+        "root-domain": "correspondência pelo domínio principal",
+        subdomain: "correspondência por subdomínio",
+        none: "sem correspondência",
+      };
       step(
         "match",
         "Propriedade correspondente ao blog",
         "ok",
-        `${activeBlog.url} → ${siteUrl}.`,
+        `${activeBlog.url} → ${siteUrl} (${matchKindLabel[activeMatch?.matchedBy ?? "none"]}).`,
       );
 
       // Verified-ownership check — this is the true cause of the classic 403.
@@ -315,7 +356,7 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
           "ownership",
           "Propriedade verificada",
           "fail",
-          `A conta não é proprietária verificada de ${siteUrl} (permissão: ${activeMatch?.permissionLevel ?? "desconhecida"}).`,
+          `${describePermission(activeMatch?.permissionLevel)} Propriedade: ${siteUrl}.`,
         );
         return {
           available: false,
@@ -329,7 +370,12 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
           diagnostics: diag,
         };
       }
-      step("ownership", "Propriedade verificada", "ok", `Acesso verificado a ${siteUrl}.`);
+      step(
+        "ownership",
+        "Propriedade verificada",
+        "ok",
+        `${describePermission(activeMatch.permissionLevel)} Acesso liberado a ${siteUrl}.`,
+      );
 
       // Smart cache lookup.
       const cacheKey = `perf:${siteUrl}:${startDate}:${endDate}`;
