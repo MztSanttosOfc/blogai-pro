@@ -336,11 +336,18 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         };
       }
 
+      const matchKindLabel: Record<string, string> = {
+        "exact-url": "correspondência exata de URL",
+        "exact-domain": "correspondência exata de domínio",
+        "root-domain": "correspondência pelo domínio principal",
+        subdomain: "correspondência por subdomínio",
+        none: "sem correspondência",
+      };
       step(
         "match",
         "Propriedade correspondente ao blog",
         "ok",
-        `${activeBlog.url} → ${siteUrl}.`,
+        `${activeBlog.url} → ${siteUrl} (${matchKindLabel[activeMatch?.matchedBy ?? "none"]}).`,
       );
 
       // Verified-ownership check — this is the true cause of the classic 403.
@@ -349,7 +356,7 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
           "ownership",
           "Propriedade verificada",
           "fail",
-          `A conta não é proprietária verificada de ${siteUrl} (permissão: ${activeMatch?.permissionLevel ?? "desconhecida"}).`,
+          `${describePermission(activeMatch?.permissionLevel)} Propriedade: ${siteUrl}.`,
         );
         return {
           available: false,
