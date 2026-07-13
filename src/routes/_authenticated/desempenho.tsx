@@ -595,6 +595,12 @@ function SeoPage() {
                 <RefreshCw className={`mr-1 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
                 Atualizar
               </Button>
+              <Button asChild variant="outline">
+                <Link to="/ajuda" search={{ topic: topicId }}>
+                  <LifeBuoy className="mr-1 h-4 w-4" />
+                  Central de Ajuda
+                </Link>
+              </Button>
               {(data?.reason === "not-connected" || data?.reason === "scope-missing") && (
                 <Button asChild variant="hero">
                   <Link to="/connections">
