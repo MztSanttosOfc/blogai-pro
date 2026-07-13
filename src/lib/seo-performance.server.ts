@@ -85,7 +85,14 @@ export async function fetchSearchConsoleSites(accessToken: string): Promise<GscS
     throw classifyGscError(res.status, body);
   }
   const data = (await res.json()) as { siteEntry?: GscSite[] };
-  return data.siteEntry ?? [];
+  const sites = data.siteEntry ?? [];
+  // Raw diagnostics: log EXACTLY what the official API returned for every
+  // property, so classification can never silently diverge from Google.
+  console.info(
+    "[gsc] Sites.list raw response:",
+    JSON.stringify(sites.map((s) => ({ siteUrl: s.siteUrl, permissionLevel: s.permissionLevel }))),
+  );
+  return sites;
 }
 
 /**
