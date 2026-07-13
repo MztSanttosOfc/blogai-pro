@@ -23,6 +23,7 @@ import {
   XCircle,
   Stethoscope,
   ShieldCheck,
+  LifeBuoy,
 } from "lucide-react";
 import {
   LineChart,
@@ -52,6 +53,7 @@ import {
   type SeoSeriesPoint,
   type SeoDiagnosticStep,
 } from "@/lib/seo-performance.functions";
+import { resolveHelpTopic, SEO_HELP_TOPICS, type SeoHelpSeverity } from "@/lib/seo-help";
 
 export const Route = createFileRoute("/_authenticated/desempenho")({
   head: () => ({
@@ -293,6 +295,59 @@ function DiagnosticsPanel({ steps }: { steps: SeoDiagnosticStep[] }) {
   );
 }
 
+const STATUS_META: Record<
+  SeoHelpSeverity,
+  { dot: string; ring: string; text: string; label: string }
+> = {
+  green: {
+    dot: "bg-emerald-500",
+    ring: "ring-emerald-500/30",
+    text: "text-emerald-600 dark:text-emerald-400",
+    label: "Funcionando",
+  },
+  yellow: {
+    dot: "bg-amber-500",
+    ring: "ring-amber-500/30",
+    text: "text-amber-600 dark:text-amber-400",
+    label: "Atenção",
+  },
+  red: {
+    dot: "bg-red-500",
+    ring: "ring-red-500/30",
+    text: "text-red-600 dark:text-red-400",
+    label: "Ação necessária",
+  },
+};
+
+/** Permanent 🟢🟡🔴 integration status pill, updated automatically per diagnosis. */
+function IntegrationStatus({
+  severity,
+  topicId,
+}: {
+  severity: SeoHelpSeverity;
+  topicId: string;
+}) {
+  const meta = STATUS_META[severity];
+  return (
+    <Link
+      to="/ajuda"
+      search={{ topic: topicId }}
+      className={`inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium ring-1 ${meta.ring} transition-colors hover:bg-muted`}
+      title="Ver detalhes e ajuda desta situação"
+    >
+      <span className={`relative flex h-2.5 w-2.5`}>
+        {severity !== "green" && (
+          <span
+            className={`absolute inline-flex h-full w-full animate-ping rounded-full ${meta.dot} opacity-60`}
+          />
+        )}
+        <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${meta.dot}`} />
+      </span>
+      <span className={meta.text}>Integração: {meta.label}</span>
+    </Link>
+  );
+}
+
 type Grouping = "day" | "week" | "month";
 
 function aggregateSeries(series: SeoSeriesPoint[], grouping: Grouping): SeoSeriesPoint[] {
@@ -357,6 +412,13 @@ function SeoPage() {
 
   const blogs = data?.blogs ?? [];
 
+  const hasData =
+    (data?.totals?.clicks ?? 0) > 0 ||
+    (data?.totals?.impressions ?? 0) > 0 ||
+    (data?.series?.length ?? 0) > 0;
+  const topicId = resolveHelpTopic(data?.available, data?.reason, hasData);
+  const severity = SEO_HELP_TOPICS[topicId].severity;
+
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
@@ -372,6 +434,12 @@ function SeoPage() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {!isLoading && <IntegrationStatus severity={severity} topicId={topicId} />}
+          <Button asChild variant="ghost" size="icon" title="Central de Ajuda">
+            <Link to="/ajuda" search={{ topic: topicId }}>
+              <LifeBuoy className="h-4 w-4" />
+            </Link>
+          </Button>
           {blogs.length > 1 && (
             <Select value={data?.activeBlogId} onValueChange={(v) => setBlogId(v)}>
               <SelectTrigger className="w-44">
@@ -526,6 +594,12 @@ function SeoPage() {
               <Button variant="outline" onClick={handleRefresh} disabled={isFetching}>
                 <RefreshCw className={`mr-1 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
                 Atualizar
+              </Button>
+              <Button asChild variant="outline">
+                <Link to="/ajuda" search={{ topic: topicId }}>
+                  <LifeBuoy className="mr-1 h-4 w-4" />
+                  Central de Ajuda
+                </Link>
               </Button>
               {(data?.reason === "not-connected" || data?.reason === "scope-missing") && (
                 <Button asChild variant="hero">

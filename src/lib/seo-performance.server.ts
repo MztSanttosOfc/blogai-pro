@@ -85,7 +85,14 @@ export async function fetchSearchConsoleSites(accessToken: string): Promise<GscS
     throw classifyGscError(res.status, body);
   }
   const data = (await res.json()) as { siteEntry?: GscSite[] };
-  return data.siteEntry ?? [];
+  const sites = data.siteEntry ?? [];
+  // Raw diagnostics: log EXACTLY what the official API returned for every
+  // property, so classification can never silently diverge from Google.
+  console.info(
+    "[gsc] Sites.list raw response:",
+    JSON.stringify(sites.map((s) => ({ siteUrl: s.siteUrl, permissionLevel: s.permissionLevel }))),
+  );
+  return sites;
 }
 
 /**
@@ -171,6 +178,34 @@ export interface SiteMatch {
 }
 
 /**
+ * Common multi-label public suffixes. Registrable-domain extraction must treat
+ * these as a single TLD, otherwise `blog.monzart.com.br` would collapse to the
+ * public suffix `com.br` and cross-match every other `.com.br` site. This is a
+ * pragmatic subset of the public suffix list covering the ccTLDs our users hit;
+ * it degrades gracefully (falls back to the last two labels) for anything else.
+ */
+const MULTI_LABEL_SUFFIXES = new Set([
+  "com.br", "net.br", "org.br", "gov.br", "edu.br", "blog.br",
+  "co.uk", "org.uk", "gov.uk", "ac.uk", "me.uk",
+  "com.au", "net.au", "org.au", "gov.au", "edu.au",
+  "co.jp", "or.jp", "ne.jp", "go.jp",
+  "co.nz", "org.nz", "govt.nz",
+  "com.mx", "com.ar", "com.co", "com.pt", "com.es", "com.pe",
+  "co.za", "co.in", "co.id", "com.tr", "com.sg", "com.hk",
+]);
+
+/** Registrable domain (eTLD+1) — public-suffix aware, so `.com.br` etc. work. */
+export function registrableDomain(host: string): string {
+  const labels = host.split(".").filter(Boolean);
+  if (labels.length <= 2) return labels.join(".");
+  const lastTwo = labels.slice(-2).join(".");
+  if (MULTI_LABEL_SUFFIXES.has(lastTwo)) {
+    return labels.slice(-3).join(".");
+  }
+  return lastTwo;
+}
+
+/**
  * Pick the Search Console property that best matches a blog URL.
  *
  * Universal matching — works for any account regardless of how the blog is
@@ -179,8 +214,10 @@ export interface SiteMatch {
  *   • URL-prefix properties  → `https://example.com/`
  *   • Domain properties      → `sc-domain:example.com`
  * and every relationship: exact host, exact domain, root domain, and
- * subdomain. Shared multi-tenant roots (blogspot.com, wordpress.com, …) only
- * ever match on the exact host so two tenants never cross-match.
+ * subdomain. Root/subdomain relationships use the public-suffix-aware
+ * registrable domain, so `.com.br`, `.co.uk`, etc. never cross-match unrelated
+ * tenants. Shared multi-tenant roots (blogspot.com, wordpress.com, …) only ever
+ * match on the exact host so two tenants never cross-match.
  *
  * When several properties match, it prefers the strongest permission first,
  * then the most specific URL relationship — so the panel defaults to a
@@ -194,11 +231,14 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
   } catch {
     return null;
   }
-  const rootDomain = host.split(".").slice(-2).join(".");
+  const rootDomain = registrableDomain(host);
   // Multi-tenant suffixes: only an exact host match is valid, never the shared
-  // root (e.g. two different *.blogspot.com blogs must not cross-match).
+  // registrable domain (e.g. two different *.blogspot.com blogs must not
+  // cross-match). Test against the registrable domain of the host.
   const sharedSuffix =
-    /^(blogspot\.com|wordpress\.com|wixsite\.com|weebly\.com|blogspot\.[a-z.]+)$/i.test(rootDomain);
+    /^(blogspot\.[a-z.]+|wordpress\.com|wixsite\.com|weebly\.com|github\.io|netlify\.app|vercel\.app|pages\.dev)$/i.test(
+      rootDomain,
+    ) || /\.blogspot\.[a-z.]+$/i.test(host);
 
   const candidates: { site: GscSite; score: number; kind: MatchKind }[] = [];
   for (const s of sites) {
@@ -212,7 +252,7 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
       } else if (!sharedSuffix && scHost === rootDomain) {
         score = 75;
         kind = "root-domain";
-      } else if (!sharedSuffix && host.endsWith("." + scHost)) {
+      } else if (!sharedSuffix && host.endsWith("." + scHost) && scHost.includes(".")) {
         score = 55;
         kind = "subdomain";
       }
@@ -225,7 +265,7 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
         } else if (!sharedSuffix && sh === rootDomain) {
           score = 60;
           kind = "root-domain";
-        } else if (!sharedSuffix && sh.endsWith("." + rootDomain)) {
+        } else if (!sharedSuffix && registrableDomain(sh) === rootDomain) {
           score = 40;
           kind = "subdomain";
         }
@@ -235,7 +275,10 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
     }
     if (score > 0) candidates.push({ site: s, score, kind });
   }
-  if (candidates.length === 0) return null;
+  if (candidates.length === 0) {
+    console.info(`[gsc] match ${blogUrl} → nenhuma propriedade correspondente.`);
+    return null;
+  }
 
   // Prefer readable permission first, then the strongest URL match.
   candidates.sort((a, b) => {
@@ -244,12 +287,25 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
     return b.score - a.score;
   });
   const best = candidates[0];
-  return {
+  const match: SiteMatch = {
     siteUrl: best.site.siteUrl,
     permissionLevel: best.site.permissionLevel,
     verified: isVerifiedPermission(best.site.permissionLevel),
     matchedBy: best.kind,
   };
+  // Transparent classification log: exactly what the API returned vs. how the
+  // system interpreted it, and the final reason. The interpreted value is a
+  // pure passthrough of the API's permissionLevel — never a value we invent.
+  console.info(
+    `[gsc] match ${blogUrl} → ${match.siteUrl} | permissionLevel(API)=${match.permissionLevel} | ` +
+      `interpreted=${classifyPermission(match.permissionLevel)} | verified=${match.verified} | ` +
+      `matchedBy=${match.matchedBy} | reason=${
+        match.verified
+          ? "API informou nível de proprietário/usuário verificado → leitura liberada"
+          : "API informou " + match.permissionLevel + " → leitura bloqueada pelo Google"
+      }`,
+  );
+  return match;
 }
 
 /** Back-compat thin wrapper: best matching property URL regardless of verification. */
