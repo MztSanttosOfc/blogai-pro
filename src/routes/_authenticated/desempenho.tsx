@@ -434,6 +434,12 @@ function SeoPage() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {!isLoading && <IntegrationStatus severity={severity} topicId={topicId} />}
+          <Button asChild variant="ghost" size="icon" title="Central de Ajuda">
+            <Link to="/ajuda" search={{ topic: topicId }}>
+              <LifeBuoy className="h-4 w-4" />
+            </Link>
+          </Button>
           {blogs.length > 1 && (
             <Select value={data?.activeBlogId} onValueChange={(v) => setBlogId(v)}>
               <SelectTrigger className="w-44">
