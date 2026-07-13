@@ -16,6 +16,7 @@ import {
   SEO_HELP_TOPICS,
   SEO_HELP_ORDER,
   type SeoHelpTopic,
+  type SeoHelpTopicId,
   type SeoHelpSeverity,
 } from "@/lib/seo-help";
 
