@@ -295,6 +295,59 @@ function DiagnosticsPanel({ steps }: { steps: SeoDiagnosticStep[] }) {
   );
 }
 
+const STATUS_META: Record<
+  SeoHelpSeverity,
+  { dot: string; ring: string; text: string; label: string }
+> = {
+  green: {
+    dot: "bg-emerald-500",
+    ring: "ring-emerald-500/30",
+    text: "text-emerald-600 dark:text-emerald-400",
+    label: "Funcionando",
+  },
+  yellow: {
+    dot: "bg-amber-500",
+    ring: "ring-amber-500/30",
+    text: "text-amber-600 dark:text-amber-400",
+    label: "Atenção",
+  },
+  red: {
+    dot: "bg-red-500",
+    ring: "ring-red-500/30",
+    text: "text-red-600 dark:text-red-400",
+    label: "Ação necessária",
+  },
+};
+
+/** Permanent 🟢🟡🔴 integration status pill, updated automatically per diagnosis. */
+function IntegrationStatus({
+  severity,
+  topicId,
+}: {
+  severity: SeoHelpSeverity;
+  topicId: string;
+}) {
+  const meta = STATUS_META[severity];
+  return (
+    <Link
+      to="/ajuda"
+      search={{ topic: topicId }}
+      className={`inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium ring-1 ${meta.ring} transition-colors hover:bg-muted`}
+      title="Ver detalhes e ajuda desta situação"
+    >
+      <span className={`relative flex h-2.5 w-2.5`}>
+        {severity !== "green" && (
+          <span
+            className={`absolute inline-flex h-full w-full animate-ping rounded-full ${meta.dot} opacity-60`}
+          />
+        )}
+        <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${meta.dot}`} />
+      </span>
+      <span className={meta.text}>Integração: {meta.label}</span>
+    </Link>
+  );
+}
+
 type Grouping = "day" | "week" | "month";
 
 function aggregateSeries(series: SeoSeriesPoint[], grouping: Grouping): SeoSeriesPoint[] {
