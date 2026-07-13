@@ -49,6 +49,7 @@ const items = [
   { title: "Assinatura", url: "/pricing", icon: CreditCard },
   { title: "Financeiro", url: "/financeiro", icon: Wallet },
   { title: "Atualizações Futuras", url: "/atualizacoes", icon: Rocket },
+  { title: "Central de Ajuda", url: "/ajuda", icon: LifeBuoy },
 ];
 
 const premiumItems = [
