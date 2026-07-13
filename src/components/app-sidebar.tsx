@@ -17,6 +17,7 @@ import {
   CalendarClock,
   Network,
   BarChart3,
+  LifeBuoy,
 } from "lucide-react";
 import {
   Sidebar,
