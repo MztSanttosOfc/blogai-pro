@@ -53,6 +53,7 @@ import {
   type SeoSeriesPoint,
   type SeoDiagnosticStep,
 } from "@/lib/seo-performance.functions";
+import { resolveHelpTopic, SEO_HELP_TOPICS, type SeoHelpSeverity } from "@/lib/seo-help";
 
 export const Route = createFileRoute("/_authenticated/desempenho")({
   head: () => ({
