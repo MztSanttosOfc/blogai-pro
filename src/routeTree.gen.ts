@@ -26,6 +26,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedClustersRouteImport } from './routes/_authenticated/clusters'
 import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authenticated/atualizacoes'
+import { Route as AuthenticatedAjudaRouteImport } from './routes/_authenticated/ajuda'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
@@ -122,6 +123,11 @@ const AuthenticatedAtualizacoesRoute =
     path: '/atualizacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAjudaRoute = AuthenticatedAjudaRouteImport.update({
+  id: '/ajuda',
+  path: '/ajuda',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAgendamentosRoute =
   AuthenticatedAgendamentosRouteImport.update({
     id: '/agendamentos',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
+  '/ajuda': typeof AuthenticatedAjudaRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
+  '/ajuda': typeof AuthenticatedAjudaRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/agendamentos': typeof AuthenticatedAgendamentosRoute
+  '/_authenticated/ajuda': typeof AuthenticatedAjudaRoute
   '/_authenticated/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/_authenticated/clusters': typeof AuthenticatedClustersRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/agendamentos'
+    | '/ajuda'
     | '/atualizacoes'
     | '/clusters'
     | '/connections'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/agendamentos'
+    | '/ajuda'
     | '/atualizacoes'
     | '/clusters'
     | '/connections'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/admin'
     | '/_authenticated/agendamentos'
+    | '/_authenticated/ajuda'
     | '/_authenticated/atualizacoes'
     | '/_authenticated/clusters'
     | '/_authenticated/connections'
@@ -437,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAtualizacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/ajuda': {
+      id: '/_authenticated/ajuda'
+      path: '/ajuda'
+      fullPath: '/ajuda'
+      preLoaderRoute: typeof AuthenticatedAjudaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/agendamentos': {
       id: '/_authenticated/agendamentos'
       path: '/agendamentos'
@@ -496,6 +515,7 @@ const AuthenticatedLibraryRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAgendamentosRoute: typeof AuthenticatedAgendamentosRoute
+  AuthenticatedAjudaRoute: typeof AuthenticatedAjudaRoute
   AuthenticatedAtualizacoesRoute: typeof AuthenticatedAtualizacoesRoute
   AuthenticatedClustersRoute: typeof AuthenticatedClustersRoute
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
@@ -515,6 +535,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAgendamentosRoute: AuthenticatedAgendamentosRoute,
+  AuthenticatedAjudaRoute: AuthenticatedAjudaRoute,
   AuthenticatedAtualizacoesRoute: AuthenticatedAtualizacoesRoute,
   AuthenticatedClustersRoute: AuthenticatedClustersRoute,
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
