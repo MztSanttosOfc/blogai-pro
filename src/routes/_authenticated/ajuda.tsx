@@ -141,7 +141,8 @@ function TopicCard({ topic, highlight }: { topic: SeoHelpTopic; highlight: boole
 
 function HelpPage() {
   const { topic } = Route.useSearch();
-  const active = topic && topic in SEO_HELP_TOPICS ? topic : undefined;
+  const active =
+    topic && topic in SEO_HELP_TOPICS ? (topic as SeoHelpTopicId) : undefined;
   // Show the active topic first, then the rest for reference.
   const order = active
     ? [active, ...SEO_HELP_ORDER.filter((t) => t !== active)]
