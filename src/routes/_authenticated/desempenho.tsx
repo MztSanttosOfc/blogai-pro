@@ -23,6 +23,7 @@ import {
   XCircle,
   Stethoscope,
   ShieldCheck,
+  LifeBuoy,
 } from "lucide-react";
 import {
   LineChart,
