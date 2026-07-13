@@ -412,6 +412,13 @@ function SeoPage() {
 
   const blogs = data?.blogs ?? [];
 
+  const hasData =
+    (data?.totals?.clicks ?? 0) > 0 ||
+    (data?.totals?.impressions ?? 0) > 0 ||
+    (data?.series?.length ?? 0) > 0;
+  const topicId = resolveHelpTopic(data?.available, data?.reason, hasData);
+  const severity = SEO_HELP_TOPICS[topicId].severity;
+
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
