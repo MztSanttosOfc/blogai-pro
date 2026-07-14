@@ -700,7 +700,7 @@ function SeoPage() {
           {data?.diagnostics && <DiagnosticsPanel steps={data.diagnostics} />}
         </div>
       ) : (
-        <>
+        <div className="space-y-6 animate-fade-in">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <Badge variant="secondary" className="font-normal">
               {data.siteUrl}
@@ -710,159 +710,225 @@ function SeoPage() {
                 {data.range.startDate} → {data.range.endDate} ({data.range.days} dias)
               </span>
             )}
-            {data.cached && <Badge variant="outline">cache</Badge>}
+            {data.cached ? (
+              <Badge
+                variant="outline"
+                className="gap-1 font-normal"
+                title="Servido do cache local (válido por até 3h) — a próxima atualização buscará novos dados na API."
+              >
+                <Database className="h-3 w-3" /> cache
+              </Badge>
+            ) : (
+              <Badge
+                variant="outline"
+                className="gap-1 border-emerald-500/30 font-normal text-emerald-600 dark:text-emerald-400"
+                title="Dados buscados agora, em tempo real, na API do Google Search Console."
+              >
+                <Zap className="h-3 w-3" /> tempo real
+              </Badge>
+            )}
+            {isFetching && !isLoading && (
+              <span className="inline-flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" /> atualizando…
+              </span>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatBox
-              icon={MousePointerClick}
-              label="Cliques"
-              value={fmtInt(totals?.clicks ?? 0)}
-              current={totals?.clicks ?? 0}
-              previous={prev?.clicks}
-            />
-            <StatBox
-              icon={Eye}
-              label="Impressões"
-              value={fmtInt(totals?.impressions ?? 0)}
-              current={totals?.impressions ?? 0}
-              previous={prev?.impressions}
-            />
-            <StatBox
-              icon={Percent}
-              label="CTR médio"
-              value={`${((totals?.ctr ?? 0) * 100).toFixed(1)}%`}
-              current={totals?.ctr ?? 0}
-              previous={prev?.ctr}
-            />
-            <StatBox
-              icon={Gauge}
-              label="Posição média"
-              value={(totals?.position ?? 0).toFixed(1)}
-              current={totals?.position ?? 0}
-              previous={prev?.position}
-              invert
-            />
-          </div>
-
-          <Card className="p-4">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-semibold">Evolução (cliques e impressões)</h3>
-              <Tabs value={grouping} onValueChange={(v) => setGrouping(v as Grouping)}>
-                <TabsList>
-                  <TabsTrigger value="day">Diária</TabsTrigger>
-                  <TabsTrigger value="week">Semanal</TabsTrigger>
-                  <TabsTrigger value="month">Mensal</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                  <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
-                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
-                  <Tooltip />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="clicks"
-                    name="Cliques"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="impressions"
-                    name="Impressões"
-                    stroke="hsl(var(--muted-foreground))"
-                    strokeWidth={1.5}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          <Tabs defaultValue="queries">
-            <TabsList className="flex-wrap">
-              <TabsTrigger value="queries">Consultas</TabsTrigger>
-              <TabsTrigger value="pages">Páginas</TabsTrigger>
-              <TabsTrigger value="countries">Países</TabsTrigger>
-              <TabsTrigger value="devices">Dispositivos</TabsTrigger>
-              <TabsTrigger value="appearance">Aparência</TabsTrigger>
-              <TabsTrigger value="trends">Tendências</TabsTrigger>
-            </TabsList>
-            <TabsContent value="queries">
-              <Card className="p-4">
-                <DataTable rows={data.queries ?? []} label="Palavra-chave" />
-              </Card>
-            </TabsContent>
-            <TabsContent value="pages">
-              <Card className="p-4">
-                <DataTable rows={data.pages ?? []} label="Página" />
-              </Card>
-            </TabsContent>
-            <TabsContent value="countries">
-              <Card className="p-4">
-                <DataTable
-                  rows={data.countries ?? []}
-                  label="País"
-                  format={(k) => COUNTRY_NAMES[k] ?? k.toUpperCase()}
+          {!hasData ? (
+            <NoDataState siteUrl={data.siteUrl} />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <StatBox
+                  icon={MousePointerClick}
+                  label="Cliques"
+                  value={fmtInt(totals?.clicks ?? 0)}
+                  current={totals?.clicks ?? 0}
+                  previous={prev?.clicks}
                 />
-              </Card>
-            </TabsContent>
-            <TabsContent value="devices">
-              <Card className="p-4">
-                <DataTable
-                  rows={data.devices ?? []}
-                  label="Dispositivo"
-                  format={(k) => DEVICE_NAMES[k] ?? k}
+                <StatBox
+                  icon={Eye}
+                  label="Impressões"
+                  value={fmtInt(totals?.impressions ?? 0)}
+                  current={totals?.impressions ?? 0}
+                  previous={prev?.impressions}
                 />
-              </Card>
-            </TabsContent>
-            <TabsContent value="appearance">
-              <Card className="p-4">
-                {(data.appearance?.length ?? 0) === 0 ? (
-                  <p className="py-6 text-center text-sm text-muted-foreground">
-                    Nenhum dado de aparência na pesquisa (Discover, Rich Results, Vídeo) disponível
-                    para este período.
-                  </p>
-                ) : (
-                  <DataTable rows={data.appearance ?? []} label="Aparência" />
-                )}
-              </Card>
-            </TabsContent>
-            <TabsContent value="trends">
-              <div className="grid gap-4 md:grid-cols-2">
-                <Card className="p-4">
-                  <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-500">
-                    <TrendingUp className="h-4 w-4" /> Páginas que mais cresceram
-                  </h3>
-                  <DataTable rows={data.gainers ?? []} label="Página" showDelta />
-                </Card>
-                <Card className="p-4">
-                  <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-red-500">
-                    <TrendingDown className="h-4 w-4" /> Páginas que perderam tráfego
-                  </h3>
-                  <DataTable rows={data.losers ?? []} label="Página" showDelta />
-                </Card>
+                <StatBox
+                  icon={Percent}
+                  label="CTR médio"
+                  value={`${((totals?.ctr ?? 0) * 100).toFixed(1)}%`}
+                  current={totals?.ctr ?? 0}
+                  previous={prev?.ctr}
+                />
+                <StatBox
+                  icon={Gauge}
+                  label="Posição média"
+                  value={(totals?.position ?? 0).toFixed(1)}
+                  current={totals?.position ?? 0}
+                  previous={prev?.position}
+                  invert
+                />
               </div>
-            </TabsContent>
-          </Tabs>
+
+              <Card className="p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-sm font-semibold">Evolução (cliques e impressões)</h3>
+                  <Tabs value={grouping} onValueChange={(v) => setGrouping(v as Grouping)}>
+                    <TabsList>
+                      <TabsTrigger value="day">Diária</TabsTrigger>
+                      <TabsTrigger value="week">Semanal</TabsTrigger>
+                      <TabsTrigger value="month">Mensal</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                      <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
+                      <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
+                      <Tooltip />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="clicks"
+                        name="Cliques"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={2}
+                        dot={false}
+                        animationDuration={600}
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="impressions"
+                        name="Impressões"
+                        stroke="hsl(var(--muted-foreground))"
+                        strokeWidth={1.5}
+                        dot={false}
+                        animationDuration={600}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+
+              {(() => {
+                const hasQueries = (data.queries?.length ?? 0) > 0;
+                const hasPages = (data.pages?.length ?? 0) > 0;
+                const hasCountries = (data.countries?.length ?? 0) > 0;
+                const hasDevices = (data.devices?.length ?? 0) > 0;
+                const hasAppearance = (data.appearance?.length ?? 0) > 0;
+                const hasTrends =
+                  (data.gainers?.length ?? 0) > 0 || (data.losers?.length ?? 0) > 0;
+                const firstTab = hasQueries
+                  ? "queries"
+                  : hasPages
+                    ? "pages"
+                    : hasCountries
+                      ? "countries"
+                      : hasDevices
+                        ? "devices"
+                        : hasAppearance
+                          ? "appearance"
+                          : hasTrends
+                            ? "trends"
+                            : "queries";
+                return (
+                  <Tabs defaultValue={firstTab}>
+                    <TabsList className="flex-wrap">
+                      {hasQueries && <TabsTrigger value="queries">Consultas</TabsTrigger>}
+                      {hasPages && <TabsTrigger value="pages">Páginas</TabsTrigger>}
+                      {hasCountries && <TabsTrigger value="countries">Países</TabsTrigger>}
+                      {hasDevices && <TabsTrigger value="devices">Dispositivos</TabsTrigger>}
+                      {hasAppearance && <TabsTrigger value="appearance">Aparência</TabsTrigger>}
+                      {hasTrends && <TabsTrigger value="trends">Tendências</TabsTrigger>}
+                    </TabsList>
+                    {hasQueries && (
+                      <TabsContent value="queries">
+                        <Card className="p-4">
+                          <DataTable rows={data.queries ?? []} label="Palavra-chave" />
+                        </Card>
+                      </TabsContent>
+                    )}
+                    {hasPages && (
+                      <TabsContent value="pages">
+                        <Card className="p-4">
+                          <DataTable rows={data.pages ?? []} label="Página" />
+                        </Card>
+                      </TabsContent>
+                    )}
+                    {hasCountries && (
+                      <TabsContent value="countries">
+                        <Card className="p-4">
+                          <DataTable
+                            rows={data.countries ?? []}
+                            label="País"
+                            format={(k) => COUNTRY_NAMES[k] ?? k.toUpperCase()}
+                          />
+                        </Card>
+                      </TabsContent>
+                    )}
+                    {hasDevices && (
+                      <TabsContent value="devices">
+                        <Card className="p-4">
+                          <DataTable
+                            rows={data.devices ?? []}
+                            label="Dispositivo"
+                            format={(k) => DEVICE_NAMES[k] ?? k}
+                          />
+                        </Card>
+                      </TabsContent>
+                    )}
+                    {hasAppearance && (
+                      <TabsContent value="appearance">
+                        <Card className="p-4">
+                          <DataTable rows={data.appearance ?? []} label="Aparência" />
+                        </Card>
+                      </TabsContent>
+                    )}
+                    {hasTrends && (
+                      <TabsContent value="trends">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          {(data.gainers?.length ?? 0) > 0 && (
+                            <Card className="p-4">
+                              <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-500">
+                                <TrendingUp className="h-4 w-4" /> Páginas que mais cresceram
+                              </h3>
+                              <DataTable rows={data.gainers ?? []} label="Página" showDelta />
+                            </Card>
+                          )}
+                          {(data.losers?.length ?? 0) > 0 && (
+                            <Card className="p-4">
+                              <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-red-500">
+                                <TrendingDown className="h-4 w-4" /> Páginas que perderam tráfego
+                              </h3>
+                              <DataTable rows={data.losers ?? []} label="Página" showDelta />
+                            </Card>
+                          )}
+                        </div>
+                      </TabsContent>
+                    )}
+                  </Tabs>
+                );
+              })()}
+            </>
+          )}
 
           {data.fetchedAt && (
-            <p className="text-center text-xs text-muted-foreground">
-              Atualizado em {new Date(data.fetchedAt).toLocaleString("pt-BR")} · comparado ao
-              período anterior de mesma duração.
+            <p className="flex flex-wrap items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
+              <Clock className="h-3 w-3" />
+              Última sincronização:{" "}
+              <span className="font-medium text-foreground">
+                {new Date(data.fetchedAt).toLocaleString("pt-BR")}
+              </span>
+              {data.cached ? "· dados do cache" : "· dados em tempo real"}
             </p>
           )}
 
           {data.diagnostics && <DiagnosticsPanel steps={data.diagnostics} />}
-        </>
+        </div>
       )}
     </div>
   );
