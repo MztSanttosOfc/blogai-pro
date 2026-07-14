@@ -559,9 +559,7 @@ function SeoPage() {
       </header>
 
       {isLoading ? (
-        <div className="flex justify-center py-20 text-muted-foreground">
-          <Loader2 className="h-6 w-6 animate-spin" />
-        </div>
+        <DashboardSkeleton />
       ) : !data?.available ? (
         <div className="space-y-4">
           <Card className="flex flex-col items-center gap-4 p-8 text-center">
