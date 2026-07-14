@@ -24,7 +24,12 @@ import {
   Stethoscope,
   ShieldCheck,
   LifeBuoy,
+  Sparkles,
+  Clock,
+  Zap,
+  Database,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   LineChart,
   Line,
