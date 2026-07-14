@@ -302,29 +302,32 @@ function DiagnosticsPanel({ steps }: { steps: SeoDiagnosticStep[] }) {
 
 const STATUS_META: Record<
   SeoHelpSeverity,
-  { dot: string; ring: string; text: string; label: string }
+  { dot: string; ring: string; text: string; label: string; description: string }
 > = {
   green: {
     dot: "bg-emerald-500",
     ring: "ring-emerald-500/30",
     text: "text-emerald-600 dark:text-emerald-400",
     label: "Funcionando",
+    description: "Tudo certo — dados sendo lidos direto do Google Search Console.",
   },
   yellow: {
     dot: "bg-amber-500",
     ring: "ring-amber-500/30",
     text: "text-amber-600 dark:text-amber-400",
     label: "Atenção",
+    description: "A integração funciona, mas há algo que pode ser melhorado.",
   },
   red: {
     dot: "bg-red-500",
     ring: "ring-red-500/30",
     text: "text-red-600 dark:text-red-400",
     label: "Ação necessária",
+    description: "Uma pequena ação sua é necessária para liberar os dados.",
   },
 };
 
-/** Permanent 🟢🟡🔴 integration status pill, updated automatically per diagnosis. */
+/** Permanent 🟢🟡🔴 integration status pill + description, updated automatically. */
 function IntegrationStatus({
   severity,
   topicId,
@@ -334,24 +337,95 @@ function IntegrationStatus({
 }) {
   const meta = STATUS_META[severity];
   return (
-    <Link
-      to="/ajuda"
-      search={{ topic: topicId }}
-      className={`inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium ring-1 ${meta.ring} transition-colors hover:bg-muted`}
-      title="Ver detalhes e ajuda desta situação"
-    >
-      <span className={`relative flex h-2.5 w-2.5`}>
-        {severity !== "green" && (
-          <span
-            className={`absolute inline-flex h-full w-full animate-ping rounded-full ${meta.dot} opacity-60`}
-          />
-        )}
-        <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${meta.dot}`} />
+    <div className="flex flex-col items-end gap-1 animate-fade-in">
+      <Link
+        to="/ajuda"
+        search={{ topic: topicId }}
+        className={`inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium ring-1 ${meta.ring} transition-colors hover:bg-muted`}
+        title="Ver detalhes e ajuda desta situação"
+      >
+        <span className="relative flex h-2.5 w-2.5">
+          {severity !== "green" && (
+            <span
+              className={`absolute inline-flex h-full w-full animate-ping rounded-full ${meta.dot} opacity-60`}
+            />
+          )}
+          <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${meta.dot}`} />
+        </span>
+        <span className={meta.text}>Integração: {meta.label}</span>
+      </Link>
+      <span className="max-w-[240px] text-right text-[11px] leading-tight text-muted-foreground">
+        {meta.description}
       </span>
-      <span className={meta.text}>Integração: {meta.label}</span>
-    </Link>
+    </div>
   );
 }
+
+/** Skeleton shown while the initial dashboard query is in flight. */
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex flex-wrap items-center gap-2">
+        <Skeleton className="h-5 w-40" />
+        <Skeleton className="h-5 w-56" />
+      </div>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Card key={i} className="p-4">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="mt-3 h-7 w-24" />
+          </Card>
+        ))}
+      </div>
+      <Card className="p-4">
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="mt-4 h-64 w-full" />
+      </Card>
+      <Card className="p-4">
+        <Skeleton className="h-4 w-32" />
+        <div className="mt-4 space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-6 w-full" />
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/** Friendly empty state when the integration works but GSC has no data yet. */
+function NoDataState({ siteUrl }: { siteUrl?: string }) {
+  return (
+    <Card className="flex flex-col items-center gap-4 p-8 text-center animate-fade-in">
+      <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
+        <Sparkles className="h-9 w-9" />
+        <span className="absolute inset-0 animate-ping rounded-3xl bg-primary/10" />
+      </div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">Integração funcionando</h2>
+        <p className="max-w-lg text-muted-foreground">
+          Sua integração está funcionando corretamente. O Google Search Console ainda não possui
+          dados suficientes para este período. Assim que o Google registrar impressões ou cliques,
+          eles aparecerão automaticamente aqui.
+        </p>
+      </div>
+      {siteUrl && (
+        <Badge variant="secondary" className="font-normal">
+          {siteUrl}
+        </Badge>
+      )}
+      <div className="max-w-lg rounded-lg border border-border bg-muted/40 p-4 text-left text-sm text-muted-foreground">
+        <p className="mb-2 font-medium text-foreground">Isso costuma acontecer porque:</p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>o blog é novo e ainda está sendo descoberto pelo Google;</li>
+          <li>o conteúdo publicado ainda não foi indexado;</li>
+          <li>ou existe o atraso natural de processamento do Google (até ~48h).</li>
+        </ul>
+      </div>
+    </Card>
+  );
+}
+
 
 type Grouping = "day" | "week" | "month";
 
