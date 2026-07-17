@@ -1,46 +1,47 @@
-// Fonte única para persistência de clusters de conteúdo (CRUD).
-// A geração via IA permanece em clusters.functions.ts nesta fase.
+// Fonte única para tipos + persistência CRUD de clusters de conteúdo.
+// A geração via IA permanece em clusters.functions.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
 type SB = SupabaseClient<Database>;
 
+export interface ClusterSatellite {
+  title: string;
+  angle: string;
+  keyword: string;
+  searchIntent: string;
+}
+
 export interface ClusterPillar {
   title: string;
   description: string;
-  keywords: string[];
-}
-export interface ClusterSatellite {
-  title: string;
   keyword: string;
-  intent: string;
 }
+
 export interface ClusterInternalLink {
   from: string;
   to: string;
   anchor: string;
 }
-export interface StoredCluster {
-  id: string;
-  created_at: string;
+
+export interface GeneratedCluster {
   topic: string;
-  language: string;
   pillar: ClusterPillar;
   satellites: ClusterSatellite[];
   primaryKeywords: string[];
   secondaryKeywords: string[];
   internalLinks: ClusterInternalLink[];
+  language: string;
 }
 
-export interface SaveClusterInput {
-  topic: string;
-  language: string;
-  pillar: ClusterPillar;
-  satellites: ClusterSatellite[];
-  primaryKeywords: string[];
-  secondaryKeywords: string[];
-  internalLinks: ClusterInternalLink[];
+export interface StoredCluster extends GeneratedCluster {
+  id: string;
+  created_at: string;
 }
+
+export interface SaveClusterInput extends GeneratedCluster {}
+
+type ClusterInsert = Database["public"]["Tables"]["content_clusters"]["Insert"];
 
 export async function saveClusterFor(
   supabase: SB,
@@ -53,11 +54,11 @@ export async function saveClusterFor(
       user_id: userId,
       topic: input.topic,
       language: input.language,
-      pillar: input.pillar as unknown as Database["public"]["Tables"]["content_clusters"]["Insert"]["pillar"],
-      satellites: input.satellites as unknown as Database["public"]["Tables"]["content_clusters"]["Insert"]["satellites"],
+      pillar: input.pillar as unknown as ClusterInsert["pillar"],
+      satellites: input.satellites as unknown as ClusterInsert["satellites"],
       primary_keywords: input.primaryKeywords,
       secondary_keywords: input.secondaryKeywords,
-      internal_links: input.internalLinks as unknown as Database["public"]["Tables"]["content_clusters"]["Insert"]["internal_links"],
+      internal_links: input.internalLinks as unknown as ClusterInsert["internal_links"],
     })
     .select("id")
     .single();
