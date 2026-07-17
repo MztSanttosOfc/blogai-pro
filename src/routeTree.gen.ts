@@ -31,6 +31,9 @@ import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
+import { Route as ApiV1ProfileIndexRouteImport } from './routes/api/v1/profile/index'
+import { Route as ApiV1PlansIndexRouteImport } from './routes/api/v1/plans/index'
+import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
 import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
 import { Route as ApiPublicHooksPublishScheduledRouteImport } from './routes/api/public/hooks/publish-scheduled'
 
@@ -150,6 +153,21 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiV1ProfileIndexRoute = ApiV1ProfileIndexRouteImport.update({
+  id: '/api/v1/profile/',
+  path: '/api/v1/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1PlansIndexRoute = ApiV1PlansIndexRouteImport.update({
+  id: '/api/v1/plans/',
+  path: '/api/v1/plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1AuthMeRoute = ApiV1AuthMeRouteImport.update({
+  id: '/api/v1/auth/me',
+  path: '/api/v1/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksSyncpayRoute =
   ApiPublicWebhooksSyncpayRouteImport.update({
     id: '/api/public/webhooks/syncpay',
@@ -187,6 +205,9 @@ export interface FileRoutesByFullPath {
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/plans/': typeof ApiV1PlansIndexRoute
+  '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -212,6 +233,9 @@ export interface FileRoutesByTo {
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/plans': typeof ApiV1PlansIndexRoute
+  '/api/v1/profile': typeof ApiV1ProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -239,6 +263,9 @@ export interface FileRoutesById {
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/plans/': typeof ApiV1PlansIndexRoute
+  '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -266,6 +293,9 @@ export interface FileRouteTypes {
     | '/library/$id'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/auth/me'
+    | '/api/v1/plans/'
+    | '/api/v1/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -291,6 +321,9 @@ export interface FileRouteTypes {
     | '/library/$id'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/auth/me'
+    | '/api/v1/plans'
+    | '/api/v1/profile'
   id:
     | '__root__'
     | '/'
@@ -317,6 +350,9 @@ export interface FileRouteTypes {
     | '/_authenticated/library/$id'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/auth/me'
+    | '/api/v1/plans/'
+    | '/api/v1/profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -326,6 +362,9 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   ApiPublicHooksPublishScheduledRoute: typeof ApiPublicHooksPublishScheduledRoute
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
+  ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
+  ApiV1PlansIndexRoute: typeof ApiV1PlansIndexRoute
+  ApiV1ProfileIndexRoute: typeof ApiV1ProfileIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -484,6 +523,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/v1/profile/': {
+      id: '/api/v1/profile/'
+      path: '/api/v1/profile'
+      fullPath: '/api/v1/profile/'
+      preLoaderRoute: typeof ApiV1ProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/plans/': {
+      id: '/api/v1/plans/'
+      path: '/api/v1/plans'
+      fullPath: '/api/v1/plans/'
+      preLoaderRoute: typeof ApiV1PlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/auth/me': {
+      id: '/api/v1/auth/me'
+      path: '/api/v1/auth/me'
+      fullPath: '/api/v1/auth/me'
+      preLoaderRoute: typeof ApiV1AuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/syncpay': {
       id: '/api/public/webhooks/syncpay'
       path: '/api/public/webhooks/syncpay'
@@ -563,6 +623,9 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   ApiPublicHooksPublishScheduledRoute: ApiPublicHooksPublishScheduledRoute,
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
+  ApiV1AuthMeRoute: ApiV1AuthMeRoute,
+  ApiV1PlansIndexRoute: ApiV1PlansIndexRoute,
+  ApiV1ProfileIndexRoute: ApiV1ProfileIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
