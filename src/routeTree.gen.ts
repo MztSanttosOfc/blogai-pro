@@ -31,9 +31,20 @@ import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
+import { Route as ApiV1SchedulingIndexRouteImport } from './routes/api/v1/scheduling/index'
 import { Route as ApiV1ProfileIndexRouteImport } from './routes/api/v1/profile/index'
 import { Route as ApiV1PlansIndexRouteImport } from './routes/api/v1/plans/index'
+import { Route as ApiV1CreditsIndexRouteImport } from './routes/api/v1/credits/index'
+import { Route as ApiV1ClustersIndexRouteImport } from './routes/api/v1/clusters/index'
+import { Route as ApiV1ArticlesIndexRouteImport } from './routes/api/v1/articles/index'
+import { Route as ApiV1SubscriptionsCurrentRouteImport } from './routes/api/v1/subscriptions/current'
+import { Route as ApiV1SeoStatusRouteImport } from './routes/api/v1/seo/status'
+import { Route as ApiV1SchedulingIdRouteImport } from './routes/api/v1/scheduling/$id'
+import { Route as ApiV1CreditsTransactionsRouteImport } from './routes/api/v1/credits/transactions'
+import { Route as ApiV1ClustersIdRouteImport } from './routes/api/v1/clusters/$id'
+import { Route as ApiV1BloggerStatusRouteImport } from './routes/api/v1/blogger/status'
 import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
+import { Route as ApiV1ArticlesIdRouteImport } from './routes/api/v1/articles/$id'
 import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
 import { Route as ApiPublicHooksPublishScheduledRouteImport } from './routes/api/public/hooks/publish-scheduled'
 
@@ -153,6 +164,11 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiV1SchedulingIndexRoute = ApiV1SchedulingIndexRouteImport.update({
+  id: '/api/v1/scheduling/',
+  path: '/api/v1/scheduling/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1ProfileIndexRoute = ApiV1ProfileIndexRouteImport.update({
   id: '/api/v1/profile/',
   path: '/api/v1/profile/',
@@ -163,9 +179,61 @@ const ApiV1PlansIndexRoute = ApiV1PlansIndexRouteImport.update({
   path: '/api/v1/plans/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1CreditsIndexRoute = ApiV1CreditsIndexRouteImport.update({
+  id: '/api/v1/credits/',
+  path: '/api/v1/credits/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ClustersIndexRoute = ApiV1ClustersIndexRouteImport.update({
+  id: '/api/v1/clusters/',
+  path: '/api/v1/clusters/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ArticlesIndexRoute = ApiV1ArticlesIndexRouteImport.update({
+  id: '/api/v1/articles/',
+  path: '/api/v1/articles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SubscriptionsCurrentRoute =
+  ApiV1SubscriptionsCurrentRouteImport.update({
+    id: '/api/v1/subscriptions/current',
+    path: '/api/v1/subscriptions/current',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1SeoStatusRoute = ApiV1SeoStatusRouteImport.update({
+  id: '/api/v1/seo/status',
+  path: '/api/v1/seo/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SchedulingIdRoute = ApiV1SchedulingIdRouteImport.update({
+  id: '/api/v1/scheduling/$id',
+  path: '/api/v1/scheduling/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1CreditsTransactionsRoute =
+  ApiV1CreditsTransactionsRouteImport.update({
+    id: '/api/v1/credits/transactions',
+    path: '/api/v1/credits/transactions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1ClustersIdRoute = ApiV1ClustersIdRouteImport.update({
+  id: '/api/v1/clusters/$id',
+  path: '/api/v1/clusters/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1BloggerStatusRoute = ApiV1BloggerStatusRouteImport.update({
+  id: '/api/v1/blogger/status',
+  path: '/api/v1/blogger/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1AuthMeRoute = ApiV1AuthMeRouteImport.update({
   id: '/api/v1/auth/me',
   path: '/api/v1/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ArticlesIdRoute = ApiV1ArticlesIdRouteImport.update({
+  id: '/api/v1/articles/$id',
+  path: '/api/v1/articles/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicWebhooksSyncpayRoute =
@@ -205,9 +273,20 @@ export interface FileRoutesByFullPath {
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
+  '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
+  '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
+  '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
+  '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
+  '/api/v1/articles/': typeof ApiV1ArticlesIndexRoute
+  '/api/v1/clusters/': typeof ApiV1ClustersIndexRoute
+  '/api/v1/credits/': typeof ApiV1CreditsIndexRoute
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
+  '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -233,9 +312,20 @@ export interface FileRoutesByTo {
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
+  '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
+  '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
+  '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
+  '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
+  '/api/v1/articles': typeof ApiV1ArticlesIndexRoute
+  '/api/v1/clusters': typeof ApiV1ClustersIndexRoute
+  '/api/v1/credits': typeof ApiV1CreditsIndexRoute
   '/api/v1/plans': typeof ApiV1PlansIndexRoute
   '/api/v1/profile': typeof ApiV1ProfileIndexRoute
+  '/api/v1/scheduling': typeof ApiV1SchedulingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -263,9 +353,20 @@ export interface FileRoutesById {
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
+  '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
+  '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
+  '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
+  '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
+  '/api/v1/articles/': typeof ApiV1ArticlesIndexRoute
+  '/api/v1/clusters/': typeof ApiV1ClustersIndexRoute
+  '/api/v1/credits/': typeof ApiV1CreditsIndexRoute
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
+  '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -293,9 +394,20 @@ export interface FileRouteTypes {
     | '/library/$id'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/articles/$id'
     | '/api/v1/auth/me'
+    | '/api/v1/blogger/status'
+    | '/api/v1/clusters/$id'
+    | '/api/v1/credits/transactions'
+    | '/api/v1/scheduling/$id'
+    | '/api/v1/seo/status'
+    | '/api/v1/subscriptions/current'
+    | '/api/v1/articles/'
+    | '/api/v1/clusters/'
+    | '/api/v1/credits/'
     | '/api/v1/plans/'
     | '/api/v1/profile/'
+    | '/api/v1/scheduling/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -321,9 +433,20 @@ export interface FileRouteTypes {
     | '/library/$id'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/articles/$id'
     | '/api/v1/auth/me'
+    | '/api/v1/blogger/status'
+    | '/api/v1/clusters/$id'
+    | '/api/v1/credits/transactions'
+    | '/api/v1/scheduling/$id'
+    | '/api/v1/seo/status'
+    | '/api/v1/subscriptions/current'
+    | '/api/v1/articles'
+    | '/api/v1/clusters'
+    | '/api/v1/credits'
     | '/api/v1/plans'
     | '/api/v1/profile'
+    | '/api/v1/scheduling'
   id:
     | '__root__'
     | '/'
@@ -350,9 +473,20 @@ export interface FileRouteTypes {
     | '/_authenticated/library/$id'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/articles/$id'
     | '/api/v1/auth/me'
+    | '/api/v1/blogger/status'
+    | '/api/v1/clusters/$id'
+    | '/api/v1/credits/transactions'
+    | '/api/v1/scheduling/$id'
+    | '/api/v1/seo/status'
+    | '/api/v1/subscriptions/current'
+    | '/api/v1/articles/'
+    | '/api/v1/clusters/'
+    | '/api/v1/credits/'
     | '/api/v1/plans/'
     | '/api/v1/profile/'
+    | '/api/v1/scheduling/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -362,9 +496,20 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   ApiPublicHooksPublishScheduledRoute: typeof ApiPublicHooksPublishScheduledRoute
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
+  ApiV1ArticlesIdRoute: typeof ApiV1ArticlesIdRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
+  ApiV1BloggerStatusRoute: typeof ApiV1BloggerStatusRoute
+  ApiV1ClustersIdRoute: typeof ApiV1ClustersIdRoute
+  ApiV1CreditsTransactionsRoute: typeof ApiV1CreditsTransactionsRoute
+  ApiV1SchedulingIdRoute: typeof ApiV1SchedulingIdRoute
+  ApiV1SeoStatusRoute: typeof ApiV1SeoStatusRoute
+  ApiV1SubscriptionsCurrentRoute: typeof ApiV1SubscriptionsCurrentRoute
+  ApiV1ArticlesIndexRoute: typeof ApiV1ArticlesIndexRoute
+  ApiV1ClustersIndexRoute: typeof ApiV1ClustersIndexRoute
+  ApiV1CreditsIndexRoute: typeof ApiV1CreditsIndexRoute
   ApiV1PlansIndexRoute: typeof ApiV1PlansIndexRoute
   ApiV1ProfileIndexRoute: typeof ApiV1ProfileIndexRoute
+  ApiV1SchedulingIndexRoute: typeof ApiV1SchedulingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -523,6 +668,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/v1/scheduling/': {
+      id: '/api/v1/scheduling/'
+      path: '/api/v1/scheduling'
+      fullPath: '/api/v1/scheduling/'
+      preLoaderRoute: typeof ApiV1SchedulingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/profile/': {
       id: '/api/v1/profile/'
       path: '/api/v1/profile'
@@ -537,11 +689,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1PlansIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/credits/': {
+      id: '/api/v1/credits/'
+      path: '/api/v1/credits'
+      fullPath: '/api/v1/credits/'
+      preLoaderRoute: typeof ApiV1CreditsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/clusters/': {
+      id: '/api/v1/clusters/'
+      path: '/api/v1/clusters'
+      fullPath: '/api/v1/clusters/'
+      preLoaderRoute: typeof ApiV1ClustersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/articles/': {
+      id: '/api/v1/articles/'
+      path: '/api/v1/articles'
+      fullPath: '/api/v1/articles/'
+      preLoaderRoute: typeof ApiV1ArticlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/subscriptions/current': {
+      id: '/api/v1/subscriptions/current'
+      path: '/api/v1/subscriptions/current'
+      fullPath: '/api/v1/subscriptions/current'
+      preLoaderRoute: typeof ApiV1SubscriptionsCurrentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/seo/status': {
+      id: '/api/v1/seo/status'
+      path: '/api/v1/seo/status'
+      fullPath: '/api/v1/seo/status'
+      preLoaderRoute: typeof ApiV1SeoStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/scheduling/$id': {
+      id: '/api/v1/scheduling/$id'
+      path: '/api/v1/scheduling/$id'
+      fullPath: '/api/v1/scheduling/$id'
+      preLoaderRoute: typeof ApiV1SchedulingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/credits/transactions': {
+      id: '/api/v1/credits/transactions'
+      path: '/api/v1/credits/transactions'
+      fullPath: '/api/v1/credits/transactions'
+      preLoaderRoute: typeof ApiV1CreditsTransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/clusters/$id': {
+      id: '/api/v1/clusters/$id'
+      path: '/api/v1/clusters/$id'
+      fullPath: '/api/v1/clusters/$id'
+      preLoaderRoute: typeof ApiV1ClustersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/blogger/status': {
+      id: '/api/v1/blogger/status'
+      path: '/api/v1/blogger/status'
+      fullPath: '/api/v1/blogger/status'
+      preLoaderRoute: typeof ApiV1BloggerStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/auth/me': {
       id: '/api/v1/auth/me'
       path: '/api/v1/auth/me'
       fullPath: '/api/v1/auth/me'
       preLoaderRoute: typeof ApiV1AuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/articles/$id': {
+      id: '/api/v1/articles/$id'
+      path: '/api/v1/articles/$id'
+      fullPath: '/api/v1/articles/$id'
+      preLoaderRoute: typeof ApiV1ArticlesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/webhooks/syncpay': {
@@ -623,9 +845,20 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   ApiPublicHooksPublishScheduledRoute: ApiPublicHooksPublishScheduledRoute,
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
+  ApiV1ArticlesIdRoute: ApiV1ArticlesIdRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,
+  ApiV1BloggerStatusRoute: ApiV1BloggerStatusRoute,
+  ApiV1ClustersIdRoute: ApiV1ClustersIdRoute,
+  ApiV1CreditsTransactionsRoute: ApiV1CreditsTransactionsRoute,
+  ApiV1SchedulingIdRoute: ApiV1SchedulingIdRoute,
+  ApiV1SeoStatusRoute: ApiV1SeoStatusRoute,
+  ApiV1SubscriptionsCurrentRoute: ApiV1SubscriptionsCurrentRoute,
+  ApiV1ArticlesIndexRoute: ApiV1ArticlesIndexRoute,
+  ApiV1ClustersIndexRoute: ApiV1ClustersIndexRoute,
+  ApiV1CreditsIndexRoute: ApiV1CreditsIndexRoute,
   ApiV1PlansIndexRoute: ApiV1PlansIndexRoute,
   ApiV1ProfileIndexRoute: ApiV1ProfileIndexRoute,
+  ApiV1SchedulingIndexRoute: ApiV1SchedulingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
