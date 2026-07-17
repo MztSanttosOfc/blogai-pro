@@ -29,6 +29,8 @@ import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAjudaRouteImport } from './routes/_authenticated/ajuda'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
+import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 import { Route as ApiV1SchedulingIndexRouteImport } from './routes/api/v1/scheduling/index'
@@ -37,14 +39,17 @@ import { Route as ApiV1PlansIndexRouteImport } from './routes/api/v1/plans/index
 import { Route as ApiV1CreditsIndexRouteImport } from './routes/api/v1/credits/index'
 import { Route as ApiV1ClustersIndexRouteImport } from './routes/api/v1/clusters/index'
 import { Route as ApiV1ArticlesIndexRouteImport } from './routes/api/v1/articles/index'
+import { Route as ApiV1ApiKeysIndexRouteImport } from './routes/api/v1/api-keys/index'
 import { Route as ApiV1SubscriptionsCurrentRouteImport } from './routes/api/v1/subscriptions/current'
 import { Route as ApiV1SeoStatusRouteImport } from './routes/api/v1/seo/status'
 import { Route as ApiV1SchedulingIdRouteImport } from './routes/api/v1/scheduling/$id'
+import { Route as ApiV1OpenapiJsonRouteImport } from './routes/api/v1/openapi/json'
 import { Route as ApiV1CreditsTransactionsRouteImport } from './routes/api/v1/credits/transactions'
 import { Route as ApiV1ClustersIdRouteImport } from './routes/api/v1/clusters/$id'
 import { Route as ApiV1BloggerStatusRouteImport } from './routes/api/v1/blogger/status'
 import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
 import { Route as ApiV1ArticlesIdRouteImport } from './routes/api/v1/articles/$id'
+import { Route as ApiV1ApiKeysIdRouteImport } from './routes/api/v1/api-keys/$id'
 import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
 import { Route as ApiPublicHooksPublishScheduledRouteImport } from './routes/api/public/hooks/publish-scheduled'
 
@@ -153,6 +158,16 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiV1LogsRoute = ApiV1LogsRouteImport.update({
+  id: '/api/v1/logs',
+  path: '/api/v1/logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1HealthRoute = ApiV1HealthRouteImport.update({
+  id: '/api/v1/health',
+  path: '/api/v1/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedLibraryIdRoute = AuthenticatedLibraryIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -194,6 +209,11 @@ const ApiV1ArticlesIndexRoute = ApiV1ArticlesIndexRouteImport.update({
   path: '/api/v1/articles/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1ApiKeysIndexRoute = ApiV1ApiKeysIndexRouteImport.update({
+  id: '/api/v1/api-keys/',
+  path: '/api/v1/api-keys/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1SubscriptionsCurrentRoute =
   ApiV1SubscriptionsCurrentRouteImport.update({
     id: '/api/v1/subscriptions/current',
@@ -208,6 +228,11 @@ const ApiV1SeoStatusRoute = ApiV1SeoStatusRouteImport.update({
 const ApiV1SchedulingIdRoute = ApiV1SchedulingIdRouteImport.update({
   id: '/api/v1/scheduling/$id',
   path: '/api/v1/scheduling/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1OpenapiJsonRoute = ApiV1OpenapiJsonRouteImport.update({
+  id: '/api/v1/openapi/json',
+  path: '/api/v1/openapi/json',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1CreditsTransactionsRoute =
@@ -234,6 +259,11 @@ const ApiV1AuthMeRoute = ApiV1AuthMeRouteImport.update({
 const ApiV1ArticlesIdRoute = ApiV1ArticlesIdRouteImport.update({
   id: '/api/v1/articles/$id',
   path: '/api/v1/articles/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ApiKeysIdRoute = ApiV1ApiKeysIdRouteImport.update({
+  id: '/api/v1/api-keys/$id',
+  path: '/api/v1/api-keys/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicWebhooksSyncpayRoute =
@@ -271,16 +301,21 @@ export interface FileRoutesByFullPath {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/openapi/json': typeof ApiV1OpenapiJsonRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
+  '/api/v1/api-keys/': typeof ApiV1ApiKeysIndexRoute
   '/api/v1/articles/': typeof ApiV1ArticlesIndexRoute
   '/api/v1/clusters/': typeof ApiV1ClustersIndexRoute
   '/api/v1/credits/': typeof ApiV1CreditsIndexRoute
@@ -310,16 +345,21 @@ export interface FileRoutesByTo {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/openapi/json': typeof ApiV1OpenapiJsonRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
+  '/api/v1/api-keys': typeof ApiV1ApiKeysIndexRoute
   '/api/v1/articles': typeof ApiV1ArticlesIndexRoute
   '/api/v1/clusters': typeof ApiV1ClustersIndexRoute
   '/api/v1/credits': typeof ApiV1CreditsIndexRoute
@@ -351,16 +391,21 @@ export interface FileRoutesById {
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
+  '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
+  '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/openapi/json': typeof ApiV1OpenapiJsonRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
+  '/api/v1/api-keys/': typeof ApiV1ApiKeysIndexRoute
   '/api/v1/articles/': typeof ApiV1ArticlesIndexRoute
   '/api/v1/clusters/': typeof ApiV1ClustersIndexRoute
   '/api/v1/credits/': typeof ApiV1CreditsIndexRoute
@@ -392,16 +437,21 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
+    | '/api/v1/health'
+    | '/api/v1/logs'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
     | '/api/v1/auth/me'
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
+    | '/api/v1/openapi/json'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
+    | '/api/v1/api-keys/'
     | '/api/v1/articles/'
     | '/api/v1/clusters/'
     | '/api/v1/credits/'
@@ -431,16 +481,21 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/blogger/callback'
     | '/library/$id'
+    | '/api/v1/health'
+    | '/api/v1/logs'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
     | '/api/v1/auth/me'
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
+    | '/api/v1/openapi/json'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
+    | '/api/v1/api-keys'
     | '/api/v1/articles'
     | '/api/v1/clusters'
     | '/api/v1/credits'
@@ -471,16 +526,21 @@ export interface FileRouteTypes {
     | '/_authenticated/verificar-blog'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
+    | '/api/v1/health'
+    | '/api/v1/logs'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
+    | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
     | '/api/v1/auth/me'
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
+    | '/api/v1/openapi/json'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
+    | '/api/v1/api-keys/'
     | '/api/v1/articles/'
     | '/api/v1/clusters/'
     | '/api/v1/credits/'
@@ -494,16 +554,21 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiV1HealthRoute: typeof ApiV1HealthRoute
+  ApiV1LogsRoute: typeof ApiV1LogsRoute
   ApiPublicHooksPublishScheduledRoute: typeof ApiPublicHooksPublishScheduledRoute
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
+  ApiV1ApiKeysIdRoute: typeof ApiV1ApiKeysIdRoute
   ApiV1ArticlesIdRoute: typeof ApiV1ArticlesIdRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
   ApiV1BloggerStatusRoute: typeof ApiV1BloggerStatusRoute
   ApiV1ClustersIdRoute: typeof ApiV1ClustersIdRoute
   ApiV1CreditsTransactionsRoute: typeof ApiV1CreditsTransactionsRoute
+  ApiV1OpenapiJsonRoute: typeof ApiV1OpenapiJsonRoute
   ApiV1SchedulingIdRoute: typeof ApiV1SchedulingIdRoute
   ApiV1SeoStatusRoute: typeof ApiV1SeoStatusRoute
   ApiV1SubscriptionsCurrentRoute: typeof ApiV1SubscriptionsCurrentRoute
+  ApiV1ApiKeysIndexRoute: typeof ApiV1ApiKeysIndexRoute
   ApiV1ArticlesIndexRoute: typeof ApiV1ArticlesIndexRoute
   ApiV1ClustersIndexRoute: typeof ApiV1ClustersIndexRoute
   ApiV1CreditsIndexRoute: typeof ApiV1CreditsIndexRoute
@@ -654,6 +719,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/v1/logs': {
+      id: '/api/v1/logs'
+      path: '/api/v1/logs'
+      fullPath: '/api/v1/logs'
+      preLoaderRoute: typeof ApiV1LogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/health': {
+      id: '/api/v1/health'
+      path: '/api/v1/health'
+      fullPath: '/api/v1/health'
+      preLoaderRoute: typeof ApiV1HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/library/$id': {
       id: '/_authenticated/library/$id'
       path: '/$id'
@@ -710,6 +789,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1ArticlesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/api-keys/': {
+      id: '/api/v1/api-keys/'
+      path: '/api/v1/api-keys'
+      fullPath: '/api/v1/api-keys/'
+      preLoaderRoute: typeof ApiV1ApiKeysIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/subscriptions/current': {
       id: '/api/v1/subscriptions/current'
       path: '/api/v1/subscriptions/current'
@@ -729,6 +815,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/scheduling/$id'
       fullPath: '/api/v1/scheduling/$id'
       preLoaderRoute: typeof ApiV1SchedulingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/openapi/json': {
+      id: '/api/v1/openapi/json'
+      path: '/api/v1/openapi/json'
+      fullPath: '/api/v1/openapi/json'
+      preLoaderRoute: typeof ApiV1OpenapiJsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/credits/transactions': {
@@ -764,6 +857,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/articles/$id'
       fullPath: '/api/v1/articles/$id'
       preLoaderRoute: typeof ApiV1ArticlesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/api-keys/$id': {
+      id: '/api/v1/api-keys/$id'
+      path: '/api/v1/api-keys/$id'
+      fullPath: '/api/v1/api-keys/$id'
+      preLoaderRoute: typeof ApiV1ApiKeysIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/webhooks/syncpay': {
@@ -843,16 +943,21 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiV1HealthRoute: ApiV1HealthRoute,
+  ApiV1LogsRoute: ApiV1LogsRoute,
   ApiPublicHooksPublishScheduledRoute: ApiPublicHooksPublishScheduledRoute,
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
+  ApiV1ApiKeysIdRoute: ApiV1ApiKeysIdRoute,
   ApiV1ArticlesIdRoute: ApiV1ArticlesIdRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,
   ApiV1BloggerStatusRoute: ApiV1BloggerStatusRoute,
   ApiV1ClustersIdRoute: ApiV1ClustersIdRoute,
   ApiV1CreditsTransactionsRoute: ApiV1CreditsTransactionsRoute,
+  ApiV1OpenapiJsonRoute: ApiV1OpenapiJsonRoute,
   ApiV1SchedulingIdRoute: ApiV1SchedulingIdRoute,
   ApiV1SeoStatusRoute: ApiV1SeoStatusRoute,
   ApiV1SubscriptionsCurrentRoute: ApiV1SubscriptionsCurrentRoute,
+  ApiV1ApiKeysIndexRoute: ApiV1ApiKeysIndexRoute,
   ApiV1ArticlesIndexRoute: ApiV1ArticlesIndexRoute,
   ApiV1ClustersIndexRoute: ApiV1ClustersIndexRoute,
   ApiV1CreditsIndexRoute: ApiV1CreditsIndexRoute,
