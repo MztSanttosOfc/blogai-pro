@@ -1,10 +1,9 @@
 // GET /api/v1/auth/me — retorna a identidade do usuário autenticado.
 import { createFileRoute } from "@tanstack/react-router";
 
-import { jsonOk } from "@/lib/api/v1/envelope";
+import { corsPreflight, jsonOk } from "@/lib/api/v1/envelope";
 import { ApiError } from "@/lib/api/v1/errors";
 import { withAuth } from "@/lib/api/v1/_middleware";
-import { corsPreflight } from "@/lib/api/v1/envelope";
 
 export const Route = createFileRoute("/api/v1/auth/me")({
   server: {
