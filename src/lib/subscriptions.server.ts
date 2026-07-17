@@ -11,9 +11,7 @@ export interface CurrentSubscription {
   current_period_end: string | null;
 }
 
-export async function getCurrentSubscriptionFor(
-  supabase: SB,
-): Promise<CurrentSubscription | null> {
+export async function getCurrentSubscriptionFor(supabase: SB): Promise<CurrentSubscription | null> {
   const { data, error } = await supabase
     .from("subscriptions")
     .select("plan_id, status, started_at, current_period_end")

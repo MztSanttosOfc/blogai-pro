@@ -47,12 +47,7 @@ export class ApiError extends Error {
   readonly status: number;
   readonly details?: ApiErrorDetail[];
 
-  constructor(
-    code: ApiErrorCode,
-    message: string,
-    status = 400,
-    details?: ApiErrorDetail[],
-  ) {
+  constructor(code: ApiErrorCode, message: string, status = 400, details?: ApiErrorDetail[]) {
     super(message);
     this.code = code;
     this.status = status;

@@ -39,11 +39,7 @@ export async function listArticlesFor(
 }
 
 export async function getArticleFor(supabase: SB, id: string) {
-  const { data, error } = await supabase
-    .from("articles")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  const { data, error } = await supabase.from("articles").select("*").eq("id", id).maybeSingle();
   if (error) throw new Error("Não foi possível carregar o artigo.");
   return data;
 }

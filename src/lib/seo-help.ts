@@ -104,7 +104,7 @@ export const SEO_HELP_TOPICS: Record<SeoHelpTopicId, SeoHelpTopic> = {
     steps: [
       { text: "Vá em Blogger/Conexões e clique em Reconectar conta Google." },
       {
-        text: 'Na tela do Google, mantenha marcada a permissão de leitura do Search Console e confirme.',
+        text: "Na tela do Google, mantenha marcada a permissão de leitura do Search Console e confirme.",
       },
       { text: "Volte aqui e clique em Atualizar." },
     ],
@@ -177,9 +177,7 @@ export const SEO_HELP_TOPICS: Record<SeoHelpTopicId, SeoHelpTopic> = {
     summary:
       "Este blog ainda não tem uma propriedade correspondente no Google Search Console na conta conectada.",
     needsUserAction: true,
-    automatic: [
-      "Assim que a propriedade existir, o sistema a associa ao blog automaticamente.",
-    ],
+    automatic: ["Assim que a propriedade existir, o sistema a associa ao blog automaticamente."],
     steps: [
       {
         text: "Abra o Search Console e adicione o endereço do seu blog como uma nova propriedade (Domínio ou prefixo de URL), usando a mesma conta Google conectada.",
@@ -194,8 +192,7 @@ export const SEO_HELP_TOPICS: Record<SeoHelpTopicId, SeoHelpTopic> = {
     id: "error",
     severity: "red",
     title: "Falha temporária",
-    summary:
-      "Não foi possível falar com o Search Console agora. Normalmente é temporário.",
+    summary: "Não foi possível falar com o Search Console agora. Normalmente é temporário.",
     needsUserAction: false,
     automatic: ["O sistema tenta novamente e renova a sessão sozinho quando possível."],
     steps: [

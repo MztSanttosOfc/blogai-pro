@@ -33,9 +33,7 @@ export const listScheduledPosts = createServerFn({ method: "GET" })
 export const schedulePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => ScheduleInput.parse(input))
-  .handler(({ data, context }) =>
-    createScheduledPostFor(context.supabase, context.userId, data),
-  );
+  .handler(({ data, context }) => createScheduledPostFor(context.supabase, context.userId, data));
 
 export const rescheduleScheduledPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

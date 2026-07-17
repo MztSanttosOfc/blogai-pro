@@ -67,10 +67,7 @@ function TopicCard({ topic, highlight }: { topic: SeoHelpTopic; highlight: boole
   const meta = SEVERITY_META[topic.severity];
   const Icon = meta.icon;
   return (
-    <Card
-      id={topic.id}
-      className={`scroll-mt-24 p-5 ${highlight ? "ring-2 ring-primary" : ""}`}
-    >
+    <Card id={topic.id} className={`scroll-mt-24 p-5 ${highlight ? "ring-2 ring-primary" : ""}`}>
       <div className="flex items-start gap-3">
         <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${meta.color}`} />
         <div className="min-w-0 flex-1 space-y-3">
@@ -91,8 +88,7 @@ function TopicCard({ topic, highlight }: { topic: SeoHelpTopic; highlight: boole
           {topic.automatic.length > 0 && (
             <div className="rounded-lg bg-muted/40 p-3">
               <p className="mb-1 flex items-center gap-1.5 text-xs font-medium text-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                O BlogAI Pro faz automaticamente
+                <Sparkles className="h-3.5 w-3.5 text-primary" />O BlogAI Pro faz automaticamente
               </p>
               <ul className="space-y-1 pl-1">
                 {topic.automatic.map((a) => (
@@ -142,12 +138,9 @@ function TopicCard({ topic, highlight }: { topic: SeoHelpTopic; highlight: boole
 
 function HelpPage() {
   const { topic } = Route.useSearch();
-  const active =
-    topic && topic in SEO_HELP_TOPICS ? (topic as SeoHelpTopicId) : undefined;
+  const active = topic && topic in SEO_HELP_TOPICS ? (topic as SeoHelpTopicId) : undefined;
   // Show the active topic first, then the rest for reference.
-  const order = active
-    ? [active, ...SEO_HELP_ORDER.filter((t) => t !== active)]
-    : SEO_HELP_ORDER;
+  const order = active ? [active, ...SEO_HELP_ORDER.filter((t) => t !== active)] : SEO_HELP_ORDER;
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6">

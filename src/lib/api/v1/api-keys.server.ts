@@ -27,9 +27,9 @@ export async function sha256Hex(input: string): Promise<string> {
 }
 
 export interface GeneratedApiKey {
-  token: string;      // apresentado uma única vez
-  prefix: string;     // 12 primeiros chars (para exibição posterior)
-  key_hash: string;   // sha256(token)
+  token: string; // apresentado uma única vez
+  prefix: string; // 12 primeiros chars (para exibição posterior)
+  key_hash: string; // sha256(token)
 }
 
 export async function generateApiKey(): Promise<GeneratedApiKey> {

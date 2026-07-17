@@ -10,9 +10,7 @@ import { sha256Hex } from "./api-keys.server";
 const MAX_KEY_LEN = 255;
 
 export function readIdempotencyKey(request: Request): string | null {
-  const raw =
-    request.headers.get("idempotency-key") ??
-    request.headers.get("Idempotency-Key");
+  const raw = request.headers.get("idempotency-key") ?? request.headers.get("Idempotency-Key");
   if (!raw) return null;
   const trimmed = raw.trim();
   if (!trimmed || trimmed.length > MAX_KEY_LEN) return null;

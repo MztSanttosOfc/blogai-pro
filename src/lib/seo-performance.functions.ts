@@ -148,7 +148,12 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
       .eq("user_id", userId)
       .maybeSingle();
     if (!conn) {
-      step("connection", "Conta Google conectada", "fail", "Nenhuma conexão do Blogger encontrada.");
+      step(
+        "connection",
+        "Conta Google conectada",
+        "fail",
+        "Nenhuma conexão do Blogger encontrada.",
+      );
       return {
         available: false,
         reason: "not-connected",
@@ -406,7 +411,9 @@ export const getSeoPerformance = createServerFn({ method: "POST" })
         "cache",
         "Cache do BlogAI Pro",
         "ok",
-        data.refresh ? "Atualização forçada — cache ignorado." : "Sem cache válido — buscando na API.",
+        data.refresh
+          ? "Atualização forçada — cache ignorado."
+          : "Sem cache válido — buscando na API.",
       );
 
       // Previous comparable period (same length, immediately before).
