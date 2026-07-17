@@ -53,11 +53,11 @@ export async function saveClusterFor(
       user_id: userId,
       topic: input.topic,
       language: input.language,
-      pillar: input.pillar,
-      satellites: input.satellites,
+      pillar: input.pillar as unknown as Database["public"]["Tables"]["content_clusters"]["Insert"]["pillar"],
+      satellites: input.satellites as unknown as Database["public"]["Tables"]["content_clusters"]["Insert"]["satellites"],
       primary_keywords: input.primaryKeywords,
       secondary_keywords: input.secondaryKeywords,
-      internal_links: input.internalLinks,
+      internal_links: input.internalLinks as unknown as Database["public"]["Tables"]["content_clusters"]["Insert"]["internal_links"],
     })
     .select("id")
     .single();
