@@ -47,7 +47,9 @@ import { Route as ApiV1SchedulingIdRouteImport } from './routes/api/v1/schedulin
 import { Route as ApiV1CreditsTransactionsRouteImport } from './routes/api/v1/credits/transactions'
 import { Route as ApiV1ClustersIdRouteImport } from './routes/api/v1/clusters/$id'
 import { Route as ApiV1BloggerStatusRouteImport } from './routes/api/v1/blogger/status'
+import { Route as ApiV1AuthRefreshRouteImport } from './routes/api/v1/auth/refresh'
 import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
+import { Route as ApiV1AuthLoginRouteImport } from './routes/api/v1/auth/login'
 import { Route as ApiV1ArticlesIdRouteImport } from './routes/api/v1/articles/$id'
 import { Route as ApiV1ApiKeysIdRouteImport } from './routes/api/v1/api-keys/$id'
 import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
@@ -251,9 +253,19 @@ const ApiV1BloggerStatusRoute = ApiV1BloggerStatusRouteImport.update({
   path: '/api/v1/blogger/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1AuthRefreshRoute = ApiV1AuthRefreshRouteImport.update({
+  id: '/api/v1/auth/refresh',
+  path: '/api/v1/auth/refresh',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1AuthMeRoute = ApiV1AuthMeRouteImport.update({
   id: '/api/v1/auth/me',
   path: '/api/v1/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1AuthLoginRoute = ApiV1AuthLoginRouteImport.update({
+  id: '/api/v1/auth/login',
+  path: '/api/v1/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1ArticlesIdRoute = ApiV1ArticlesIdRouteImport.update({
@@ -308,7 +320,9 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
+  '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/auth/refresh': typeof ApiV1AuthRefreshRoute
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
@@ -352,7 +366,9 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
+  '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/auth/refresh': typeof ApiV1AuthRefreshRoute
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
@@ -398,7 +414,9 @@ export interface FileRoutesById {
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
+  '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/auth/refresh': typeof ApiV1AuthRefreshRoute
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
@@ -444,7 +462,9 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
+    | '/api/v1/auth/login'
     | '/api/v1/auth/me'
+    | '/api/v1/auth/refresh'
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
@@ -488,7 +508,9 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
+    | '/api/v1/auth/login'
     | '/api/v1/auth/me'
+    | '/api/v1/auth/refresh'
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
@@ -533,7 +555,9 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
+    | '/api/v1/auth/login'
     | '/api/v1/auth/me'
+    | '/api/v1/auth/refresh'
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
@@ -561,7 +585,9 @@ export interface RootRouteChildren {
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
   ApiV1ApiKeysIdRoute: typeof ApiV1ApiKeysIdRoute
   ApiV1ArticlesIdRoute: typeof ApiV1ArticlesIdRoute
+  ApiV1AuthLoginRoute: typeof ApiV1AuthLoginRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
+  ApiV1AuthRefreshRoute: typeof ApiV1AuthRefreshRoute
   ApiV1BloggerStatusRoute: typeof ApiV1BloggerStatusRoute
   ApiV1ClustersIdRoute: typeof ApiV1ClustersIdRoute
   ApiV1CreditsTransactionsRoute: typeof ApiV1CreditsTransactionsRoute
@@ -845,11 +871,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1BloggerStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/auth/refresh': {
+      id: '/api/v1/auth/refresh'
+      path: '/api/v1/auth/refresh'
+      fullPath: '/api/v1/auth/refresh'
+      preLoaderRoute: typeof ApiV1AuthRefreshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/auth/me': {
       id: '/api/v1/auth/me'
       path: '/api/v1/auth/me'
       fullPath: '/api/v1/auth/me'
       preLoaderRoute: typeof ApiV1AuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/auth/login': {
+      id: '/api/v1/auth/login'
+      path: '/api/v1/auth/login'
+      fullPath: '/api/v1/auth/login'
+      preLoaderRoute: typeof ApiV1AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/articles/$id': {
@@ -950,7 +990,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
   ApiV1ApiKeysIdRoute: ApiV1ApiKeysIdRoute,
   ApiV1ArticlesIdRoute: ApiV1ArticlesIdRoute,
+  ApiV1AuthLoginRoute: ApiV1AuthLoginRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,
+  ApiV1AuthRefreshRoute: ApiV1AuthRefreshRoute,
   ApiV1BloggerStatusRoute: ApiV1BloggerStatusRoute,
   ApiV1ClustersIdRoute: ApiV1ClustersIdRoute,
   ApiV1CreditsTransactionsRoute: ApiV1CreditsTransactionsRoute,
