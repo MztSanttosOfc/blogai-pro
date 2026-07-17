@@ -5,6 +5,9 @@
 export type ApiErrorCode =
   | "unauthorized"
   | "invalid_token"
+  | "api_key_invalid"
+  | "api_key_revoked"
+  | "api_key_expired"
   | "forbidden"
   | "not_admin"
   | "not_premium"
@@ -14,6 +17,8 @@ export type ApiErrorCode =
   | "not_found"
   | "conflict"
   | "already_exists"
+  | "idempotency_conflict"
+  | "rate_limited"
   | "insufficient_credits"
   | "plan_required"
   | "blogger_not_connected"
@@ -58,6 +63,9 @@ export class ApiError extends Error {
 export const DEFAULT_STATUS_BY_CODE: Record<ApiErrorCode, number> = {
   unauthorized: 401,
   invalid_token: 401,
+  api_key_invalid: 401,
+  api_key_revoked: 401,
+  api_key_expired: 401,
   forbidden: 403,
   not_admin: 403,
   not_premium: 403,
@@ -67,6 +75,8 @@ export const DEFAULT_STATUS_BY_CODE: Record<ApiErrorCode, number> = {
   not_found: 404,
   conflict: 409,
   already_exists: 409,
+  idempotency_conflict: 409,
+  rate_limited: 429,
   insufficient_credits: 402,
   plan_required: 403,
   blogger_not_connected: 409,
