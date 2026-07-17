@@ -53,6 +53,146 @@ export type Database = {
         }
         Relationships: []
       }
+      api_idempotency_keys: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          idempotency_key: string
+          method: string
+          path: string
+          request_hash: string
+          response_body: Json
+          response_status: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          idempotency_key: string
+          method: string
+          path: string
+          request_hash: string
+          response_body: Json
+          response_status: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          idempotency_key?: string
+          method?: string
+          path?: string
+          request_hash?: string
+          response_body?: Json
+          response_status?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      api_keys: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          key_hash: string
+          last_used_at: string | null
+          name: string
+          prefix: string
+          rate_limit_per_minute: number
+          revoked_at: string | null
+          scopes: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash: string
+          last_used_at?: string | null
+          name: string
+          prefix: string
+          rate_limit_per_minute?: number
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash?: string
+          last_used_at?: string | null
+          name?: string
+          prefix?: string
+          rate_limit_per_minute?: number
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      api_request_logs: {
+        Row: {
+          api_key_id: string | null
+          auth_type: string
+          created_at: string
+          duration_ms: number | null
+          error_code: string | null
+          id: string
+          ip_address: string | null
+          method: string
+          path: string
+          request_id: string
+          status_code: number
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          api_key_id?: string | null
+          auth_type: string
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          id?: string
+          ip_address?: string | null
+          method: string
+          path: string
+          request_id: string
+          status_code: number
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          api_key_id?: string | null
+          auth_type?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          id?: string
+          ip_address?: string | null
+          method?: string
+          path?: string
+          request_id?: string
+          status_code?: number
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_request_logs_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           blogger_post_id: string | null
@@ -945,6 +1085,10 @@ export type Database = {
         Returns: Json
       }
       admin_stats: { Args: never; Returns: Json }
+      api_count_recent_requests: {
+        Args: { p_api_key_id: string; p_since: string; p_user_id: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
