@@ -187,54 +187,20 @@ const SaveInput = z.object({
 export const saveCluster = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => SaveInput.parse(input))
-  .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    const { data: inserted, error } = await supabase
-      .from("content_clusters")
-      .insert({
-        user_id: userId,
-        topic: data.topic,
-        language: data.language,
-        pillar: data.pillar,
-        satellites: data.satellites,
-        primary_keywords: data.primaryKeywords,
-        secondary_keywords: data.secondaryKeywords,
-        internal_links: data.internalLinks,
-      })
-      .select("id")
-      .single();
-    if (error) throw new Error("Não foi possível salvar o cluster.");
-    return { id: inserted.id };
-  });
+  .handler(({ data, context }) =>
+    saveClusterFor(context.supabase, context.userId, data),
+  );
 
 /** List the user's saved clusters. */
 export const listClusters = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<StoredCluster[]> => {
-    const { data, error } = await context.supabase
-      .from("content_clusters")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) throw new Error("Não foi possível carregar os clusters.");
-    return (data ?? []).map((r) => ({
-      id: r.id,
-      created_at: r.created_at,
-      topic: r.topic,
-      language: r.language,
-      pillar: r.pillar as unknown as ClusterPillar,
-      satellites: (r.satellites as unknown as ClusterSatellite[]) ?? [],
-      primaryKeywords: r.primary_keywords ?? [],
-      secondaryKeywords: r.secondary_keywords ?? [],
-      internalLinks: (r.internal_links as unknown as ClusterInternalLink[]) ?? [],
-    }));
-  });
+  .handler(({ context }) => listClustersFor(context.supabase));
 
 /** Delete a saved cluster. */
 export const deleteCluster = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("content_clusters").delete().eq("id", data.id);
-    if (error) throw new Error("Não foi possível excluir o cluster.");
+    await deleteClusterFor(context.supabase, data.id);
     return { ok: true };
   });
