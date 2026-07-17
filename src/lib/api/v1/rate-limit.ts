@@ -39,7 +39,7 @@ export async function checkRateLimit(
 
   const { data: count } = await admin.rpc("api_count_recent_requests", {
     p_user_id: opts.userId,
-    p_api_key_id: opts.apiKeyId,
+    p_api_key_id: opts.apiKeyId as unknown as string,
     p_since: since,
   });
 
