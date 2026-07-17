@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/v1/blogger/status")({
         const { data } = await ctx.supabase
           .from("blogger_connections")
           .select(
-            "connected_at, google_email, selected_blog_id, selected_blog_name, selected_blog_url, updated_at",
+            "created_at, google_email, selected_blog_id, selected_blog_name, updated_at",
           )
           .maybeSingle();
         return jsonOk(
@@ -22,8 +22,7 @@ export const Route = createFileRoute("/api/v1/blogger/status")({
             google_email: data?.google_email ?? null,
             selected_blog_id: data?.selected_blog_id ?? null,
             selected_blog_name: data?.selected_blog_name ?? null,
-            selected_blog_url: data?.selected_blog_url ?? null,
-            connected_at: data?.connected_at ?? null,
+            connected_at: data?.created_at ?? null,
             updated_at: data?.updated_at ?? null,
           },
           { requestId },
