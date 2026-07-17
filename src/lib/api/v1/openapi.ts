@@ -119,6 +119,57 @@ export function buildOpenApiDocument(origin: string) {
           responses: { "200": envelopeResponse("Documento OpenAPI 3.1") },
         },
       },
+      "/auth/login": {
+        post: {
+          summary: "Autentica com e-mail e senha e retorna tokens",
+          security: [],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["email", "password"],
+                  properties: {
+                    email: { type: "string", format: "email" },
+                    password: { type: "string", minLength: 6 },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            "200": envelopeResponse(
+              "Sessão criada (access_token, refresh_token, expires_in, user)",
+            ),
+            "401": envelopeResponse("Credenciais inválidas"),
+            "422": envelopeResponse("Erro de validação"),
+          },
+        },
+      },
+      "/auth/refresh": {
+        post: {
+          summary: "Renova o access_token a partir de um refresh_token",
+          security: [],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["refresh_token"],
+                  properties: { refresh_token: { type: "string" } },
+                },
+              },
+            },
+          },
+          responses: {
+            "200": envelopeResponse("Nova sessão emitida"),
+            "401": envelopeResponse("Refresh token inválido ou expirado"),
+            "422": envelopeResponse("Erro de validação"),
+          },
+        },
+      },
       "/auth/me": {
         get: {
           summary: "Retorna identidade do usuário autenticado",
