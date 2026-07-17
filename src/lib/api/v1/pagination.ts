@@ -34,10 +34,7 @@ export function parseListParams(url: URL, allowedSort: string[] = []): ListParam
   return { page, per_page, sort, search };
 }
 
-export function buildPagination(
-  params: ListParams,
-  total: number,
-): Pagination {
+export function buildPagination(params: ListParams, total: number): Pagination {
   const total_pages = Math.max(1, Math.ceil(total / params.per_page));
   return {
     page: params.page,

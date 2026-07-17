@@ -99,8 +99,7 @@ export function toErrorResponse(err: unknown, requestId?: string): Response {
       requestId,
     });
   }
-  const message =
-    err instanceof Error ? err.message : "Erro interno inesperado.";
+  const message = err instanceof Error ? err.message : "Erro interno inesperado.";
   // Nunca vaza stack trace ao cliente. O log no servidor mantém o detalhe.
   console.error("[api:v1] unhandled", err);
   return jsonError("internal_error", "Erro interno. Tente novamente em instantes.", {

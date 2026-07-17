@@ -71,18 +71,13 @@ export const Route = createFileRoute("/api/v1/api-keys/")({
             rate_limit_per_minute: parsed.data.rate_limit_per_minute ?? 60,
             expires_at: parsed.data.expires_at ?? null,
           })
-          .select(
-            "id, name, prefix, scopes, rate_limit_per_minute, expires_at, created_at",
-          )
+          .select("id, name, prefix, scopes, rate_limit_per_minute, expires_at, created_at")
           .maybeSingle();
         if (error || !data) {
           throw new ApiError("internal_error", error?.message ?? "Erro ao criar chave.", 500);
         }
 
-        return jsonOk(
-          { ...data, token: generated.token },
-          { requestId, status: 201 },
-        );
+        return jsonOk({ ...data, token: generated.token }, { requestId, status: 201 });
       }),
     },
   },

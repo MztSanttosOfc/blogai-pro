@@ -163,12 +163,7 @@ export function describePermission(level: string | undefined | null): string {
 }
 
 /** How a blog URL was matched to a Search Console property (for diagnostics). */
-export type MatchKind =
-  | "exact-url"
-  | "exact-domain"
-  | "root-domain"
-  | "subdomain"
-  | "none";
+export type MatchKind = "exact-url" | "exact-domain" | "root-domain" | "subdomain" | "none";
 
 export interface SiteMatch {
   siteUrl: string;
@@ -185,13 +180,41 @@ export interface SiteMatch {
  * it degrades gracefully (falls back to the last two labels) for anything else.
  */
 const MULTI_LABEL_SUFFIXES = new Set([
-  "com.br", "net.br", "org.br", "gov.br", "edu.br", "blog.br",
-  "co.uk", "org.uk", "gov.uk", "ac.uk", "me.uk",
-  "com.au", "net.au", "org.au", "gov.au", "edu.au",
-  "co.jp", "or.jp", "ne.jp", "go.jp",
-  "co.nz", "org.nz", "govt.nz",
-  "com.mx", "com.ar", "com.co", "com.pt", "com.es", "com.pe",
-  "co.za", "co.in", "co.id", "com.tr", "com.sg", "com.hk",
+  "com.br",
+  "net.br",
+  "org.br",
+  "gov.br",
+  "edu.br",
+  "blog.br",
+  "co.uk",
+  "org.uk",
+  "gov.uk",
+  "ac.uk",
+  "me.uk",
+  "com.au",
+  "net.au",
+  "org.au",
+  "gov.au",
+  "edu.au",
+  "co.jp",
+  "or.jp",
+  "ne.jp",
+  "go.jp",
+  "co.nz",
+  "org.nz",
+  "govt.nz",
+  "com.mx",
+  "com.ar",
+  "com.co",
+  "com.pt",
+  "com.es",
+  "com.pe",
+  "co.za",
+  "co.in",
+  "co.id",
+  "com.tr",
+  "com.sg",
+  "com.hk",
 ]);
 
 /** Registrable domain (eTLD+1) — public-suffix aware, so `.com.br` etc. work. */
@@ -245,7 +268,10 @@ export function matchSiteDetailed(sites: GscSite[], blogUrl: string): SiteMatch 
     let score = 0;
     let kind: MatchKind = "none";
     if (s.siteUrl.startsWith("sc-domain:")) {
-      const scHost = s.siteUrl.slice("sc-domain:".length).replace(/^www\./, "").toLowerCase();
+      const scHost = s.siteUrl
+        .slice("sc-domain:".length)
+        .replace(/^www\./, "")
+        .toLowerCase();
       if (scHost === host) {
         score = 95;
         kind = "exact-domain";
@@ -543,7 +569,10 @@ export async function syncPropertyMap(
         })),
         { onConflict: "user_id,blog_id" },
       )
-      .then(() => undefined, () => undefined);
+      .then(
+        () => undefined,
+        () => undefined,
+      );
   }
 
   // Remove mappings for blogs no longer in the account.
@@ -554,7 +583,10 @@ export async function syncPropertyMap(
       .delete()
       .eq("user_id", userId)
       .in("blog_id", stale)
-      .then(() => undefined, () => undefined);
+      .then(
+        () => undefined,
+        () => undefined,
+      );
   }
 
   return changes;
@@ -568,5 +600,8 @@ export async function clearSeoCacheForUser(userId: string): Promise<void> {
     .from("seo_cache")
     .delete()
     .eq("user_id", userId)
-    .then(() => undefined, () => undefined);
+    .then(
+      () => undefined,
+      () => undefined,
+    );
 }

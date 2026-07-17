@@ -18,10 +18,7 @@ export interface CreditTransactionRow {
   created_at: string;
 }
 
-export async function getCreditsBalanceFor(
-  supabase: SB,
-  userId: string,
-): Promise<CreditsBalance> {
+export async function getCreditsBalanceFor(supabase: SB, userId: string): Promise<CreditsBalance> {
   const { data, error } = await supabase
     .from("profiles")
     .select("credits, plan")

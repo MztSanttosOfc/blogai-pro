@@ -8,29 +8,11 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "@/integrations/supabase/types";
 import { ApiError } from "./errors";
-import {
-  corsPreflight,
-  jsonError,
-  jsonOk,
-  newRequestId,
-  toErrorResponse,
-} from "./envelope";
-import {
-  isTokenLikeApiKey,
-  verifyApiKey,
-  type ApiKeyRow,
-} from "./api-keys.server";
+import { corsPreflight, jsonError, jsonOk, newRequestId, toErrorResponse } from "./envelope";
+import { isTokenLikeApiKey, verifyApiKey, type ApiKeyRow } from "./api-keys.server";
 import { checkRateLimit, rateLimitHeaders } from "./rate-limit";
-import {
-  extractIp,
-  logRequest,
-  type RequestLogEntry,
-} from "./logging";
-import {
-  lookupIdempotency,
-  readIdempotencyKey,
-  saveIdempotency,
-} from "./idempotency";
+import { extractIp, logRequest, type RequestLogEntry } from "./logging";
+import { lookupIdempotency, readIdempotencyKey, saveIdempotency } from "./idempotency";
 
 export type AuthType = "jwt" | "api_key";
 
@@ -96,10 +78,7 @@ async function verifyBearer(request: Request): Promise<AuthContext> {
     }
 
     // Atualiza last_used_at em background (não bloqueia).
-    void admin
-      .from("api_keys")
-      .update({ last_used_at: new Date().toISOString() })
-      .eq("id", row.id);
+    void admin.from("api_keys").update({ last_used_at: new Date().toISOString() }).eq("id", row.id);
 
     // Client Supabase impersonando o dono da API Key (RLS aplicada).
     // Gera um "session-less" client usando a service key mas filtrando
@@ -191,7 +170,10 @@ export function withAuth(handler: AuthedHandler) {
               ...rateLimitHeaders(info),
             },
           });
-          logRequest(admin, buildLog(ctx, request, url, response.status, null, requestId, Date.now() - started));
+          logRequest(
+            admin,
+            buildLog(ctx, request, url, response.status, null, requestId, Date.now() - started),
+          );
           return response;
         }
       }
@@ -218,14 +200,20 @@ export function withAuth(handler: AuthedHandler) {
         }
       }
 
-      logRequest(admin, buildLog(ctx, request, url, response.status, null, requestId, Date.now() - started));
+      logRequest(
+        admin,
+        buildLog(ctx, request, url, response.status, null, requestId, Date.now() - started),
+      );
       return response;
     } catch (err) {
       response = toErrorResponse(err, requestId);
       if (ctx) {
         const admin = await adminClient();
         const code = err instanceof ApiError ? err.code : "internal_error";
-        logRequest(admin, buildLog(ctx, request, url, response.status, code, requestId, Date.now() - started));
+        logRequest(
+          admin,
+          buildLog(ctx, request, url, response.status, code, requestId, Date.now() - started),
+        );
       }
       return response;
     }

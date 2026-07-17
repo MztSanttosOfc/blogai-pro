@@ -238,9 +238,7 @@ async function fetchTokenScopes(accessToken: string): Promise<string[]> {
  * OAuth scopes were actually granted. This lets the panel self-diagnose instead
  * of showing a generic error.
  */
-export async function getBloggerTokenDiagnostics(
-  userId: string,
-): Promise<BloggerTokenDiagnostics> {
+export async function getBloggerTokenDiagnostics(userId: string): Promise<BloggerTokenDiagnostics> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: conn, error } = await supabaseAdmin
     .from("blogger_connections")
@@ -286,7 +284,6 @@ export async function getBloggerTokenDiagnostics(
     hasSearchConsoleScope: scopes.length === 0 ? true : scopes.includes(WEBMASTERS_SCOPE),
   };
 }
-
 
 /** Create a static Blogger Page (used for About/Contact/Privacy/Terms etc.). */
 export async function createBloggerPage(

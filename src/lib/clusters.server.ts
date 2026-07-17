@@ -39,7 +39,7 @@ export interface StoredCluster extends GeneratedCluster {
   created_at: string;
 }
 
-export interface SaveClusterInput extends GeneratedCluster {}
+export type SaveClusterInput = GeneratedCluster;
 
 type ClusterInsert = Database["public"]["Tables"]["content_clusters"]["Insert"];
 

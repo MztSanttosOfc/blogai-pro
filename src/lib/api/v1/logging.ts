@@ -19,10 +19,7 @@ export interface RequestLogEntry {
   userAgent?: string | null;
 }
 
-export function logRequest(
-  admin: SupabaseClient<Database>,
-  entry: RequestLogEntry,
-): void {
+export function logRequest(admin: SupabaseClient<Database>, entry: RequestLogEntry): void {
   // Não aguardamos: qualquer falha no log não deve quebrar a resposta.
   void admin
     .from("api_request_logs")

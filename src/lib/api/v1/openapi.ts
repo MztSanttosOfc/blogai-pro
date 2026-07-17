@@ -64,7 +64,11 @@ const commonErrors = {
 
 const paginationParams = [
   { name: "page", in: "query", schema: { type: "integer", minimum: 1, default: 1 } },
-  { name: "per_page", in: "query", schema: { type: "integer", minimum: 1, maximum: 100, default: 20 } },
+  {
+    name: "per_page",
+    in: "query",
+    schema: { type: "integer", minimum: 1, maximum: 100, default: 20 },
+  },
   { name: "sort", in: "query", schema: { type: "string" }, description: "Prefixe '-' para desc" },
   { name: "search", in: "query", schema: { type: "string" } },
 ];
@@ -79,9 +83,7 @@ export function buildOpenApiDocument(origin: string) {
         "API REST oficial do BlogAI Pro. Base para Plugin do WordPress, Aplicativo Web, Android (Capacitor), futura versão iOS e integrações externas.",
       contact: { name: "BlogAI Pro", url: "https://monzart.com.br" },
     },
-    servers: [
-      { url: `${origin}/api/v1`, description: "API v1" },
-    ],
+    servers: [{ url: `${origin}/api/v1`, description: "API v1" }],
     components: {
       securitySchemes: {
         BearerAuth: {
@@ -222,33 +224,76 @@ export function buildOpenApiDocument(origin: string) {
         },
       },
       "/clusters": {
-        get: { summary: "Lista clusters", parameters: paginationParams, responses: { "200": envelopeResponse("Clusters"), ...commonErrors } },
+        get: {
+          summary: "Lista clusters",
+          parameters: paginationParams,
+          responses: { "200": envelopeResponse("Clusters"), ...commonErrors },
+        },
       },
       "/clusters/{id}": {
-        get: { summary: "Detalhe cluster", parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { "200": envelopeResponse("Cluster"), ...commonErrors } },
-        delete: { summary: "Remove cluster", parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }, { $ref: "#/components/parameters/IdempotencyKey" }], responses: { "200": envelopeResponse("Removido"), ...commonErrors } },
+        get: {
+          summary: "Detalhe cluster",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": envelopeResponse("Cluster"), ...commonErrors },
+        },
+        delete: {
+          summary: "Remove cluster",
+          parameters: [
+            { name: "id", in: "path", required: true, schema: { type: "string" } },
+            { $ref: "#/components/parameters/IdempotencyKey" },
+          ],
+          responses: { "200": envelopeResponse("Removido"), ...commonErrors },
+        },
       },
       "/scheduling": {
-        get: { summary: "Lista agendamentos", parameters: paginationParams, responses: { "200": envelopeResponse("Agendamentos"), ...commonErrors } },
-        post: { summary: "Cria agendamento", parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }], responses: { "201": envelopeResponse("Criado"), ...commonErrors } },
+        get: {
+          summary: "Lista agendamentos",
+          parameters: paginationParams,
+          responses: { "200": envelopeResponse("Agendamentos"), ...commonErrors },
+        },
+        post: {
+          summary: "Cria agendamento",
+          parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }],
+          responses: { "201": envelopeResponse("Criado"), ...commonErrors },
+        },
       },
       "/scheduling/{id}": {
-        delete: { summary: "Cancela agendamento", parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { "200": envelopeResponse("Cancelado"), ...commonErrors } },
+        delete: {
+          summary: "Cancela agendamento",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": envelopeResponse("Cancelado"), ...commonErrors },
+        },
       },
       "/credits": {
-        get: { summary: "Saldo de créditos", responses: { "200": envelopeResponse("Créditos"), ...commonErrors } },
+        get: {
+          summary: "Saldo de créditos",
+          responses: { "200": envelopeResponse("Créditos"), ...commonErrors },
+        },
       },
       "/credits/transactions": {
-        get: { summary: "Histórico de transações", parameters: paginationParams, responses: { "200": envelopeResponse("Transações"), ...commonErrors } },
+        get: {
+          summary: "Histórico de transações",
+          parameters: paginationParams,
+          responses: { "200": envelopeResponse("Transações"), ...commonErrors },
+        },
       },
       "/subscriptions/current": {
-        get: { summary: "Assinatura atual", responses: { "200": envelopeResponse("Assinatura"), ...commonErrors } },
+        get: {
+          summary: "Assinatura atual",
+          responses: { "200": envelopeResponse("Assinatura"), ...commonErrors },
+        },
       },
       "/blogger/status": {
-        get: { summary: "Status da integração Blogger", responses: { "200": envelopeResponse("Status"), ...commonErrors } },
+        get: {
+          summary: "Status da integração Blogger",
+          responses: { "200": envelopeResponse("Status"), ...commonErrors },
+        },
       },
       "/seo/status": {
-        get: { summary: "Status do Google Search Console", responses: { "200": envelopeResponse("Status"), ...commonErrors } },
+        get: {
+          summary: "Status do Google Search Console",
+          responses: { "200": envelopeResponse("Status"), ...commonErrors },
+        },
       },
     },
   } as const;

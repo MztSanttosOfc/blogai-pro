@@ -1,11 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  saveClusterFor,
-  listClustersFor,
-  deleteClusterFor,
-} from "./clusters.server";
+import { saveClusterFor, listClustersFor, deleteClusterFor } from "./clusters.server";
 
 export interface ClusterSatellite {
   title: string;
@@ -192,9 +188,7 @@ const SaveInput = z.object({
 export const saveCluster = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => SaveInput.parse(input))
-  .handler(({ data, context }) =>
-    saveClusterFor(context.supabase, context.userId, data),
-  );
+  .handler(({ data, context }) => saveClusterFor(context.supabase, context.userId, data));
 
 /** List the user's saved clusters. */
 export const listClusters = createServerFn({ method: "GET" })

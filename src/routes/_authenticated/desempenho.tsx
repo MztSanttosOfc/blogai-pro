@@ -328,13 +328,7 @@ const STATUS_META: Record<
 };
 
 /** Permanent 🟢🟡🔴 integration status pill + description, updated automatically. */
-function IntegrationStatus({
-  severity,
-  topicId,
-}: {
-  severity: SeoHelpSeverity;
-  topicId: string;
-}) {
+function IntegrationStatus({ severity, topicId }: { severity: SeoHelpSeverity; topicId: string }) {
   const meta = STATUS_META[severity];
   return (
     <div className="flex flex-col items-end gap-1 animate-fade-in">
@@ -425,7 +419,6 @@ function NoDataState({ siteUrl }: { siteUrl?: string }) {
     </Card>
   );
 }
-
 
 type Grouping = "day" | "week" | "month";
 
@@ -564,7 +557,6 @@ function SeoPage() {
         <div className="space-y-4">
           <Card className="flex flex-col items-center gap-4 p-8 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-
               {data?.reason === "unverified" ? (
                 <ShieldCheck className="h-7 w-7" />
               ) : (
@@ -612,8 +604,8 @@ function SeoPage() {
                   </li>
                   <li>
                     Selecione o projeto das suas credenciais e clique em{" "}
-                    <span className="font-medium text-foreground">Ativar</span> na API
-                    &quot;Google Search Console API&quot;.
+                    <span className="font-medium text-foreground">Ativar</span> na API &quot;Google
+                    Search Console API&quot;.
                   </li>
                   <li>Aguarde 1–2 minutos e volte aqui para atualizar.</li>
                 </ol>
@@ -641,11 +633,16 @@ function SeoPage() {
                     <span className="font-medium text-foreground">
                       {data.problemSite ?? "do seu blog"}
                     </span>{" "}
-                    e conclua a <span className="font-medium text-foreground">verificação de propriedade</span>.
+                    e conclua a{" "}
+                    <span className="font-medium text-foreground">verificação de propriedade</span>.
                   </li>
                   <li>
                     Se a propriedade for de outra pessoa, peça para ela adicionar seu e-mail como
-                    usuário em <span className="font-medium text-foreground">Configurações → Usuários e permissões</span>.
+                    usuário em{" "}
+                    <span className="font-medium text-foreground">
+                      Configurações → Usuários e permissões
+                    </span>
+                    .
                   </li>
                   <li>Depois volte aqui e clique em Atualizar — nenhuma reconexão é necessária.</li>
                 </ol>
@@ -820,8 +817,7 @@ function SeoPage() {
                 const hasCountries = (data.countries?.length ?? 0) > 0;
                 const hasDevices = (data.devices?.length ?? 0) > 0;
                 const hasAppearance = (data.appearance?.length ?? 0) > 0;
-                const hasTrends =
-                  (data.gainers?.length ?? 0) > 0 || (data.losers?.length ?? 0) > 0;
+                const hasTrends = (data.gainers?.length ?? 0) > 0 || (data.losers?.length ?? 0) > 0;
                 const firstTab = hasQueries
                   ? "queries"
                   : hasPages

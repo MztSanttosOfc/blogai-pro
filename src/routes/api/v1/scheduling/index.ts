@@ -6,10 +6,7 @@ import { z } from "zod";
 import { corsPreflight, jsonOk } from "@/lib/api/v1/envelope";
 import { ApiError } from "@/lib/api/v1/errors";
 import { withAuth } from "@/lib/api/v1/_middleware";
-import {
-  createScheduledPostFor,
-  listScheduledPostsFor,
-} from "@/lib/scheduling.server";
+import { createScheduledPostFor, listScheduledPostsFor } from "@/lib/scheduling.server";
 
 const CreateInput = z.object({
   article_id: z.string().uuid(),
