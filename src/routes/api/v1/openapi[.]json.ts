@@ -6,7 +6,7 @@ import { corsPreflight } from "@/lib/api/v1/envelope";
 import { withPublic } from "@/lib/api/v1/_middleware";
 import { buildOpenApiDocument } from "@/lib/api/v1/openapi";
 
-export const Route = createFileRoute("/api/v1/openapi/json")({
+export const Route = createFileRoute("/api/v1/openapi.json")({
   server: {
     handlers: {
       OPTIONS: () => corsPreflight(),

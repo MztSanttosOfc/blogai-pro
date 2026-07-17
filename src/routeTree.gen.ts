@@ -29,6 +29,7 @@ import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAjudaRouteImport } from './routes/_authenticated/ajuda'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiV1OpenapiDotjsonRouteImport } from './routes/api/v1/openapi[.]json'
 import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
@@ -43,7 +44,6 @@ import { Route as ApiV1ApiKeysIndexRouteImport } from './routes/api/v1/api-keys/
 import { Route as ApiV1SubscriptionsCurrentRouteImport } from './routes/api/v1/subscriptions/current'
 import { Route as ApiV1SeoStatusRouteImport } from './routes/api/v1/seo/status'
 import { Route as ApiV1SchedulingIdRouteImport } from './routes/api/v1/scheduling/$id'
-import { Route as ApiV1OpenapiJsonRouteImport } from './routes/api/v1/openapi/json'
 import { Route as ApiV1CreditsTransactionsRouteImport } from './routes/api/v1/credits/transactions'
 import { Route as ApiV1ClustersIdRouteImport } from './routes/api/v1/clusters/$id'
 import { Route as ApiV1BloggerStatusRouteImport } from './routes/api/v1/blogger/status'
@@ -158,6 +158,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiV1OpenapiDotjsonRoute = ApiV1OpenapiDotjsonRouteImport.update({
+  id: '/api/v1/openapi.json',
+  path: '/api/v1/openapi.json',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1LogsRoute = ApiV1LogsRouteImport.update({
   id: '/api/v1/logs',
   path: '/api/v1/logs',
@@ -230,11 +235,6 @@ const ApiV1SchedulingIdRoute = ApiV1SchedulingIdRouteImport.update({
   path: '/api/v1/scheduling/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiV1OpenapiJsonRoute = ApiV1OpenapiJsonRouteImport.update({
-  id: '/api/v1/openapi/json',
-  path: '/api/v1/openapi/json',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiV1CreditsTransactionsRoute =
   ApiV1CreditsTransactionsRouteImport.update({
     id: '/api/v1/credits/transactions',
@@ -303,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
+  '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
@@ -311,7 +312,6 @@ export interface FileRoutesByFullPath {
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
-  '/api/v1/openapi/json': typeof ApiV1OpenapiJsonRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
@@ -347,6 +347,7 @@ export interface FileRoutesByTo {
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
+  '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
@@ -355,7 +356,6 @@ export interface FileRoutesByTo {
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
-  '/api/v1/openapi/json': typeof ApiV1OpenapiJsonRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
@@ -393,6 +393,7 @@ export interface FileRoutesById {
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
+  '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
@@ -401,7 +402,6 @@ export interface FileRoutesById {
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
-  '/api/v1/openapi/json': typeof ApiV1OpenapiJsonRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
@@ -439,6 +439,7 @@ export interface FileRouteTypes {
     | '/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
+    | '/api/v1/openapi.json'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
@@ -447,7 +448,6 @@ export interface FileRouteTypes {
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
-    | '/api/v1/openapi/json'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
@@ -483,6 +483,7 @@ export interface FileRouteTypes {
     | '/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
+    | '/api/v1/openapi.json'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
@@ -491,7 +492,6 @@ export interface FileRouteTypes {
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
-    | '/api/v1/openapi/json'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
@@ -528,6 +528,7 @@ export interface FileRouteTypes {
     | '/_authenticated/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
+    | '/api/v1/openapi.json'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
@@ -536,7 +537,6 @@ export interface FileRouteTypes {
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
-    | '/api/v1/openapi/json'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
@@ -556,6 +556,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   ApiV1HealthRoute: typeof ApiV1HealthRoute
   ApiV1LogsRoute: typeof ApiV1LogsRoute
+  ApiV1OpenapiDotjsonRoute: typeof ApiV1OpenapiDotjsonRoute
   ApiPublicHooksPublishScheduledRoute: typeof ApiPublicHooksPublishScheduledRoute
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
   ApiV1ApiKeysIdRoute: typeof ApiV1ApiKeysIdRoute
@@ -564,7 +565,6 @@ export interface RootRouteChildren {
   ApiV1BloggerStatusRoute: typeof ApiV1BloggerStatusRoute
   ApiV1ClustersIdRoute: typeof ApiV1ClustersIdRoute
   ApiV1CreditsTransactionsRoute: typeof ApiV1CreditsTransactionsRoute
-  ApiV1OpenapiJsonRoute: typeof ApiV1OpenapiJsonRoute
   ApiV1SchedulingIdRoute: typeof ApiV1SchedulingIdRoute
   ApiV1SeoStatusRoute: typeof ApiV1SeoStatusRoute
   ApiV1SubscriptionsCurrentRoute: typeof ApiV1SubscriptionsCurrentRoute
@@ -719,6 +719,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/v1/openapi.json': {
+      id: '/api/v1/openapi.json'
+      path: '/api/v1/openapi.json'
+      fullPath: '/api/v1/openapi.json'
+      preLoaderRoute: typeof ApiV1OpenapiDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/logs': {
       id: '/api/v1/logs'
       path: '/api/v1/logs'
@@ -815,13 +822,6 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/scheduling/$id'
       fullPath: '/api/v1/scheduling/$id'
       preLoaderRoute: typeof ApiV1SchedulingIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/openapi/json': {
-      id: '/api/v1/openapi/json'
-      path: '/api/v1/openapi/json'
-      fullPath: '/api/v1/openapi/json'
-      preLoaderRoute: typeof ApiV1OpenapiJsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/credits/transactions': {
@@ -945,6 +945,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   ApiV1HealthRoute: ApiV1HealthRoute,
   ApiV1LogsRoute: ApiV1LogsRoute,
+  ApiV1OpenapiDotjsonRoute: ApiV1OpenapiDotjsonRoute,
   ApiPublicHooksPublishScheduledRoute: ApiPublicHooksPublishScheduledRoute,
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
   ApiV1ApiKeysIdRoute: ApiV1ApiKeysIdRoute,
@@ -953,7 +954,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1BloggerStatusRoute: ApiV1BloggerStatusRoute,
   ApiV1ClustersIdRoute: ApiV1ClustersIdRoute,
   ApiV1CreditsTransactionsRoute: ApiV1CreditsTransactionsRoute,
-  ApiV1OpenapiJsonRoute: ApiV1OpenapiJsonRoute,
   ApiV1SchedulingIdRoute: ApiV1SchedulingIdRoute,
   ApiV1SeoStatusRoute: ApiV1SeoStatusRoute,
   ApiV1SubscriptionsCurrentRoute: ApiV1SubscriptionsCurrentRoute,
