@@ -127,3 +127,121 @@ export async function runScheduledPublishing(): Promise<RunResult> {
 
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// CRUD helpers reused by createServerFn AND the /api/v1/scheduling REST layer.
+// These operate through a user-scoped Supabase client (RLS applied).
+// ---------------------------------------------------------------------------
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
+type SB = SupabaseClient<Database>;
+
+export interface ScheduledPostRow {
+  id: string;
+  article_id: string;
+  article_title: string;
+  scheduled_at: string;
+  status: string;
+  attempts: number;
+  blogger_post_url: string | null;
+  error: string | null;
+  executed_at: string | null;
+  created_at: string;
+}
+
+export async function listScheduledPostsFor(supabase: SB): Promise<ScheduledPostRow[]> {
+  const { data, error } = await supabase
+    .from("scheduled_posts")
+    .select(
+      "id, article_id, scheduled_at, status, attempts, blogger_post_url, error, executed_at, created_at, articles(title, keyword)",
+    )
+    .order("scheduled_at", { ascending: true });
+  if (error) throw new Error("Não foi possível carregar os agendamentos.");
+  return (data ?? []).map((r) => {
+    const art = r.articles as { title?: string; keyword?: string } | null;
+    return {
+      id: r.id,
+      article_id: r.article_id,
+      article_title: art?.title || art?.keyword || "Artigo",
+      scheduled_at: r.scheduled_at,
+      status: r.status,
+      attempts: r.attempts,
+      blogger_post_url: r.blogger_post_url,
+      error: r.error,
+      executed_at: r.executed_at,
+      created_at: r.created_at,
+    };
+  });
+}
+
+export async function createScheduledPostFor(
+  supabase: SB,
+  userId: string,
+  input: { articleId: string; scheduledAt: string },
+): Promise<{ id: string }> {
+  const when = new Date(input.scheduledAt);
+  if (Number.isNaN(when.getTime()) || when.getTime() < Date.now() - 60_000) {
+    throw new Error("Escolha uma data e horário futuros.");
+  }
+  const { data: article, error: aErr } = await supabase
+    .from("articles")
+    .select("id")
+    .eq("id", input.articleId)
+    .maybeSingle();
+  if (aErr || !article) throw new Error("Artigo não encontrado.");
+
+  const { data: inserted, error } = await supabase
+    .from("scheduled_posts")
+    .insert({
+      user_id: userId,
+      article_id: input.articleId,
+      scheduled_at: when.toISOString(),
+      status: "pending",
+    })
+    .select("id")
+    .single();
+  if (error) throw new Error("Não foi possível criar o agendamento.");
+  return { id: inserted.id };
+}
+
+export async function rescheduleScheduledPostFor(
+  supabase: SB,
+  id: string,
+  scheduledAt: string,
+): Promise<void> {
+  const when = new Date(scheduledAt);
+  if (Number.isNaN(when.getTime()) || when.getTime() < Date.now() - 60_000) {
+    throw new Error("Escolha uma data e horário futuros.");
+  }
+  const { error } = await supabase
+    .from("scheduled_posts")
+    .update({ scheduled_at: when.toISOString(), status: "pending", error: null })
+    .eq("id", id)
+    .in("status", ["pending", "failed", "canceled"]);
+  if (error) throw new Error("Não foi possível reagendar.");
+}
+
+export async function cancelScheduledPostFor(supabase: SB, id: string): Promise<void> {
+  const { error } = await supabase
+    .from("scheduled_posts")
+    .update({ status: "canceled" })
+    .eq("id", id)
+    .eq("status", "pending");
+  if (error) throw new Error("Não foi possível cancelar o agendamento.");
+}
+
+export async function deleteScheduledPostFor(supabase: SB, id: string): Promise<void> {
+  const { error } = await supabase.from("scheduled_posts").delete().eq("id", id);
+  if (error) throw new Error("Não foi possível excluir o agendamento.");
+}
+
+export async function getScheduledPostLogsFor(supabase: SB, id: string) {
+  const { data, error } = await supabase
+    .from("scheduled_post_logs")
+    .select("id, level, message, created_at")
+    .eq("scheduled_post_id", id)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error("Não foi possível carregar os registros.");
+  return data ?? [];
+}
