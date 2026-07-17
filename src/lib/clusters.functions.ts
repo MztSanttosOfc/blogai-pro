@@ -199,7 +199,7 @@ export const saveCluster = createServerFn({ method: "POST" })
 /** List the user's saved clusters. */
 export const listClusters = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(({ context }) => listClustersFor(context.supabase));
+  .handler(({ context }): Promise<StoredCluster[]> => listClustersFor(context.supabase));
 
 /** Delete a saved cluster. */
 export const deleteCluster = createServerFn({ method: "POST" })
