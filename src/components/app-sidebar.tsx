@@ -18,7 +18,8 @@ import {
   Network,
   BarChart3,
   LifeBuoy,
-} from "lucide-react";
+  UserCircle2,
+
 import {
   Sidebar,
   SidebarContent,
