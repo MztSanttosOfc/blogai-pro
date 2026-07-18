@@ -23,6 +23,7 @@ import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedDesempenhoRouteImport } from './routes/_authenticated/desempenho'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCriadorRouteImport } from './routes/_authenticated/criador'
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedClustersRouteImport } from './routes/_authenticated/clusters'
 import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authenticated/atualizacoes'
@@ -125,6 +126,11 @@ const AuthenticatedDesempenhoRoute = AuthenticatedDesempenhoRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCriadorRoute = AuthenticatedCriadorRouteImport.update({
+  id: '/criador',
+  path: '/criador',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedConnectionsRoute =
@@ -301,6 +307,7 @@ export interface FileRoutesByFullPath {
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
+  '/criador': typeof AuthenticatedCriadorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/desempenho': typeof AuthenticatedDesempenhoRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -347,6 +354,7 @@ export interface FileRoutesByTo {
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
+  '/criador': typeof AuthenticatedCriadorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/desempenho': typeof AuthenticatedDesempenhoRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -395,6 +403,7 @@ export interface FileRoutesById {
   '/_authenticated/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/_authenticated/clusters': typeof AuthenticatedClustersRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
+  '/_authenticated/criador': typeof AuthenticatedCriadorRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/desempenho': typeof AuthenticatedDesempenhoRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -443,6 +452,7 @@ export interface FileRouteTypes {
     | '/atualizacoes'
     | '/clusters'
     | '/connections'
+    | '/criador'
     | '/dashboard'
     | '/desempenho'
     | '/financeiro'
@@ -489,6 +499,7 @@ export interface FileRouteTypes {
     | '/atualizacoes'
     | '/clusters'
     | '/connections'
+    | '/criador'
     | '/dashboard'
     | '/desempenho'
     | '/financeiro'
@@ -536,6 +547,7 @@ export interface FileRouteTypes {
     | '/_authenticated/atualizacoes'
     | '/_authenticated/clusters'
     | '/_authenticated/connections'
+    | '/_authenticated/criador'
     | '/_authenticated/dashboard'
     | '/_authenticated/desempenho'
     | '/_authenticated/financeiro'
@@ -701,6 +713,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/criador': {
+      id: '/_authenticated/criador'
+      path: '/criador'
+      fullPath: '/criador'
+      preLoaderRoute: typeof AuthenticatedCriadorRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/connections': {
@@ -941,6 +960,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAtualizacoesRoute: typeof AuthenticatedAtualizacoesRoute
   AuthenticatedClustersRoute: typeof AuthenticatedClustersRoute
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
+  AuthenticatedCriadorRoute: typeof AuthenticatedCriadorRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDesempenhoRoute: typeof AuthenticatedDesempenhoRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
@@ -961,6 +981,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAtualizacoesRoute: AuthenticatedAtualizacoesRoute,
   AuthenticatedClustersRoute: AuthenticatedClustersRoute,
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
+  AuthenticatedCriadorRoute: AuthenticatedCriadorRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDesempenhoRoute: AuthenticatedDesempenhoRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
