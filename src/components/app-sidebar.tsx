@@ -19,6 +19,8 @@ import {
   BarChart3,
   LifeBuoy,
   UserCircle2,
+} from "lucide-react";
+
 
 import {
   Sidebar,
@@ -52,7 +54,9 @@ const items = [
   { title: "Financeiro", url: "/financeiro", icon: Wallet },
   { title: "Atualizações Futuras", url: "/atualizacoes", icon: Rocket },
   { title: "Central de Ajuda", url: "/ajuda", icon: LifeBuoy },
+  { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
 ];
+
 
 const premiumItems = [
   { title: "Central de Monetização", url: "/monetizacao", icon: Crown },
