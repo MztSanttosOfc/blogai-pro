@@ -470,6 +470,8 @@ export const generateArticle = createServerFn({ method: "POST" })
       (data.structure.length
         ? `- Use preferencialmente esta estrutura de seções (H2): ${data.structure.join(" | ")}\n`
         : "") +
+      smartCtx +
+      internalLinksBlock +
       `\nDistribua as palavras-chave de forma natural, use H2/H3 semânticos, ` +
       `parágrafos curtos, listas quando fizer sentido e uma introdução e conclusão fortes.\n\n` +
       `Responda EXATAMENTE neste formato de texto puro (nada antes do TITLE):\n\n` +
@@ -582,6 +584,7 @@ export const generateArticle = createServerFn({ method: "POST" })
         language: data.language,
         headings: parsed.headings,
         internalCount: 2,
+        styleKey: resolvedImageStyle,
       });
 
       if (featured || internal.length > 0) {
