@@ -32,7 +32,7 @@ async function logEvent(
   await supabaseAdmin.from("financial_logs").insert({
     event,
     level,
-    payload,
+    payload: payload as never,
     user_id: userId ?? null,
   });
 }
