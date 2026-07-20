@@ -282,7 +282,10 @@ function SmartMode({ disabled }: { disabled: boolean }) {
                 </SelectContent>
               </Select>
             </div>
+            <ImageStylePicker value={imageStyle} onChange={setImageStyle} />
           </div>
+          <SmartProfileHint />
+
           <Button
             type="submit"
             variant="hero"
