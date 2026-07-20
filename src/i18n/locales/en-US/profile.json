@@ -1,0 +1,82 @@
+{
+  "pageTitle": "My Profile — BlogAI Pro",
+  "title": "My Profile",
+  "subtitle": "Manage your personal information, security and integrations.",
+  "tabs": {
+    "account": "Account",
+    "security": "Security",
+    "integrations": "Integrations"
+  },
+  "avatar": {
+    "title": "Profile picture",
+    "description": "Upload a square image. JPG, PNG or WEBP up to 2 MB.",
+    "upload": "Upload photo",
+    "change": "Change photo",
+    "remove": "Remove photo",
+    "uploading": "Uploading...",
+    "invalidType": "Invalid format. Use JPG, PNG or WEBP.",
+    "tooLarge": "File too large (max 2 MB).",
+    "success": "Photo updated successfully.",
+    "removed": "Photo removed.",
+    "error": "Could not upload the photo."
+  },
+  "fields": {
+    "fullName": "Full name",
+    "displayName": "Display name",
+    "displayNameHint": "How you want to be called inside BlogAI Pro.",
+    "email": "Email",
+    "birthDate": "Date of birth",
+    "birthDateHint": "Optional. Used only for personalization.",
+    "language": "Language",
+    "country": "Country",
+    "timezone": "Time zone",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "Profile updated successfully.",
+    "saveError": "Could not save the profile."
+  },
+  "account": {
+    "title": "Account information",
+    "description": "These details appear on your profile and communications.",
+    "summaryTitle": "Account summary",
+    "plan": "Current plan",
+    "credits": "Available credits",
+    "unlimited": "Unlimited",
+    "memberSince": "Member since",
+    "lastAccess": "Last access",
+    "subscriptionStatus": "Subscription status",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "statusTrialing": "Trial",
+    "statusCanceled": "Canceled",
+    "renewsOn": "Renews on {{date}}"
+  },
+  "security": {
+    "title": "Security",
+    "description": "Change your password or the email tied to your account.",
+    "changePassword": "Change password",
+    "changeEmail": "Change email",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "newEmail": "New email",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "passwordUpdated": "Password updated. You may need to sign in again.",
+    "emailUpdated": "We've sent a confirmation link to the new email.",
+    "updateError": "Could not complete the change."
+  },
+  "integrations": {
+    "title": "Connected integrations",
+    "description": "Services linked to your BlogAI Pro account.",
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "comingSoon": "Coming soon",
+    "manage": "Manage",
+    "blogger": "Blogger",
+    "bloggerDesc": "Automatic publishing of your articles.",
+    "gsc": "Google Search Console",
+    "gscDesc": "Real-time SEO performance metrics.",
+    "wordpress": "WordPress",
+    "wordpressDesc": "Integration via official plugin (coming soon)."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "title": "Meu Perfil",
+  "subtitle": "Gerencie os dados pessoais da sua conta BlogAI Pro.",
+  "tabs": {
+    "account": "Conta",
+    "security": "Segurança",
+    "integrations": "Integrações"
+  },
+  "avatar": {
+    "change": "Alterar foto",
+    "remove": "Remover foto",
+    "removed": "Foto removida.",
+    "success": "Foto atualizada com sucesso.",
+    "error": "Não foi possível atualizar a foto.",
+    "invalidType": "Formato inválido. Use JPG, PNG ou WEBP.",
+    "tooLarge": "A imagem deve ter no máximo 2 MB."
+  },
+  "fields": {
+    "fullName": "Nome completo",
+    "displayName": "Nome de exibição",
+    "displayNameHint": "Como você quer ser chamado no BlogAI Pro.",
+    "email": "E-mail",
+    "birthDate": "Data de nascimento",
+    "birthDateHint": "Opcional. Usada apenas para personalização.",
+    "language": "Idioma",
+    "country": "País",
+    "timezone": "Fuso horário",
+    "save": "Salvar alterações",
+    "saving": "Salvando...",
+    "saved": "Perfil atualizado com sucesso.",
+    "saveError": "Não foi possível salvar o perfil."
+  },
+  "account": {
+    "title": "Informações pessoais",
+    "description": "Estes dados aparecem em toda a plataforma.",
+    "summaryTitle": "Resumo da conta",
+    "plan": "Plano atual",
+    "credits": "Créditos",
+    "unlimited": "Ilimitados",
+    "memberSince": "Membro desde",
+    "lastAccess": "Último acesso",
+    "subscriptionStatus": "Status da assinatura",
+    "renewsOn": "Renova em {{date}}",
+    "statusActive": "Ativa",
+    "statusTrialing": "Período de teste",
+    "statusCanceled": "Cancelada",
+    "statusInactive": "Sem assinatura"
+  },
+  "security": {
+    "title": "Segurança",
+    "description": "Atualize sua senha e o e-mail de acesso.",
+    "changePassword": "Alterar senha",
+    "changeEmail": "Alterar e-mail",
+    "newPassword": "Nova senha",
+    "confirmPassword": "Confirmar nova senha",
+    "newEmail": "Novo e-mail",
+    "passwordTooShort": "A senha deve ter pelo menos 8 caracteres.",
+    "passwordMismatch": "As senhas não coincidem.",
+    "passwordUpdated": "Senha atualizada com sucesso.",
+    "emailUpdated": "Enviamos um link de confirmação para o novo e-mail.",
+    "updateError": "Não foi possível concluir a atualização."
+  },
+  "integrations": {
+    "title": "Integrações conectadas",
+    "description": "Contas externas vinculadas a este perfil.",
+    "blogger": "Blogger",
+    "bloggerDesc": "Publicação automática de artigos.",
+    "gsc": "Google Search Console",
+    "gscDesc": "Métricas oficiais de desempenho SEO.",
+    "wordpress": "WordPress",
+    "wordpressDesc": "Publicação via plugin oficial.",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "comingSoon": "Em breve",
+    "manage": "Gerenciar"
+  }
+}
