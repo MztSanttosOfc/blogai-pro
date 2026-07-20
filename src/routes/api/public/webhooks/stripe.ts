@@ -207,7 +207,7 @@ async function upsertSubscriptionFromStripe(sub: Stripe.Subscription) {
       {
         user_id: found.userId,
         plan_id: planId,
-        status: isActive ? "active" : sub.status,
+        status: isActive ? "active" : sub.status === "canceled" ? "canceled" : "pending",
         stripe_subscription_id: sub.id,
         current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
       },
@@ -291,7 +291,7 @@ async function handleInvoiceFailed(invoice: Stripe.Invoice) {
   if (found) {
     await supabaseAdmin
       .from("subscriptions")
-      .update({ status: "past_due" })
+      .update({ status: "pending" })
       .eq("user_id", found.userId);
   }
   await logEvent(
