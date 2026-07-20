@@ -65,6 +65,7 @@ const GenerateInput = z.object({
   slug: clampedString(120),
   metaHint: clampedString(260),
   structure: clampedStringArray(160, 20),
+  imageStyle: clampedString(40),
 });
 
 const AnalyzeInput = z.object({
@@ -421,6 +422,31 @@ export const generateArticle = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("Serviço de IA indisponível no momento.");
 
+    // v1.1 — Perfil Inteligente (fonte única) + links internos do próprio usuário.
+    const { loadSmartProfile, buildSmartProfilePromptContext } = await import(
+      "./smart-profile.server"
+    );
+    const { collectInternalLinkCandidates, buildInternalLinksPromptBlock } = await import(
+      "./internal-links.server"
+    );
+    let smartCtx = "";
+    let internalLinksBlock = "";
+    let resolvedImageStyle: string | null = data.imageStyle?.trim() || null;
+    try {
+      const smart = await loadSmartProfile(supabase, userId);
+      smartCtx = buildSmartProfilePromptContext(smart, "article");
+      const candidates = await collectInternalLinkCandidates(supabase, userId, {
+        manualLinks: smart.default_links,
+        limit: 8,
+      });
+      internalLinksBlock = buildInternalLinksPromptBlock(candidates);
+      if (!resolvedImageStyle) {
+        resolvedImageStyle = smart.ai_prefs?.preferred_image_style ?? null;
+      }
+    } catch (e) {
+      console.warn("[article-ai:smart-profile-skip]", e);
+    }
+
     const systemPrompt =
       `Você é um redator especialista em SEO e marketing de conteúdo para blogs (Blogger). ` +
       `Escreva sempre no idioma solicitado e siga EXATAMENTE o formato de saída pedido, ` +
@@ -444,6 +470,8 @@ export const generateArticle = createServerFn({ method: "POST" })
       (data.structure.length
         ? `- Use preferencialmente esta estrutura de seções (H2): ${data.structure.join(" | ")}\n`
         : "") +
+      smartCtx +
+      internalLinksBlock +
       `\nDistribua as palavras-chave de forma natural, use H2/H3 semânticos, ` +
       `parágrafos curtos, listas quando fizer sentido e uma introdução e conclusão fortes.\n\n` +
       `Responda EXATAMENTE neste formato de texto puro (nada antes do TITLE):\n\n` +
@@ -556,6 +584,7 @@ export const generateArticle = createServerFn({ method: "POST" })
         language: data.language,
         headings: parsed.headings,
         internalCount: 2,
+        styleKey: resolvedImageStyle,
       });
 
       if (featured || internal.length > 0) {

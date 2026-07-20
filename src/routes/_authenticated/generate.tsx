@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -35,6 +35,9 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { generateArticle, analyzeTopic, type TopicAnalysis } from "@/lib/articles.functions";
 import { TONES, LANGUAGES, WORD_COUNTS } from "@/lib/constants";
+import { IMAGE_STYLES, DEFAULT_IMAGE_STYLE, type ImageStyleKey } from "@/lib/image-styles";
+import { getSmartProfile } from "@/lib/smart-profile.functions";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/generate")({
   component: GeneratePage,
@@ -117,6 +120,7 @@ interface GenerateInput {
   slug?: string;
   metaHint?: string;
   structure?: string[];
+  imageStyle?: string;
 }
 
 function useGenerate() {
@@ -132,6 +136,61 @@ function useGenerate() {
     toast.success("Artigo gerado com sucesso!");
     navigate({ to: "/library/$id", params: { id: result.article.id } });
   };
+}
+
+/** Hook: lê o estilo padrão de imagem do Perfil Inteligente (fonte única). */
+function useDefaultImageStyle(): ImageStyleKey {
+  const fetchSmart = useServerFn(getSmartProfile);
+  const q = useQuery({
+    queryKey: ["smart-profile", "image-style-default"],
+    queryFn: () => fetchSmart(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const key = q.data?.ai_prefs?.preferred_image_style as ImageStyleKey | undefined;
+  return key && IMAGE_STYLES.some((s) => s.key === key) ? key : DEFAULT_IMAGE_STYLE;
+}
+
+/** Seletor reutilizável de estilo de imagem. */
+function ImageStylePicker({
+  value,
+  onChange,
+}: {
+  value: ImageStyleKey;
+  onChange: (v: ImageStyleKey) => void;
+}) {
+  const current = IMAGE_STYLES.find((s) => s.key === value) ?? IMAGE_STYLES[0];
+  return (
+    <div className="space-y-2">
+      <Label>Estilo das imagens</Label>
+      <Select value={value} onValueChange={(v) => onChange(v as ImageStyleKey)}>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {IMAGE_STYLES.map((s) => (
+            <SelectItem key={s.key} value={s.key}>
+              {s.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground">{current.description}</p>
+    </div>
+  );
+}
+
+/** Aviso curto informando reutilização automática do Perfil Inteligente. */
+function SmartProfileHint() {
+  return (
+    <p className="rounded-md bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+      <Sparkles className="mr-1 inline h-3 w-3 text-primary" />
+      Este artigo usará automaticamente os dados do seu{" "}
+      <a href="/perfil-inteligente" className="font-medium text-primary underline">
+        Perfil Inteligente
+      </a>{" "}
+      (autor, tom, links internos, palavras banidas).
+    </p>
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -153,6 +212,9 @@ function SmartMode({ disabled }: { disabled: boolean }) {
   const [title, setTitle] = useState("");
   const [tone, setTone] = useState("Profissional");
   const [wordCount, setWordCount] = useState(1200);
+  const defaultImageStyle = useDefaultImageStyle();
+  const [imageStyle, setImageStyle] = useState<ImageStyleKey>(defaultImageStyle);
+  useEffect(() => setImageStyle(defaultImageStyle), [defaultImageStyle]);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,6 +254,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
         slug: analysis.slug,
         metaHint: analysis.metaDescription,
         structure: analysis.structure,
+        imageStyle,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
@@ -233,7 +296,10 @@ function SmartMode({ disabled }: { disabled: boolean }) {
                 </SelectContent>
               </Select>
             </div>
+            <ImageStylePicker value={imageStyle} onChange={setImageStyle} />
           </div>
+          <SmartProfileHint />
+
           <Button
             type="submit"
             variant="hero"
@@ -427,6 +493,9 @@ function AutoMode({ disabled }: { disabled: boolean }) {
   const [language, setLanguage] = useState<string>("Português");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState("");
+  const defaultImageStyle = useDefaultImageStyle();
+  const [imageStyle, setImageStyle] = useState<ImageStyleKey>(defaultImageStyle);
+  useEffect(() => setImageStyle(defaultImageStyle), [defaultImageStyle]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -452,6 +521,7 @@ function AutoMode({ disabled }: { disabled: boolean }) {
         slug: a.slug,
         metaHint: a.metaDescription,
         structure: a.structure,
+        imageStyle,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
@@ -494,6 +564,8 @@ function AutoMode({ disabled }: { disabled: boolean }) {
             </SelectContent>
           </Select>
         </div>
+        <ImageStylePicker value={imageStyle} onChange={setImageStyle} />
+        <SmartProfileHint />
         {loading && step && (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" /> {step}
@@ -538,6 +610,9 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
   const [language, setLanguage] = useState<string>("Português");
   const [country, setCountry] = useState<string>("Brasil");
   const [loading, setLoading] = useState(false);
+  const defaultImageStyle = useDefaultImageStyle();
+  const [imageStyle, setImageStyle] = useState<ImageStyleKey>(defaultImageStyle);
+  useEffect(() => setImageStyle(defaultImageStyle), [defaultImageStyle]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -561,6 +636,7 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
           .map((s) => s.trim())
           .filter(Boolean)
           .slice(0, 15),
+        imageStyle,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
@@ -690,6 +766,10 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
             </Select>
           </div>
         </div>
+
+        <ImageStylePicker value={imageStyle} onChange={setImageStyle} />
+        <SmartProfileHint />
+
 
         <Button
           type="submit"

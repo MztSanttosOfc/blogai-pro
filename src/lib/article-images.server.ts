@@ -108,15 +108,16 @@ async function uploadAndSign(articleId: string, name: string, b64: string): Prom
   }
 }
 
-const stylePrompt =
-  "Professional editorial blog illustration, clean modern and futuristic flat design, " +
-  "tech-forward aesthetic, soft cinematic lighting, vibrant but tasteful colors, " +
-  "high quality, sharp focus, no text, no watermark, no logos, no letters.";
+import { resolveImageStyle, UNIVERSAL_IMAGE_SUFFIX, type ImageStyleKey } from "./image-styles";
 
 /**
  * Generate a featured cover image plus up to `internalCount` in-content images
  * for an article. Returns the produced images (may be empty if generation is
  * unavailable). Never throws — image failures must not break article creation.
+ *
+ * `styleKey` chooses the visual aesthetic (Ultra Realista, Cartoon, Anime, 3D…).
+ * When omitted, uses "normal" (the previous default), so callers that don't
+ * pass a style keep the v1.0 behavior byte-for-byte.
  */
 export async function generateArticleImages(opts: {
   apiKey: string;
@@ -126,8 +127,11 @@ export async function generateArticleImages(opts: {
   language: string;
   headings: { type: "h2" | "h3"; text: string }[];
   internalCount: number;
+  styleKey?: ImageStyleKey | string | null;
 }): Promise<{ featured: GeneratedImage | null; internal: GeneratedImage[] }> {
   const { apiKey, articleId, title, keyword, language, headings, internalCount } = opts;
+  const style = resolveImageStyle(opts.styleKey);
+  const stylePrompt = `${style.prompt} ${UNIVERSAL_IMAGE_SUFFIX}`;
 
   // Pick up to `internalCount` distinct H2 sections to illustrate.
   const h2s = headings.filter((h) => h.type === "h2").map((h) => h.text);

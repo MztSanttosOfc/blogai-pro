@@ -62,14 +62,28 @@ function settingsBlock(s: SiteSettings): string {
   return lines.join("\n");
 }
 
-function promptForType(type: SitePageType, s: SiteSettings): string {
+function promptForType(
+  type: SitePageType,
+  s: SiteSettings,
+  smartCtx: string,
+  customLinks: { label: string; url: string }[],
+): string {
+  const linksBlock = customLinks.length
+    ? `\n[Links personalizados do autor — inclua-os naturalmente quando fizer sentido ` +
+      `(rodapé, seção "saiba mais", CTA). Formate em Markdown [texto](URL):\n` +
+      customLinks.map((l) => `  - ${l.label}: ${l.url}`).join("\n") +
+      `\nNunca invente URLs; use apenas as listadas.]\n`
+    : "";
   const base =
     `Você é um redator jurídico e de conteúdo especializado em blogs que buscam aprovação no Google AdSense. ` +
     `Escreva em português do Brasil, com tom profissional, claro e confiável. ` +
     `Use Markdown: títulos com ## e ###, parágrafos e listas quando fizer sentido. ` +
     `NÃO inclua o título principal da página (ele já existe). NÃO use blocos de código. ` +
     `Use a data atual quando precisar citar "última atualização". ` +
-    `Dados do site para personalização:\n${settingsBlock(s)}\n\n`;
+    `Dados do site para personalização:\n${settingsBlock(s)}\n` +
+    smartCtx +
+    linksBlock +
+    `\n`;
 
   switch (type) {
     case "sobre":
@@ -119,7 +133,12 @@ function promptForType(type: SitePageType, s: SiteSettings): string {
 }
 
 /** Call the Lovable AI gateway and return the generated Markdown content. */
-async function generateContent(type: SitePageType, s: SiteSettings): Promise<string> {
+async function generateContent(
+  type: SitePageType,
+  s: SiteSettings,
+  smartCtx: string,
+  customLinks: { label: string; url: string }[],
+): Promise<string> {
   const apiKey = process.env.LOVABLE_API_KEY;
   if (!apiKey) throw new Error("Serviço de IA indisponível no momento.");
 
@@ -139,7 +158,7 @@ async function generateContent(type: SitePageType, s: SiteSettings): Promise<str
             content:
               "Você gera páginas institucionais e legais para blogs, em Markdown, prontas para o Google AdSense.",
           },
-          { role: "user", content: promptForType(type, s) },
+          { role: "user", content: promptForType(type, s, smartCtx, customLinks) },
         ],
         max_tokens: 4000,
         temperature: 0.6,
@@ -180,6 +199,52 @@ async function loadSettings(userId: string): Promise<SiteSettings> {
     .eq("user_id", userId)
     .maybeSingle();
   return { ...EMPTY_SETTINGS, ...(data ?? {}) };
+}
+
+/**
+ * v1.1 — Carrega o Perfil Inteligente (fonte única) e usa seus valores para
+ * complementar dados ausentes em `site_settings`. site_settings continua sendo
+ * respeitado (compatibilidade v1.0) — apenas os campos vazios recebem fallback
+ * do Perfil Inteligente. Também retorna o bloco de contexto pronto para prompt
+ * e os links personalizados que a IA deve utilizar.
+ */
+async function loadPageGenerationContext(
+  supabase: import("@supabase/supabase-js").SupabaseClient<
+    import("@/integrations/supabase/types").Database
+  >,
+  userId: string,
+): Promise<{
+  settings: SiteSettings;
+  smartCtx: string;
+  customLinks: { label: string; url: string }[];
+}> {
+  const settings = await loadSettings(userId);
+  try {
+    const { loadSmartProfile, buildSmartProfilePromptContext } = await import(
+      "./smart-profile.server"
+    );
+    const smart = await loadSmartProfile(supabase, userId);
+    const merged: SiteSettings = {
+      blog_name: settings.blog_name || smart.blogger.niche || "",
+      owner_name:
+        settings.owner_name ||
+        smart.personal.author_name ||
+        smart.personal.full_name ||
+        "",
+      contact_email: settings.contact_email || smart.contacts.email || "",
+      domain: settings.domain || smart.blogger.main_url || smart.contacts.website || "",
+      niche: settings.niche || smart.blogger.niche || "",
+    };
+    const smartCtx = buildSmartProfilePromptContext(smart, "page");
+    const customLinks = (smart.default_links ?? [])
+      .filter((l) => l?.label && l?.url)
+      .slice(0, 20)
+      .map((l) => ({ label: l.label, url: l.url }));
+    return { settings: merged, smartCtx, customLinks };
+  } catch (e) {
+    console.warn("[pages-ai:smart-profile-skip]", e);
+    return { settings, smartCtx: "", customLinks: [] };
+  }
 }
 
 /** Upsert one generated page and return the saved row. */
@@ -259,8 +324,16 @@ export const generateSitePage = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const settings = await loadSettings(context.userId);
-    const content = await generateContent(data.type as SitePageType, settings);
+    const { settings, smartCtx, customLinks } = await loadPageGenerationContext(
+      context.supabase,
+      context.userId,
+    );
+    const content = await generateContent(
+      data.type as SitePageType,
+      settings,
+      smartCtx,
+      customLinks,
+    );
     const page = await upsertPage(context.userId, data.type as SitePageType, content);
     return { page };
   });
@@ -269,10 +342,13 @@ export const generateSitePage = createServerFn({ method: "POST" })
 export const generateAdsenseKit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const settings = await loadSettings(context.userId);
+    const { settings, smartCtx, customLinks } = await loadPageGenerationContext(
+      context.supabase,
+      context.userId,
+    );
     const pages = [];
     for (const type of ADSENSE_KIT) {
-      const content = await generateContent(type, settings);
+      const content = await generateContent(type, settings, smartCtx, customLinks);
       pages.push(await upsertPage(context.userId, type, content));
     }
     return { pages };
