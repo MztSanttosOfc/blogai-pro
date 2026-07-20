@@ -452,6 +452,7 @@ export type Database = {
         Row: {
           amount_cents: number
           created_at: string
+          currency: string
           external_id: string | null
           id: string
           metadata: Json
@@ -467,6 +468,7 @@ export type Database = {
         Insert: {
           amount_cents?: number
           created_at?: string
+          currency?: string
           external_id?: string | null
           id?: string
           metadata?: Json
@@ -482,6 +484,7 @@ export type Database = {
         Update: {
           amount_cents?: number
           created_at?: string
+          currency?: string
           external_id?: string | null
           id?: string
           metadata?: Json
@@ -506,6 +509,7 @@ export type Database = {
           monthly_credits: number
           name: string
           price_cents: number
+          price_usd_cents: number | null
           sort_order: number
           updated_at: string
         }
@@ -518,6 +522,7 @@ export type Database = {
           monthly_credits?: number
           name: string
           price_cents?: number
+          price_usd_cents?: number | null
           sort_order?: number
           updated_at?: string
         }
@@ -530,6 +535,7 @@ export type Database = {
           monthly_credits?: number
           name?: string
           price_cents?: number
+          price_usd_cents?: number | null
           sort_order?: number
           updated_at?: string
         }
@@ -544,6 +550,7 @@ export type Database = {
           id: string
           locale: string
           plan: Database["public"]["Enums"]["user_plan"]
+          preferred_currency: string
           updated_at: string
         }
         Insert: {
@@ -554,6 +561,7 @@ export type Database = {
           id: string
           locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
+          preferred_currency?: string
           updated_at?: string
         }
         Update: {
@@ -564,6 +572,7 @@ export type Database = {
           id?: string
           locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
+          preferred_currency?: string
           updated_at?: string
         }
         Relationships: []
@@ -1006,6 +1015,48 @@ export type Database = {
         }
         Relationships: []
       }
+      user_feedback: {
+        Row: {
+          admin_reply: string | null
+          admin_reply_at: string | null
+          admin_reply_by: string | null
+          comment: string | null
+          created_at: string
+          id: string
+          issue: string | null
+          rating: number
+          suggestion: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          admin_reply_at?: string | null
+          admin_reply_by?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          issue?: string | null
+          rating: number
+          suggestion?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_reply?: string | null
+          admin_reply_at?: string | null
+          admin_reply_by?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          issue?: string | null
+          rating?: number
+          suggestion?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1090,6 +1141,7 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_feedback_stats: { Args: never; Returns: Json }
       admin_list_audit_logs: {
         Args: { p_limit?: number }
         Returns: {
