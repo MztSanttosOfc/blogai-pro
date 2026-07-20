@@ -423,12 +423,10 @@ export const generateArticle = createServerFn({ method: "POST" })
     if (!apiKey) throw new Error("Serviço de IA indisponível no momento.");
 
     // v1.1 — Perfil Inteligente (fonte única) + links internos do próprio usuário.
-    const { loadSmartProfile, buildSmartProfilePromptContext } = await import(
-      "./smart-profile.server"
-    );
-    const { collectInternalLinkCandidates, buildInternalLinksPromptBlock } = await import(
-      "./internal-links.server"
-    );
+    const { loadSmartProfile, buildSmartProfilePromptContext } =
+      await import("./smart-profile.server");
+    const { collectInternalLinkCandidates, buildInternalLinksPromptBlock } =
+      await import("./internal-links.server");
     let smartCtx = "";
     let internalLinksBlock = "";
     let resolvedImageStyle: string | null = data.imageStyle?.trim() || null;

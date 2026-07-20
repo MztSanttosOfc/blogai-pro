@@ -157,8 +157,9 @@ export async function saveSmartProfile(
   for (const [k, v] of Object.entries(patch)) {
     if (v !== undefined) payload[k] = v;
   }
-  const { error } = await (supabase.from("user_smart_profile") as any)
-    .upsert(payload, { onConflict: "user_id" });
+  const { error } = await (supabase.from("user_smart_profile") as any).upsert(payload, {
+    onConflict: "user_id",
+  });
   if (error) throw new Error(error.message);
   return loadSmartProfile(supabase, userId);
 }

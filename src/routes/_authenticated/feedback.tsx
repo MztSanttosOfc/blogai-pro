@@ -10,17 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  submitFeedback,
-  listMyFeedbacks,
-  deleteFeedback,
-} from "@/lib/feedback.functions";
+import { submitFeedback, listMyFeedbacks, deleteFeedback } from "@/lib/feedback.functions";
 
 export const Route = createFileRoute("/_authenticated/feedback")({
   head: () => ({
     meta: [
       { title: "Central de Feedback — BlogAI Pro" },
-      { name: "description", content: "Envie sua opinião, sugestões e relatos ao time do BlogAI Pro." },
+      {
+        name: "description",
+        content: "Envie sua opinião, sugestões e relatos ao time do BlogAI Pro.",
+      },
     ],
   }),
   component: FeedbackPage,
@@ -116,7 +115,9 @@ function FeedbackPage() {
         <CardHeader>
           <CardTitle>{t("feedback.newTitle", { defaultValue: "Novo feedback" })}</CardTitle>
           <CardDescription>
-            {t("feedback.newHint", { defaultValue: "Avalie sua experiência e nos conte detalhes." })}
+            {t("feedback.newHint", {
+              defaultValue: "Avalie sua experiência e nos conte detalhes.",
+            })}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -145,7 +146,9 @@ function FeedbackPage() {
             <Textarea
               rows={2}
               maxLength={2000}
-              placeholder={t("feedback.suggestionPh", { defaultValue: "O que poderíamos adicionar?" })}
+              placeholder={t("feedback.suggestionPh", {
+                defaultValue: "O que poderíamos adicionar?",
+              })}
               value={suggestion}
               onChange={(e) => setSuggestion(e.target.value)}
             />
@@ -165,7 +168,9 @@ function FeedbackPage() {
           <div className="flex justify-end">
             <Button
               onClick={() => submitMut.mutate()}
-              disabled={submitMut.isPending || (!hasAnyText && rating === 5) ? false : submitMut.isPending}
+              disabled={
+                submitMut.isPending || (!hasAnyText && rating === 5) ? false : submitMut.isPending
+              }
               variant="hero"
             >
               <Send className="mr-2 h-4 w-4" />
@@ -181,7 +186,9 @@ function FeedbackPage() {
         <CardHeader>
           <CardTitle>{t("feedback.mineTitle", { defaultValue: "Meus feedbacks" })}</CardTitle>
           <CardDescription>
-            {t("feedback.mineHint", { defaultValue: "Histórico do que você enviou e as respostas da equipe." })}
+            {t("feedback.mineHint", {
+              defaultValue: "Histórico do que você enviou e as respostas da equipe.",
+            })}
           </CardDescription>
         </CardHeader>
         <CardContent>

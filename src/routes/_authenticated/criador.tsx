@@ -196,7 +196,10 @@ function CreatorPage() {
         <div className="relative grid gap-8 md:grid-cols-[auto_minmax(0,1fr)] md:items-center">
           <div className="mx-auto md:mx-0">
             <div className="relative animate-scale-in">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-primary/40 blur-lg opacity-70" aria-hidden />
+              <div
+                className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-primary/40 blur-lg opacity-70"
+                aria-hidden
+              />
               <img
                 src={creatorPortrait}
                 alt="Foto oficial de Júnnior Monzart, criador do BlogAI Pro"
@@ -216,8 +219,8 @@ function CreatorPage() {
               Júnnior Monzart
             </h1>
             <p className="text-base text-white/80 md:text-lg">
-              Blogueiro, especialista em SEO, monetização e desenvolvedor por trás do BlogAI Pro —
-              a plataforma que une inteligência artificial e produção de conteúdo em escala.
+              Blogueiro, especialista em SEO, monetização e desenvolvedor por trás do BlogAI Pro — a
+              plataforma que une inteligência artificial e produção de conteúdo em escala.
             </p>
             <div className="flex flex-wrap justify-center gap-2 md:justify-start">
               <Button asChild variant="hero" size="lg">
@@ -272,8 +275,8 @@ function CreatorPage() {
           <p className="text-sm leading-relaxed text-muted-foreground">
             Tudo começou com um único blog no Blogger e a curiosidade de entender por que uns
             artigos apareciam no Google e outros não. Anos depois, dezenas de blogs, milhares de
-            posts otimizados e muita leitura de documentação transformaram esse hobby em profissão
-            — e a profissão, em produto.
+            posts otimizados e muita leitura de documentação transformaram esse hobby em profissão —
+            e a profissão, em produto.
           </p>
         </Card>
         <Card className="space-y-3 p-6">
@@ -282,10 +285,10 @@ function CreatorPage() {
             <h2 className="text-xl font-semibold">Como surgiu o BlogAI Pro</h2>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            O BlogAI Pro nasceu de uma dor real: publicar com consistência, manter qualidade e
-            ainda enxergar dados de SEO sem pular entre 10 abas. Decidi unir IA generativa,
-            integração nativa com Blogger e um painel de desempenho conectado ao Google Search
-            Console — tudo em uma plataforma só.
+            O BlogAI Pro nasceu de uma dor real: publicar com consistência, manter qualidade e ainda
+            enxergar dados de SEO sem pular entre 10 abas. Decidi unir IA generativa, integração
+            nativa com Blogger e um painel de desempenho conectado ao Google Search Console — tudo
+            em uma plataforma só.
           </p>
         </Card>
         <Card className="space-y-3 p-6">
@@ -304,9 +307,9 @@ function CreatorPage() {
             <h2 className="text-xl font-semibold">Visão de futuro</h2>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Tornar o BlogAI Pro o ecossistema oficial de publicação inteligente em português —
-            com API pública, plugin WordPress, apps Android e iOS e integrações que respeitam o
-            criador de conteúdo.
+            Tornar o BlogAI Pro o ecossistema oficial de publicação inteligente em português — com
+            API pública, plugin WordPress, apps Android e iOS e integrações que respeitam o criador
+            de conteúdo.
           </p>
         </Card>
       </section>
@@ -403,9 +406,7 @@ function CreatorPage() {
       <section className="space-y-4">
         <div>
           <h2 className="text-xl font-semibold md:text-2xl">Onde me encontrar</h2>
-          <p className="text-sm text-muted-foreground">
-            Links oficiais das minhas redes e canais.
-          </p>
+          <p className="text-sm text-muted-foreground">Links oficiais das minhas redes e canais.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
           {SOCIALS.map((s) => (

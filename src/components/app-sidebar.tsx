@@ -23,7 +23,6 @@ import {
   Sparkles as SparklesIcon,
 } from "lucide-react";
 
-
 import {
   Sidebar,
   SidebarContent,
@@ -61,7 +60,6 @@ const items = [
   { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
   { title: "Central de Feedback", url: "/feedback", icon: MessageSquare },
 ];
-
 
 const premiumItems = [
   { title: "Central de Monetização", url: "/monetizacao", icon: Crown },

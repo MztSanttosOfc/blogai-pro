@@ -16,7 +16,6 @@ import { CurrencyProvider } from "@/hooks/use-currency";
 import { Toaster } from "@/components/ui/sonner";
 import "@/i18n";
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -165,7 +164,6 @@ function RootComponent() {
           <Toaster richColors position="top-right" />
         </CurrencyProvider>
       </AuthProvider>
-
     </QueryClientProvider>
   );
 }

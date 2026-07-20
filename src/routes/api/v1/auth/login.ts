@@ -25,15 +25,10 @@ export const Route = createFileRoute("/api/v1/auth/login")({
           const email = typeof body.email === "string" ? body.email.trim() : "";
           const password = typeof body.password === "string" ? body.password : "";
           if (!email || !password) {
-            throw new ApiError(
-              "validation_error",
-              "Informe email e senha.",
-              422,
-              [
-                ...(!email ? [{ field: "email", message: "obrigatório" }] : []),
-                ...(!password ? [{ field: "password", message: "obrigatório" }] : []),
-              ],
-            );
+            throw new ApiError("validation_error", "Informe email e senha.", 422, [
+              ...(!email ? [{ field: "email", message: "obrigatório" }] : []),
+              ...(!password ? [{ field: "password", message: "obrigatório" }] : []),
+            ]);
           }
 
           const SUPABASE_URL = process.env.SUPABASE_URL;

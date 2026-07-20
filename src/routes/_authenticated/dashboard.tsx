@@ -105,7 +105,9 @@ function DashboardPage() {
                     </p>
                   </div>
                   <Badge variant={a.status === "published" ? "default" : "secondary"}>
-                    {a.status === "published" ? t("recent.statusPublished") : t("recent.statusDraft")}
+                    {a.status === "published"
+                      ? t("recent.statusPublished")
+                      : t("recent.statusDraft")}
                   </Badge>
                 </Card>
               </Link>

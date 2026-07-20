@@ -775,7 +775,6 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
         <ImageStylePicker value={imageStyle} onChange={setImageStyle} />
         <SmartProfileHint />
 
-
         <Button
           type="submit"
           variant="hero"
