@@ -1,0 +1,25 @@
+{
+  "greeting": "Olá, {{name}} 👋",
+  "greetingFallback": "blogueiro",
+  "subtitle": "Aqui está um resumo da sua produção de conteúdo.",
+  "stats": {
+    "generated": "Artigos gerados",
+    "published": "Artigos publicados",
+    "credits": "Créditos disponíveis",
+    "plan": "Seu plano"
+  },
+  "hero": {
+    "badge": "Gerador com IA",
+    "title": "Crie um artigo otimizado para SEO em segundos",
+    "subtitle": "Informe a palavra-chave e a IA gera título, meta descrição, headings, FAQ e tags.",
+    "cta": "Gerar artigo"
+  },
+  "recent": {
+    "title": "Artigos recentes",
+    "viewAll": "Ver todos",
+    "emptyText": "Você ainda não gerou nenhum artigo. Que tal começar agora?",
+    "emptyCta": "Criar primeiro artigo",
+    "statusPublished": "Publicado",
+    "statusDraft": "Rascunho"
+  }
+}

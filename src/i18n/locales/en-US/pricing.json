@@ -1,0 +1,14 @@
+{
+  "title": "Choose the ideal plan",
+  "subtitle": "More credits, more articles, more reach for your blog.",
+  "currentPlan": "Current plan",
+  "subscribe": "Subscribe",
+  "freePlan": "Free plan",
+  "usdSoon": "USD payment coming soon",
+  "usdNotice": "USD payments coming soon. The infrastructure is ready. For now, USD accounts can view plans, but purchases go through BRL via Pix.",
+  "popular": "Most popular",
+  "comingSoon": "Coming soon",
+  "testTitle": "Integration validation",
+  "testHint": "Generates a R$ 1.00 Pix charge to test the full payment flow end-to-end.",
+  "testCta": "Test payment (R$ 1.00)"
+}
