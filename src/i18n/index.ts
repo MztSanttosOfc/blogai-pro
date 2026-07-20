@@ -98,6 +98,9 @@ if (!i18n.isInitialized) {
         "creator",
         "admin",
         "finance",
+        "analytics",
+        "activity",
+        "invites",
       ],
       defaultNS: "common",
 
