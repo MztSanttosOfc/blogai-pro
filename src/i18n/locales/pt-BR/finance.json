@@ -1,0 +1,31 @@
+{
+  "title": "Financeiro",
+  "pageTitle": "Financeiro — BlogAI Pro",
+  "subtitle": "Acompanhe sua assinatura, pagamentos e movimentação de créditos.",
+  "loadError": "Não foi possível carregar os dados financeiros: {{error}}",
+  "cards": {
+    "plan": "Plano atual",
+    "renewsAt": "Renova em {{date}}",
+    "totalInvested": "Total investido",
+    "transactions": "{{count}} transação(ões)",
+    "creditMoves": "Movimentações de crédito",
+    "recentRecords": "registros recentes"
+  },
+  "payments": {
+    "title": "Histórico de pagamentos",
+    "empty": "Nenhum pagamento registrado ainda.",
+    "planLabel": "Plano {{plan}}"
+  },
+  "credits": {
+    "title": "Extrato de créditos",
+    "empty": "Nenhuma movimentação de crédito ainda.",
+    "balance": "saldo {{balance}}"
+  },
+  "statuses": {
+    "paid": "Pago",
+    "pending": "Pendente",
+    "failed": "Falhou",
+    "refunded": "Reembolsado",
+    "canceled": "Cancelado"
+  }
+}

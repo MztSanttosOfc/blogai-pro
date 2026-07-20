@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -46,6 +47,7 @@ interface Faq {
 }
 
 function ArticleDetailPage() {
+  const { t } = useTranslation("library");
   const { id } = Route.useParams();
   const { edit } = Route.useSearch();
   const navigate = useNavigate();
@@ -95,9 +97,9 @@ function ArticleDetailPage() {
   if (!article) {
     return (
       <div className="mx-auto max-w-2xl py-20 text-center">
-        <p className="text-muted-foreground">Artigo não encontrado.</p>
+        <p className="text-muted-foreground">{t("detail.notFound")}</p>
         <Button asChild variant="hero" className="mt-4">
-          <Link to="/library">Voltar à biblioteca</Link>
+          <Link to="/library">{t("detail.backToLibrary")}</Link>
         </Button>
       </div>
     );
@@ -106,7 +108,6 @@ function ArticleDetailPage() {
   const headings = (article.headings as unknown as Heading[]) ?? [];
 
   const startEditing = () => {
-    // Reset working copy from the latest persisted article to avoid stale state.
     setTitle(article.title ?? "");
     setMeta(article.meta_description ?? "");
     setContent(article.content ?? "");
@@ -131,7 +132,7 @@ function ArticleDetailPage() {
     const cleanFaq = faq
       .map((f) => ({ question: f.question.trim(), answer: f.answer.trim() }))
       .filter((f) => f.question || f.answer);
-    const cleanTags = tags.map((t) => t.trim()).filter(Boolean);
+    const cleanTags = tags.map((tg) => tg.trim()).filter(Boolean);
 
     const { error } = await supabase
       .from("articles")
@@ -146,43 +147,43 @@ function ArticleDetailPage() {
       .eq("id", id);
     setSaving(false);
     if (error) {
-      toast.error("Erro ao salvar alterações.");
+      toast.error(t("toasts.saveError"));
       return;
     }
     await queryClient.invalidateQueries({ queryKey: ["article", id] });
     await queryClient.invalidateQueries({ queryKey: ["articles"] });
     setEditing(false);
-    toast.success("Alterações salvas com sucesso!");
+    toast.success(t("toasts.saved"));
   };
 
   const handlePublishToBlogger = async () => {
     if (editing) {
-      toast.info("Salve as alterações antes de publicar.");
+      toast.info(t("toasts.saveFirst"));
       return;
     }
     setPublishing(true);
     try {
-      const status = await bloggerStatusFn();
-      if (!status.connected) {
-        toast.error("Conecte sua conta do Blogger primeiro.");
+      const st = await bloggerStatusFn();
+      if (!st.connected) {
+        toast.error(t("toasts.connectFirst"));
         navigate({ to: "/connections" });
         return;
       }
-      if (!status.selectedBlogId) {
-        toast.error("Selecione um blog de destino na página de conexões.");
+      if (!st.selectedBlogId) {
+        toast.error(t("toasts.selectBlog"));
         navigate({ to: "/connections" });
         return;
       }
       const res = await publishFn({ data: { articleId: id } });
       await queryClient.invalidateQueries({ queryKey: ["article", id] });
       await queryClient.invalidateQueries({ queryKey: ["articles"] });
-      toast.success("Artigo publicado no Blogger!", {
+      toast.success(t("toasts.published"), {
         action: res.url
-          ? { label: "Abrir", onClick: () => window.open(res.url, "_blank") }
+          ? { label: t("actions.open"), onClick: () => window.open(res.url, "_blank") }
           : undefined,
       });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao publicar no Blogger.");
+      toast.error(e instanceof Error ? e.message : t("toasts.publishError"));
     } finally {
       setPublishing(false);
     }
@@ -190,7 +191,7 @@ function ArticleDetailPage() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
-    toast.success("Conteúdo copiado!");
+    toast.success(t("toasts.copied"));
   };
 
   const addTag = () => {
@@ -204,16 +205,16 @@ function ArticleDetailPage() {
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between gap-3">
         <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/library" })}>
-          <ArrowLeft className="h-4 w-4" /> Voltar
+          <ArrowLeft className="h-4 w-4" /> {t("actions.back")}
         </Button>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" onClick={handleCopy}>
-            <Copy className="h-4 w-4" /> Copiar
+            <Copy className="h-4 w-4" /> {t("actions.copy")}
           </Button>
           {editing ? (
             <>
               <Button variant="ghost" size="sm" onClick={cancelEditing} disabled={saving}>
-                Cancelar
+                {t("actions.cancel")}
               </Button>
               <Button variant="hero" size="sm" onClick={handleSave} disabled={saving}>
                 {saving ? (
@@ -221,12 +222,12 @@ function ArticleDetailPage() {
                 ) : (
                   <Save className="h-4 w-4" />
                 )}{" "}
-                Salvar alterações
+                {t("actions.save")}
               </Button>
             </>
           ) : (
             <Button variant="outline" size="sm" onClick={startEditing}>
-              <Pencil className="h-4 w-4" /> Editar
+              <Pencil className="h-4 w-4" /> {t("actions.edit")}
             </Button>
           )}
           <Button variant="hero" size="sm" onClick={handlePublishToBlogger} disabled={publishing}>
@@ -235,7 +236,7 @@ function ArticleDetailPage() {
             ) : (
               <Send className="h-4 w-4" />
             )}{" "}
-            Publicar no Blogger
+            {t("actions.publishToBlogger")}
           </Button>
         </div>
       </div>
@@ -243,22 +244,24 @@ function ArticleDetailPage() {
       <Card className="space-y-4 p-6">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={article.status === "published" ? "default" : "secondary"}>
-            {article.status === "published" ? "Publicado" : "Rascunho"}
+            {article.status === "published" ? t("status.published") : t("status.draft")}
           </Badge>
           <Badge variant="outline">{article.tone}</Badge>
           <Badge variant="outline">{article.language}</Badge>
-          <Badge variant="outline">{article.word_count} palavras</Badge>
+          <Badge variant="outline">
+            {article.word_count} {t("detail.words")}
+          </Badge>
         </div>
 
         {editing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Título SEO</Label>
+              <Label>{t("detail.titleLabel")}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={160} />
               <p className="text-right text-xs text-muted-foreground">{title.length}/160</p>
             </div>
             <div className="space-y-2">
-              <Label>Meta descrição</Label>
+              <Label>{t("detail.metaLabel")}</Label>
               <Textarea
                 value={meta}
                 onChange={(e) => setMeta(e.target.value)}
@@ -268,14 +271,14 @@ function ArticleDetailPage() {
               <p className="text-right text-xs text-muted-foreground">{meta.length}/200</p>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
+              <Label>{t("detail.statusLabel")}</Label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as "draft" | "published")}
                 className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
               >
-                <option value="draft">Rascunho</option>
-                <option value="published">Publicado</option>
+                <option value="draft">{t("status.draft")}</option>
+                <option value="published">{t("status.published")}</option>
               </select>
             </div>
           </div>
@@ -289,22 +292,19 @@ function ArticleDetailPage() {
 
       <Tabs defaultValue="article">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="article">Artigo</TabsTrigger>
-          <TabsTrigger value="outline">Estrutura</TabsTrigger>
-          <TabsTrigger value="faq">FAQ</TabsTrigger>
-          <TabsTrigger value="tags">Tags</TabsTrigger>
+          <TabsTrigger value="article">{t("detail.tabs.article")}</TabsTrigger>
+          <TabsTrigger value="outline">{t("detail.tabs.outline")}</TabsTrigger>
+          <TabsTrigger value="faq">{t("detail.tabs.faq")}</TabsTrigger>
+          <TabsTrigger value="tags">{t("detail.tabs.tags")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="article">
           <Card className="p-6">
             {editing ? (
               <div className="space-y-2">
-                <Label>Conteúdo do artigo</Label>
+                <Label>{t("detail.content")}</Label>
                 <RichTextEditor value={content} onChange={setContent} />
-                <p className="text-xs text-muted-foreground">
-                  Use a barra de ferramentas para formatar negrito, itálico, títulos, listas e
-                  links.
-                </p>
+                <p className="text-xs text-muted-foreground">{t("detail.editorHint")}</p>
               </div>
             ) : (
               <article className="max-w-none">
@@ -317,10 +317,10 @@ function ArticleDetailPage() {
         <TabsContent value="outline">
           <Card className="space-y-2 p-6">
             <h3 className="flex items-center gap-2 font-semibold">
-              <ListTree className="h-4 w-4 text-primary" /> Headings (H2/H3)
+              <ListTree className="h-4 w-4 text-primary" /> {t("detail.headings")}
             </h3>
             {headings.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Sem estrutura registrada.</p>
+              <p className="text-sm text-muted-foreground">{t("detail.noHeadings")}</p>
             ) : (
               <ul className="space-y-1.5">
                 {headings.map((h, i) => (
@@ -342,7 +342,7 @@ function ArticleDetailPage() {
         <TabsContent value="faq">
           <Card className="space-y-4 p-6">
             <h3 className="flex items-center gap-2 font-semibold">
-              <HelpCircle className="h-4 w-4 text-primary" /> Perguntas frequentes
+              <HelpCircle className="h-4 w-4 text-primary" /> {t("detail.faqTitle")}
             </h3>
             {editing ? (
               <div className="space-y-4">
@@ -350,21 +350,21 @@ function ArticleDetailPage() {
                   <div key={i} className="space-y-2 rounded-lg border border-border p-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs uppercase text-muted-foreground">
-                        Pergunta {i + 1}
+                        {t("detail.questionN", { n: i + 1 })}
                       </Label>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-destructive hover:text-destructive"
                         onClick={() => setFaq(faq.filter((_, idx) => idx !== i))}
-                        aria-label="Remover pergunta"
+                        aria-label={t("actions.removeQuestion")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                     <Input
                       value={f.question}
-                      placeholder="Pergunta"
+                      placeholder={t("detail.questionPh")}
                       onChange={(e) =>
                         setFaq(
                           faq.map((x, idx) => (idx === i ? { ...x, question: e.target.value } : x)),
@@ -373,7 +373,7 @@ function ArticleDetailPage() {
                     />
                     <Textarea
                       value={f.answer}
-                      placeholder="Resposta"
+                      placeholder={t("detail.answerPh")}
                       rows={3}
                       onChange={(e) =>
                         setFaq(
@@ -388,11 +388,11 @@ function ArticleDetailPage() {
                   size="sm"
                   onClick={() => setFaq([...faq, { question: "", answer: "" }])}
                 >
-                  <Plus className="h-4 w-4" /> Adicionar pergunta
+                  <Plus className="h-4 w-4" /> {t("actions.addQuestion")}
                 </Button>
               </div>
             ) : faq.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Sem FAQ registrado.</p>
+              <p className="text-sm text-muted-foreground">{t("detail.noFaq")}</p>
             ) : (
               faq.map((f, i) => (
                 <div key={i} className="space-y-1">
@@ -407,19 +407,19 @@ function ArticleDetailPage() {
         <TabsContent value="tags">
           <Card className="space-y-3 p-6">
             <h3 className="flex items-center gap-2 font-semibold">
-              <Tag className="h-4 w-4 text-primary" /> Tags sugeridas
+              <Tag className="h-4 w-4 text-primary" /> {t("detail.tagsTitle")}
             </h3>
             {editing ? (
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2">
-                  {tags.map((t, i) => (
+                  {tags.map((tg, i) => (
                     <Badge key={i} variant="secondary" className="gap-1 pr-1">
-                      {t}
+                      {tg}
                       <button
                         type="button"
                         onClick={() => setTags(tags.filter((_, idx) => idx !== i))}
                         className="rounded-full p-0.5 hover:bg-foreground/10"
-                        aria-label={`Remover ${t}`}
+                        aria-label={t("detail.removeTag", { tag: tg })}
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -429,7 +429,7 @@ function ArticleDetailPage() {
                 <div className="flex gap-2">
                   <Input
                     value={tagInput}
-                    placeholder="Nova tag"
+                    placeholder={t("detail.newTag")}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -439,18 +439,18 @@ function ArticleDetailPage() {
                     }}
                   />
                   <Button variant="outline" onClick={addTag}>
-                    <Plus className="h-4 w-4" /> Adicionar
+                    <Plus className="h-4 w-4" /> {t("actions.add")}
                   </Button>
                 </div>
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {tags.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Sem tags.</p>
+                  <p className="text-sm text-muted-foreground">{t("detail.noTags")}</p>
                 ) : (
-                  tags.map((t, i) => (
+                  tags.map((tg, i) => (
                     <Badge key={i} variant="secondary">
-                      {t}
+                      {tg}
                     </Badge>
                   ))
                 )}

@@ -2,5 +2,58 @@
   "title": "Biblioteca",
   "subtitle": "Todos os seus artigos gerados.",
   "empty": "Nenhum artigo encontrado.",
-  "search": "Pesquisar artigos…"
+  "search": "Pesquisar artigos…",
+  "status": {
+    "draft": "Rascunho",
+    "published": "Publicado"
+  },
+  "actions": {
+    "back": "Voltar",
+    "copy": "Copiar",
+    "edit": "Editar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "open": "Abrir",
+    "publishToBlogger": "Publicar no Blogger",
+    "add": "Adicionar",
+    "addQuestion": "Adicionar pergunta",
+    "removeQuestion": "Remover pergunta"
+  },
+  "toasts": {
+    "saved": "Artigo salvo.",
+    "saveError": "Erro ao salvar.",
+    "saveFirst": "Salve as edições antes de publicar.",
+    "connectFirst": "Conecte o Blogger antes de publicar.",
+    "selectBlog": "Selecione um blog em Conexões.",
+    "published": "Publicado no Blogger!",
+    "publishError": "Erro ao publicar.",
+    "copied": "Conteúdo copiado."
+  },
+  "detail": {
+    "notFound": "Artigo não encontrado.",
+    "backToLibrary": "Voltar para a biblioteca",
+    "words": "palavras",
+    "titleLabel": "Título",
+    "metaLabel": "Meta description",
+    "statusLabel": "Status",
+    "content": "Conteúdo",
+    "editorHint": "Use o editor visual para formatar o conteúdo.",
+    "tabs": {
+      "article": "Artigo",
+      "outline": "Estrutura",
+      "faq": "FAQ",
+      "tags": "Tags"
+    },
+    "headings": "Estrutura de títulos",
+    "noHeadings": "Sem estrutura salva.",
+    "faqTitle": "Perguntas e respostas",
+    "questionN": "Pergunta {{n}}",
+    "questionPh": "Pergunta",
+    "answerPh": "Resposta",
+    "noFaq": "Nenhuma pergunta cadastrada.",
+    "tagsTitle": "Tags",
+    "noTags": "Sem tags.",
+    "newTag": "Nova tag",
+    "removeTag": "Remover tag {{tag}}"
+  }
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Check, Info } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/pricing")({
 });
 
 function PricingPage() {
+  const { t } = useTranslation("pricing");
   const { profile } = useAuth();
   const { currency } = useCurrency();
   const isUSD = currency === "USD";
@@ -31,10 +33,8 @@ function PricingPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="space-y-3 text-center">
-        <h1 className="text-2xl font-bold md:text-3xl">Escolha o plano ideal</h1>
-        <p className="text-muted-foreground">
-          Mais créditos, mais artigos, mais alcance para o seu blog.
-        </p>
+        <h1 className="text-2xl font-bold md:text-3xl">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
         <div className="flex justify-center pt-2">
           <CurrencySwitcher />
         </div>
@@ -47,9 +47,7 @@ function PricingPage() {
         >
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
-            <strong>Pagamento em dólar disponível em breve.</strong> A infraestrutura já está
-            preparada para gateways internacionais. Enquanto isso, contas em USD podem visualizar os
-            planos, mas as compras seguem em BRL via Pix.
+            <strong>{t("usdSoonBoldPrefix")}</strong> {t("usdNotice")}
           </p>
         </div>
       )}
@@ -69,7 +67,7 @@ function PricingPage() {
             >
               {plan.highlight && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary">
-                  Mais popular
+                  {t("popular")}
                 </Badge>
               )}
               <div className="flex items-center gap-3">
@@ -81,7 +79,7 @@ function PricingPage() {
               <div className="mt-4 flex items-end gap-1">
                 {isUSD && isPaid ? (
                   <span className="font-display text-xl font-semibold text-muted-foreground">
-                    Em breve
+                    {t("comingSoon")}
                   </span>
                 ) : (
                   <>
@@ -113,12 +111,12 @@ function PricingPage() {
                 }
               >
                 {current
-                  ? "Plano atual"
+                  ? t("currentPlan")
                   : isUSD && isPaid
-                    ? "Pagamento em dólar em breve"
+                    ? t("usdSoon")
                     : isPaid
-                      ? "Assinar"
-                      : "Plano gratuito"}
+                      ? t("subscribe")
+                      : t("freePlan")}
               </Button>
             </Card>
           );
@@ -127,17 +125,17 @@ function PricingPage() {
 
       {!isUSD && (
         <div className="rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30 p-4 text-center">
-          <p className="text-sm font-medium">Validação de integração</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Gera um Pix de R$ 1,00 para testar todo o fluxo de pagamento ponta a ponta.
-          </p>
+          <p className="text-sm font-medium">{t("testTitle")}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("testHint")}</p>
           <Button
             variant="outline"
             size="sm"
             className="mt-3"
-            onClick={() => setCheckout({ planId: "teste", name: "Teste", price: "R$ 1,00" })}
+            onClick={() =>
+              setCheckout({ planId: "teste", name: t("testPlanName"), price: "R$ 1,00" })
+            }
           >
-            Testar pagamento (R$ 1,00)
+            {t("testCta")}
           </Button>
         </div>
       )}

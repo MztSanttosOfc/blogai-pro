@@ -24,6 +24,8 @@ import ptBrCreator from "./locales/pt-BR/creator.json";
 import enUsCreator from "./locales/en-US/creator.json";
 import ptBrAdmin from "./locales/pt-BR/admin.json";
 import enUsAdmin from "./locales/en-US/admin.json";
+import ptBrFinance from "./locales/pt-BR/finance.json";
+import enUsFinance from "./locales/en-US/finance.json";
 
 export type SupportedLanguage = "pt-BR" | "en-US";
 
@@ -56,6 +58,7 @@ if (!i18n.isInitialized) {
           settings: ptBrSettings,
           creator: ptBrCreator,
           admin: ptBrAdmin,
+          finance: ptBrFinance,
         },
         "en-US": {
           common: enUsCommon,
@@ -67,6 +70,7 @@ if (!i18n.isInitialized) {
           settings: enUsSettings,
           creator: enUsCreator,
           admin: enUsAdmin,
+          finance: enUsFinance,
         },
       },
       fallbackLng: DEFAULT_LANGUAGE,
@@ -81,6 +85,7 @@ if (!i18n.isInitialized) {
         "settings",
         "creator",
         "admin",
+        "finance",
       ],
       defaultNS: "common",
 

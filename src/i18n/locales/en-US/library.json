@@ -2,5 +2,58 @@
   "title": "Library",
   "subtitle": "All your generated articles.",
   "empty": "No articles found.",
-  "search": "Search articles…"
+  "search": "Search articles…",
+  "status": {
+    "draft": "Draft",
+    "published": "Published"
+  },
+  "actions": {
+    "back": "Back",
+    "copy": "Copy",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "open": "Open",
+    "publishToBlogger": "Publish to Blogger",
+    "add": "Add",
+    "addQuestion": "Add question",
+    "removeQuestion": "Remove question"
+  },
+  "toasts": {
+    "saved": "Article saved.",
+    "saveError": "Failed to save.",
+    "saveFirst": "Save changes before publishing.",
+    "connectFirst": "Connect Blogger before publishing.",
+    "selectBlog": "Select a blog in Connections.",
+    "published": "Published to Blogger!",
+    "publishError": "Failed to publish.",
+    "copied": "Content copied."
+  },
+  "detail": {
+    "notFound": "Article not found.",
+    "backToLibrary": "Back to library",
+    "words": "words",
+    "titleLabel": "Title",
+    "metaLabel": "Meta description",
+    "statusLabel": "Status",
+    "content": "Content",
+    "editorHint": "Use the visual editor to format content.",
+    "tabs": {
+      "article": "Article",
+      "outline": "Outline",
+      "faq": "FAQ",
+      "tags": "Tags"
+    },
+    "headings": "Heading structure",
+    "noHeadings": "No structure saved.",
+    "faqTitle": "Questions & answers",
+    "questionN": "Question {{n}}",
+    "questionPh": "Question",
+    "answerPh": "Answer",
+    "noFaq": "No questions saved.",
+    "tagsTitle": "Tags",
+    "noTags": "No tags.",
+    "newTag": "New tag",
+    "removeTag": "Remove tag {{tag}}"
+  }
 }

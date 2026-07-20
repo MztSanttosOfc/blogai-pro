@@ -1,4 +1,98 @@
 {
-  "title": "Administration",
-  "subtitle": "BlogAI Pro admin panel."
+  "pageTitle": "Administration — BlogAI Pro",
+  "title": "Admin Dashboard",
+  "subtitle": "Full management of BlogAI Pro",
+  "restricted": {
+    "title": "Restricted access",
+    "text": "This area is exclusive to administrators."
+  },
+  "tabs": {
+    "stats": "Statistics",
+    "users": "Users",
+    "logs": "Logs"
+  },
+  "stats": {
+    "empty": "No data.",
+    "totalUsers": "Total users",
+    "free": "Free",
+    "pro": "Pro",
+    "premium": "Premium",
+    "payments": "Confirmed payments",
+    "revenue": "Total revenue",
+    "creditsDistributed": "Credits distributed",
+    "creditsConsumed": "Credits consumed",
+    "new7d": "New (7 days)",
+    "new30d": "New (30 days)",
+    "articles": "Articles generated",
+    "teste": "Test accounts"
+  },
+  "users": {
+    "searchPh": "Search by name or email...",
+    "allPlans": "All plans",
+    "free": "Free",
+    "pro": "Pro",
+    "premium": "Premium",
+    "teste": "Test",
+    "columns": {
+      "user": "User",
+      "plan": "Plan",
+      "credits": "Credits",
+      "subscription": "Subscription",
+      "createdAt": "Signup",
+      "lastSignIn": "Last sign-in",
+      "actions": "Actions"
+    },
+    "creditsBtn": "Credits",
+    "empty": "No users found.",
+    "planUpdated": "Plan updated.",
+    "planError": "Failed to change plan.",
+    "unlimited": "unlimited"
+  },
+  "credits": {
+    "title": "Manage credits",
+    "balanceText": "{{name}} — current balance: {{balance}}",
+    "operation": "Operation",
+    "add": "Add",
+    "remove": "Remove",
+    "set": "Set",
+    "amount": "Amount",
+    "reason": "Reason (optional)",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "invalid": "Enter a valid amount.",
+    "updated": "Credits updated.",
+    "error": "Failed to adjust credits."
+  },
+  "logs": {
+    "columns": {
+      "date": "Date",
+      "action": "Action",
+      "admin": "Administrator",
+      "target": "Target user",
+      "details": "Details"
+    },
+    "empty": "No records yet."
+  },
+  "feedback": {
+    "pageTitle": "Feedback Center (Admin) — BlogAI Pro",
+    "title": "Feedback Center",
+    "cards": {
+      "total": "Total",
+      "avg": "Average rating",
+      "pending": "Pending",
+      "replied": "Replied"
+    },
+    "distributionTitle": "Rating distribution",
+    "recent": "Recent feedback",
+    "loading": "Loading…",
+    "empty": "No feedback yet.",
+    "suggestion": "Suggestion",
+    "issue": "Issue",
+    "replySent": "Reply sent",
+    "replyPh": "Reply to user…",
+    "reply": "Reply",
+    "delete": "Delete",
+    "sent": "Reply sent",
+    "genericError": "Error"
+  }
 }

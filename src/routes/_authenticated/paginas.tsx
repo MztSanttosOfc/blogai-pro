@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   FileText,
@@ -49,16 +50,8 @@ interface SitePageRow {
   blogger_post_url: string | null;
 }
 
-const PAGE_DESCRIPTIONS: Record<SitePageType, string> = {
-  sobre: "Apresente seu site, missão e autoridade (E-E-A-T).",
-  contato: "Canal de contato para leitores e anunciantes.",
-  privacidade: "Compatível com LGPD e exigida pelo AdSense.",
-  termos: "Regras de uso e direitos autorais do conteúdo.",
-  disclaimer: "Aviso legal sobre o caráter informativo do conteúdo.",
-  cookies: "Uso de cookies e consentimento (LGPD).",
-};
-
 function PaginasPage() {
+  const { t } = useTranslation("pages");
   const queryClient = useQueryClient();
 
   const fetchSettings = useServerFn(getSiteSettings);
@@ -124,9 +117,9 @@ function PaginasPage() {
     try {
       await runSaveSettings({ data: settings });
       await queryClient.invalidateQueries({ queryKey: ["site-settings"] });
-      toast.success("Configurações salvas.");
+      toast.success(t("settings.saved"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao salvar.");
+      toast.error(err instanceof Error ? err.message : t("settings.saveError"));
     } finally {
       setSavingSettings(false);
     }
@@ -137,13 +130,13 @@ function PaginasPage() {
     try {
       const res = await runGenerate({ data: { type } });
       await queryClient.invalidateQueries({ queryKey: ["site-pages"] });
-      toast.success(`${PAGE_TITLES[type]} gerada com sucesso!`);
+      toast.success(t("toasts.generated", { page: PAGE_TITLES[type] }));
       const page = res.page as SitePageRow;
       setSelectedType(type);
       setEditorTitle(page.title);
       setEditorContent(page.content);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao gerar a página.");
+      toast.error(err instanceof Error ? err.message : t("toasts.generateError"));
     } finally {
       setBusyType(null);
     }
@@ -154,9 +147,9 @@ function PaginasPage() {
     try {
       await runKit();
       await queryClient.invalidateQueries({ queryKey: ["site-pages"] });
-      toast.success("Kit Completo AdSense gerado! Revise e publique.");
+      toast.success(t("kit.success"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao gerar o kit.");
+      toast.error(err instanceof Error ? err.message : t("kit.error"));
     } finally {
       setKitLoading(false);
     }
@@ -174,9 +167,9 @@ function PaginasPage() {
         },
       });
       await queryClient.invalidateQueries({ queryKey: ["site-pages"] });
-      toast.success("Página salva.");
+      toast.success(t("toasts.saved"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao salvar.");
+      toast.error(err instanceof Error ? err.message : t("toasts.saveError"));
     } finally {
       setSavingPage(false);
     }
@@ -187,9 +180,9 @@ function PaginasPage() {
     try {
       const res = await runPublish({ data: { type } });
       await queryClient.invalidateQueries({ queryKey: ["site-pages"] });
-      toast.success(`Publicado no Blogger${res.blogName ? ` (${res.blogName})` : ""}!`);
+      toast.success(`${t("toasts.published")}${res.blogName ? ` (${res.blogName})` : ""}!`);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao publicar.");
+      toast.error(err instanceof Error ? err.message : t("toasts.publishError"));
     } finally {
       setPublishingType(null);
     }
@@ -201,9 +194,9 @@ function PaginasPage() {
       await runDelete({ data: { type } });
       await queryClient.invalidateQueries({ queryKey: ["site-pages"] });
       if (selectedType === type) setSelectedType(null);
-      toast.success("Página excluída.");
+      toast.success(t("toasts.deleted"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao excluir.");
+      toast.error(err instanceof Error ? err.message : t("toasts.deleteError"));
     } finally {
       setBusyType(null);
     }
@@ -213,69 +206,65 @@ function PaginasPage() {
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="space-y-1">
         <h1 className="flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <FileText className="h-6 w-6 text-primary" /> Páginas Essenciais
+          <FileText className="h-6 w-6 text-primary" /> {t("title")}
         </h1>
-        <p className="text-muted-foreground">
-          Gere páginas profissionais prontas para a aprovação no Google AdSense e compatíveis com a
-          LGPD.
-        </p>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      {/* Configurações do site (personalização automática) */}
       <Card className="space-y-4 p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <Settings2 className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold">Dados do site (personalização automática)</h2>
+          <h2 className="text-lg font-semibold">{t("settings.title")}</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="blog_name">Nome do blog</Label>
+            <Label htmlFor="blog_name">{t("settings.blogName")}</Label>
             <Input
               id="blog_name"
               value={settings.blog_name}
               maxLength={160}
-              placeholder="Ex.: Monzart Tech"
+              placeholder={t("settings.blogNamePh")}
               onChange={(e) => setSettings((s) => ({ ...s, blog_name: e.target.value }))}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="owner_name">Nome do proprietário</Label>
+            <Label htmlFor="owner_name">{t("settings.ownerName")}</Label>
             <Input
               id="owner_name"
               value={settings.owner_name}
               maxLength={160}
-              placeholder="Ex.: Junior Santos"
+              placeholder={t("settings.ownerNamePh")}
               onChange={(e) => setSettings((s) => ({ ...s, owner_name: e.target.value }))}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contact_email">E-mail de contato</Label>
+            <Label htmlFor="contact_email">{t("settings.contactEmail")}</Label>
             <Input
               id="contact_email"
               type="email"
               value={settings.contact_email}
               maxLength={160}
-              placeholder="contato@seudominio.com.br"
+              placeholder={t("settings.contactEmailPh")}
               onChange={(e) => setSettings((s) => ({ ...s, contact_email: e.target.value }))}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="domain">Domínio</Label>
+            <Label htmlFor="domain">{t("settings.domain")}</Label>
             <Input
               id="domain"
               value={settings.domain}
               maxLength={200}
-              placeholder="seudominio.com.br"
+              placeholder={t("settings.domainPh")}
               onChange={(e) => setSettings((s) => ({ ...s, domain: e.target.value }))}
             />
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="niche">Nicho / Assunto do site</Label>
+            <Label htmlFor="niche">{t("settings.niche")}</Label>
             <Input
               id="niche"
               value={settings.niche}
               maxLength={200}
-              placeholder="Ex.: tecnologia, inteligência artificial e produtividade"
+              placeholder={t("settings.nichePh")}
               onChange={(e) => setSettings((s) => ({ ...s, niche: e.target.value }))}
             />
           </div>
@@ -286,19 +275,16 @@ function PaginasPage() {
           ) : (
             <Save className="h-4 w-4" />
           )}
-          Salvar dados
+          {t("settings.save")}
         </Button>
       </Card>
 
-      {/* Kit Completo AdSense */}
       <Card className="flex flex-col items-start justify-between gap-4 bg-gradient-primary p-6 text-primary-foreground shadow-glow sm:flex-row sm:items-center">
         <div className="space-y-1">
           <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Rocket className="h-5 w-5" /> Gerar Kit Completo AdSense
+            <Rocket className="h-5 w-5" /> {t("kit.title")}
           </h2>
-          <p className="text-sm opacity-90">
-            Cria de uma vez Sobre Nós, Contato, Política de Privacidade e Termos de Uso.
-          </p>
+          <p className="text-sm opacity-90">{t("kit.subtitle")}</p>
         </div>
         <Button
           onClick={handleKit}
@@ -310,11 +296,10 @@ function PaginasPage() {
           ) : (
             <Sparkles className="h-4 w-4" />
           )}
-          {kitLoading ? "Gerando kit..." : "Gerar kit"}
+          {kitLoading ? t("kit.loading") : t("kit.cta")}
         </Button>
       </Card>
 
-      {/* Lista de páginas */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {PAGE_TYPES.map((type) => {
           const page = pageByType.get(type);
@@ -325,18 +310,18 @@ function PaginasPage() {
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h3 className="font-semibold">{PAGE_TITLES[type]}</h3>
-                  <p className="text-xs text-muted-foreground">{PAGE_DESCRIPTIONS[type]}</p>
+                  <p className="text-xs text-muted-foreground">{t(`descriptions.${type}`)}</p>
                 </div>
                 {page ? (
                   page.status === "published" ? (
                     <Badge className="bg-success text-success-foreground">
-                      <CheckCircle2 className="mr-1 h-3 w-3" /> Publicada
+                      <CheckCircle2 className="mr-1 h-3 w-3" /> {t("status.published")}
                     </Badge>
                   ) : (
-                    <Badge variant="secondary">Rascunho</Badge>
+                    <Badge variant="secondary">{t("status.draft")}</Badge>
                   )
                 ) : (
-                  <Badge variant="outline">Não criada</Badge>
+                  <Badge variant="outline">{t("status.notCreated")}</Badge>
                 )}
               </div>
 
@@ -349,12 +334,12 @@ function PaginasPage() {
                   ) : (
                     <Sparkles className="h-4 w-4" />
                   )}
-                  {page ? "Regerar" : "Gerar"}
+                  {page ? t("actions.regenerate") : t("actions.generate")}
                 </Button>
                 {page && (
                   <>
                     <Button size="sm" variant="secondary" onClick={() => selectPage(type)}>
-                      <Pencil className="h-4 w-4" /> Editar
+                      <Pencil className="h-4 w-4" /> {t("actions.edit")}
                     </Button>
                     <Button
                       size="sm"
@@ -367,7 +352,7 @@ function PaginasPage() {
                       ) : (
                         <Send className="h-4 w-4" />
                       )}
-                      {page.status === "published" ? "Atualizar" : "Publicar"}
+                      {page.status === "published" ? t("actions.update") : t("actions.publish")}
                     </Button>
                     <Button
                       size="icon"
@@ -375,7 +360,7 @@ function PaginasPage() {
                       className="text-destructive hover:text-destructive"
                       onClick={() => handleDelete(type)}
                       disabled={busy}
-                      aria-label="Excluir"
+                      aria-label={t("actions.delete")}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -388,7 +373,7 @@ function PaginasPage() {
                     rel="noopener noreferrer"
                     className="self-center text-xs text-primary underline"
                   >
-                    Ver no blog
+                    {t("actions.seeOnBlog")}
                   </a>
                 )}
               </div>
@@ -397,19 +382,19 @@ function PaginasPage() {
         })}
       </div>
 
-      {/* Editor visual */}
       {selectedType && (
         <Card className="space-y-4 p-6 shadow-soft">
           <div className="flex items-center justify-between gap-2">
             <h2 className="flex items-center gap-2 text-lg font-semibold">
-              <Pencil className="h-5 w-5 text-primary" /> Editar: {PAGE_TITLES[selectedType]}
+              <Pencil className="h-5 w-5 text-primary" /> {t("editor.title")}{" "}
+              {PAGE_TITLES[selectedType]}
             </h2>
             <Button size="sm" variant="ghost" onClick={() => setSelectedType(null)}>
-              Fechar
+              {t("actions.close")}
             </Button>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="editor_title">Título da página</Label>
+            <Label htmlFor="editor_title">{t("editor.pageTitle")}</Label>
             <Input
               id="editor_title"
               value={editorTitle}
@@ -425,7 +410,7 @@ function PaginasPage() {
               ) : (
                 <Save className="h-4 w-4" />
               )}
-              Salvar
+              {t("actions.save")}
             </Button>
             <Button
               variant="outline"
@@ -437,7 +422,7 @@ function PaginasPage() {
               ) : (
                 <Send className="h-4 w-4" />
               )}
-              Publicar no Blogger
+              {t("actions.publishToBlogger")}
             </Button>
           </div>
         </Card>

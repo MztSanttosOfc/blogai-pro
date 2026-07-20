@@ -1,4 +1,101 @@
 {
-  "title": "Meet the Creator",
-  "subtitle": "The person behind BlogAI Pro."
+  "pageTitle": "Meet the Creator — BlogAI Pro",
+  "metaDescription": "Meet Júnnior Monzart, creator of BlogAI Pro — blogger, SEO and monetization expert, and platform developer.",
+  "ogDescription": "The story behind BlogAI Pro: who built it, why it exists, and where it's going.",
+  "hero": {
+    "badge": "Creator of BlogAI Pro",
+    "name": "Júnnior Monzart",
+    "description": "Blogger, SEO and monetization expert, and developer behind BlogAI Pro — the platform that combines artificial intelligence with content production at scale.",
+    "visitSite": "Visit site",
+    "mediaKit": "Media Kit",
+    "contact": "Contact",
+    "portraitAlt": "Official photo of Júnnior Monzart, creator of BlogAI Pro"
+  },
+  "stats": {
+    "years": "Years creating content",
+    "projects": "Projects delivered",
+    "tools": "Tools developed",
+    "impacted": "Bloggers impacted"
+  },
+  "timeline": {
+    "title": "Journey",
+    "subtitle": "A timeline up to the official 1.0 launch.",
+    "items": {
+      "2017": {
+        "title": "First steps on Blogger",
+        "description": "Beginning of the blogging journey, publishing about tech, productivity and SEO."
+      },
+      "2019": {
+        "title": "SEO specialization",
+        "description": "Deep dive into technical SEO, Search Console, Analytics and organic traffic strategies."
+      },
+      "2021": {
+        "title": "Monetization and AdSense",
+        "description": "Intensive study of blog monetization with Google AdSense, partnerships and evergreen content."
+      },
+      "2023": {
+        "title": "Own tools",
+        "description": "First internal prototypes to automate article generation, meta tags and content clusters."
+      },
+      "2025": {
+        "title": "BlogAI Pro is born",
+        "description": "Official launch of the platform combining generative AI, Blogger publishing and SEO performance in one place."
+      },
+      "2026": {
+        "title": "Official ecosystem",
+        "description": "Public API v1, official WordPress plugin and Android app via Capacitor — ready to scale."
+      }
+    }
+  },
+  "expertise": {
+    "title": "Areas of focus",
+    "subtitle": "The technical and editorial foundation behind every BlogAI Pro decision.",
+    "blogger": {
+      "title": "Blogger & Content",
+      "text": "Years publishing, optimizing and scaling blogs — from zero to monetization."
+    },
+    "seo": {
+      "title": "Technical SEO",
+      "text": "Search Console, Core Web Vitals, schema, indexing and topic clusters."
+    },
+    "monetization": {
+      "title": "Monetization",
+      "text": "AdSense, partnerships and sustainable revenue strategies for creators."
+    },
+    "dev": {
+      "title": "Development",
+      "text": "React, TypeScript, Supabase and applied AI — BlogAI Pro is 100% original."
+    }
+  },
+  "story": {
+    "myStoryTitle": "My story",
+    "myStoryText": "It all started with a single Blogger blog and the curiosity to understand why some articles ranked on Google and others didn't. Years later, dozens of blogs, thousands of optimized posts and lots of documentation turned that hobby into a profession — and the profession into a product.",
+    "howTitle": "How BlogAI Pro came about",
+    "howText": "BlogAI Pro was born from a real pain: publishing consistently, keeping quality high and still tracking SEO data without jumping between 10 tabs. I decided to combine generative AI, native Blogger integration and a performance dashboard connected to Google Search Console — all in a single platform.",
+    "missionTitle": "Mission",
+    "missionText": "Democratize access to professional content and SEO tools so any blogger — beginner or advanced — can publish with agency-level quality.",
+    "visionTitle": "Future vision",
+    "visionText": "Make BlogAI Pro the official ecosystem for smart publishing in Portuguese — with public API, WordPress plugin, Android and iOS apps and integrations that respect content creators."
+  },
+  "projects": {
+    "title": "Main projects",
+    "subtitle": "Public initiatives tied to the same mission.",
+    "download": "Download",
+    "items": {
+      "blogaiPro": "AI SaaS platform for bloggers",
+      "blog": "Official blog with SEO and Blogger tutorials",
+      "divpen": "Online editor for HTML, CSS and JavaScript — fast code prototyping.",
+      "tools": "Collection of free tools for bloggers, content creators and SEO professionals.",
+      "plugin": "Official WordPress ↔ BlogAI Pro integration for automated publishing.",
+      "pluginCta": "Download plugin"
+    }
+  },
+  "socials": {
+    "title": "Where to find me",
+    "subtitle": "Official links for my networks and channels.",
+    "site": "Official site",
+    "blog": "Blog",
+    "mediaKit": "Media Kit",
+    "contact": "Contact"
+  }
 }
