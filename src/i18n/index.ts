@@ -58,6 +58,7 @@ if (!i18n.isInitialized) {
           settings: ptBrSettings,
           creator: ptBrCreator,
           admin: ptBrAdmin,
+          finance: ptBrFinance,
         },
         "en-US": {
           common: enUsCommon,
@@ -69,6 +70,7 @@ if (!i18n.isInitialized) {
           settings: enUsSettings,
           creator: enUsCreator,
           admin: enUsAdmin,
+          finance: enUsFinance,
         },
       },
       fallbackLng: DEFAULT_LANGUAGE,
