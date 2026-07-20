@@ -1,4 +1,67 @@
 {
-  "title": "Pages",
-  "subtitle": "Generate institutional and landing pages."
+  "title": "Essential Pages",
+  "subtitle": "Generate professional pages ready for Google AdSense approval and GDPR/LGPD compliant.",
+  "settings": {
+    "title": "Site data (automatic personalization)",
+    "blogName": "Blog name",
+    "blogNamePh": "E.g.: Monzart Tech",
+    "ownerName": "Owner name",
+    "ownerNamePh": "E.g.: Junior Santos",
+    "contactEmail": "Contact email",
+    "contactEmailPh": "contact@yourdomain.com",
+    "domain": "Domain",
+    "domainPh": "yourdomain.com",
+    "niche": "Site niche / topic",
+    "nichePh": "E.g.: technology, artificial intelligence and productivity",
+    "save": "Save data",
+    "saved": "Settings saved.",
+    "saveError": "Save failed."
+  },
+  "kit": {
+    "title": "Generate Full AdSense Kit",
+    "subtitle": "Creates About, Contact, Privacy Policy and Terms of Use at once.",
+    "cta": "Generate kit",
+    "loading": "Generating kit...",
+    "success": "Full AdSense Kit generated! Review and publish.",
+    "error": "Kit generation failed."
+  },
+  "descriptions": {
+    "sobre": "Introduce your site, mission and authority (E-E-A-T).",
+    "contato": "Contact channel for readers and advertisers.",
+    "privacidade": "GDPR/LGPD compliant and required by AdSense.",
+    "termos": "Usage rules and content copyright.",
+    "disclaimer": "Legal notice on the informational nature of content.",
+    "cookies": "Cookie usage and consent (GDPR/LGPD)."
+  },
+  "status": {
+    "published": "Published",
+    "draft": "Draft",
+    "notCreated": "Not created"
+  },
+  "actions": {
+    "generate": "Generate",
+    "regenerate": "Regenerate",
+    "edit": "Edit",
+    "publish": "Publish",
+    "update": "Update",
+    "seeOnBlog": "View on blog",
+    "delete": "Delete",
+    "close": "Close",
+    "save": "Save",
+    "publishToBlogger": "Publish to Blogger"
+  },
+  "editor": {
+    "title": "Editing:",
+    "pageTitle": "Page title"
+  },
+  "toasts": {
+    "generated": "{{page}} generated successfully!",
+    "generateError": "Page generation failed.",
+    "saved": "Page saved.",
+    "saveError": "Save failed.",
+    "published": "Published to Blogger",
+    "publishError": "Publish failed.",
+    "deleted": "Page deleted.",
+    "deleteError": "Delete failed."
+  }
 }

@@ -1,6 +1,77 @@
 {
   "title": "Biblioteca",
-  "subtitle": "Todos os seus artigos gerados.",
+  "subtitle": "Gerencie todos os seus artigos gerados.",
+  "newArticle": "Novo artigo",
+  "searchPh": "Buscar por título ou palavra-chave...",
+  "loading": "Carregando...",
   "empty": "Nenhum artigo encontrado.",
-  "search": "Pesquisar artigos…"
+  "generateArticle": "Gerar artigo",
+  "status": {
+    "published": "Publicado",
+    "draft": "Rascunho"
+  },
+  "wordsCount": "{{count}} palavras",
+  "actions": {
+    "view": "Ver",
+    "edit": "Editar",
+    "publish": "Publicar",
+    "duplicate": "Duplicar",
+    "delete": "Excluir",
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "open": "Abrir",
+    "copy": "Copiar",
+    "save": "Salvar alterações",
+    "publishToBlogger": "Publicar no Blogger",
+    "addQuestion": "Adicionar pergunta",
+    "removeQuestion": "Remover pergunta",
+    "add": "Adicionar"
+  },
+  "toasts": {
+    "duplicated": "Artigo duplicado!",
+    "duplicateError": "Erro ao duplicar artigo.",
+    "deleted": "Artigo excluído.",
+    "deleteError": "Erro ao excluir artigo.",
+    "published": "Artigo publicado no Blogger!",
+    "publishError": "Falha ao publicar no Blogger.",
+    "selectBlog": "Selecione um blog de destino na página de conexões.",
+    "connectFirst": "Conecte sua conta do Blogger primeiro.",
+    "copied": "Conteúdo copiado!",
+    "saved": "Alterações salvas com sucesso!",
+    "saveError": "Erro ao salvar alterações.",
+    "saveFirst": "Salve as alterações antes de publicar."
+  },
+  "delete": {
+    "title": "Excluir artigo?",
+    "description": "Esta ação não pode ser desfeita. O artigo será removido permanentemente.",
+    "cancel": "Cancelar",
+    "confirm": "Excluir"
+  },
+  "detail": {
+    "notFound": "Artigo não encontrado.",
+    "backToLibrary": "Voltar à biblioteca",
+    "titleLabel": "Título SEO",
+    "metaLabel": "Meta descrição",
+    "statusLabel": "Status",
+    "words": "palavras",
+    "tabs": {
+      "article": "Artigo",
+      "outline": "Estrutura",
+      "faq": "FAQ",
+      "tags": "Tags"
+    },
+    "content": "Conteúdo do artigo",
+    "editorHint": "Use a barra de ferramentas para formatar negrito, itálico, títulos, listas e links.",
+    "headings": "Headings (H2/H3)",
+    "noHeadings": "Sem estrutura registrada.",
+    "faqTitle": "Perguntas frequentes",
+    "noFaq": "Sem FAQ registrado.",
+    "questionN": "Pergunta {{n}}",
+    "questionPh": "Pergunta",
+    "answerPh": "Resposta",
+    "tagsTitle": "Tags sugeridas",
+    "noTags": "Sem tags.",
+    "newTag": "Nova tag",
+    "removeTag": "Remover {{tag}}"
+  }
 }

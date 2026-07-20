@@ -1,0 +1,31 @@
+{
+  "title": "Finance",
+  "pageTitle": "Finance — BlogAI Pro",
+  "subtitle": "Track your subscription, payments and credit activity.",
+  "loadError": "Could not load financial data: {{error}}",
+  "cards": {
+    "plan": "Current plan",
+    "renewsAt": "Renews on {{date}}",
+    "totalInvested": "Total invested",
+    "transactions": "{{count}} transaction(s)",
+    "creditMoves": "Credit activity",
+    "recentRecords": "recent records"
+  },
+  "payments": {
+    "title": "Payment history",
+    "empty": "No payments recorded yet.",
+    "planLabel": "{{plan}} plan"
+  },
+  "credits": {
+    "title": "Credit statement",
+    "empty": "No credit activity yet.",
+    "balance": "balance {{balance}}"
+  },
+  "statuses": {
+    "paid": "Paid",
+    "pending": "Pending",
+    "failed": "Failed",
+    "refunded": "Refunded",
+    "canceled": "Canceled"
+  }
+}

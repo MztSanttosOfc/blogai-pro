@@ -1,6 +1,77 @@
 {
   "title": "Library",
-  "subtitle": "All your generated articles.",
+  "subtitle": "Manage all your generated articles.",
+  "newArticle": "New article",
+  "searchPh": "Search by title or keyword...",
+  "loading": "Loading...",
   "empty": "No articles found.",
-  "search": "Search articles…"
+  "generateArticle": "Generate article",
+  "status": {
+    "published": "Published",
+    "draft": "Draft"
+  },
+  "wordsCount": "{{count}} words",
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "publish": "Publish",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "back": "Back",
+    "cancel": "Cancel",
+    "open": "Open",
+    "copy": "Copy",
+    "save": "Save changes",
+    "publishToBlogger": "Publish to Blogger",
+    "addQuestion": "Add question",
+    "removeQuestion": "Remove question",
+    "add": "Add"
+  },
+  "toasts": {
+    "duplicated": "Article duplicated!",
+    "duplicateError": "Failed to duplicate article.",
+    "deleted": "Article deleted.",
+    "deleteError": "Failed to delete article.",
+    "published": "Article published to Blogger!",
+    "publishError": "Failed to publish to Blogger.",
+    "selectBlog": "Select a target blog on the Connections page.",
+    "connectFirst": "Connect your Blogger account first.",
+    "copied": "Content copied!",
+    "saved": "Changes saved successfully!",
+    "saveError": "Failed to save changes.",
+    "saveFirst": "Save changes before publishing."
+  },
+  "delete": {
+    "title": "Delete article?",
+    "description": "This action cannot be undone. The article will be removed permanently.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+  "detail": {
+    "notFound": "Article not found.",
+    "backToLibrary": "Back to library",
+    "titleLabel": "SEO title",
+    "metaLabel": "Meta description",
+    "statusLabel": "Status",
+    "words": "words",
+    "tabs": {
+      "article": "Article",
+      "outline": "Outline",
+      "faq": "FAQ",
+      "tags": "Tags"
+    },
+    "content": "Article content",
+    "editorHint": "Use the toolbar to format bold, italic, headings, lists and links.",
+    "headings": "Headings (H2/H3)",
+    "noHeadings": "No outline registered.",
+    "faqTitle": "Frequently asked questions",
+    "noFaq": "No FAQ registered.",
+    "questionN": "Question {{n}}",
+    "questionPh": "Question",
+    "answerPh": "Answer",
+    "tagsTitle": "Suggested tags",
+    "noTags": "No tags.",
+    "newTag": "New tag",
+    "removeTag": "Remove {{tag}}"
+  }
 }
