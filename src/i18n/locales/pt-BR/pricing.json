@@ -1,14 +1,18 @@
 {
+  "pageTitle": "Assinatura — BlogAI Pro",
   "title": "Escolha o plano ideal",
   "subtitle": "Mais créditos, mais artigos, mais alcance para o seu blog.",
   "currentPlan": "Plano atual",
   "subscribe": "Assinar",
   "freePlan": "Plano gratuito",
   "usdSoon": "Pagamento em dólar em breve",
-  "usdNotice": "Pagamento em dólar disponível em breve. A infraestrutura já está preparada. Enquanto isso, contas em USD podem visualizar os planos, mas as compras seguem em BRL via Pix.",
+  "usdSoonShort": "Pagamento em dólar em breve.",
+  "usdSoonBoldPrefix": "Pagamento em dólar disponível em breve.",
+  "usdNotice": "A infraestrutura já está preparada para gateways internacionais. Enquanto isso, contas em USD podem visualizar os planos, mas as compras seguem em BRL via Pix.",
   "popular": "Mais popular",
   "comingSoon": "Em breve",
   "testTitle": "Validação de integração",
   "testHint": "Gera um Pix de R$ 1,00 para testar todo o fluxo de pagamento ponta a ponta.",
-  "testCta": "Testar pagamento (R$ 1,00)"
+  "testCta": "Testar pagamento (R$ 1,00)",
+  "testPlanName": "Teste"
 }

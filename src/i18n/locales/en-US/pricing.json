@@ -1,14 +1,18 @@
 {
+  "pageTitle": "Subscription — BlogAI Pro",
   "title": "Choose the ideal plan",
   "subtitle": "More credits, more articles, more reach for your blog.",
   "currentPlan": "Current plan",
   "subscribe": "Subscribe",
   "freePlan": "Free plan",
   "usdSoon": "USD payment coming soon",
-  "usdNotice": "USD payments coming soon. The infrastructure is ready. For now, USD accounts can view plans, but purchases go through BRL via Pix.",
+  "usdSoonShort": "USD payment coming soon.",
+  "usdSoonBoldPrefix": "USD payment coming soon.",
+  "usdNotice": "The infrastructure is ready for international gateways. Meanwhile, USD accounts can browse plans, but purchases run in BRL via Pix.",
   "popular": "Most popular",
   "comingSoon": "Coming soon",
   "testTitle": "Integration validation",
-  "testHint": "Generates a R$ 1.00 Pix charge to test the full payment flow end-to-end.",
-  "testCta": "Test payment (R$ 1.00)"
+  "testHint": "Generates a R$ 1.00 Pix to test the full payment flow end to end.",
+  "testCta": "Test payment (R$ 1.00)",
+  "testPlanName": "Test"
 }

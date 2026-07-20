@@ -1,4 +1,98 @@
 {
-  "title": "Administração",
-  "subtitle": "Painel administrativo do BlogAI Pro."
+  "pageTitle": "Administração — BlogAI Pro",
+  "title": "Painel Administrativo",
+  "subtitle": "Gestão completa do BlogAI Pro",
+  "restricted": {
+    "title": "Acesso restrito",
+    "text": "Esta área é exclusiva para administradores."
+  },
+  "tabs": {
+    "stats": "Estatísticas",
+    "users": "Usuários",
+    "logs": "Logs"
+  },
+  "stats": {
+    "empty": "Sem dados.",
+    "totalUsers": "Total de usuários",
+    "free": "Gratuitos",
+    "pro": "Pro",
+    "premium": "Premium",
+    "payments": "Pagamentos confirmados",
+    "revenue": "Receita total",
+    "creditsDistributed": "Créditos distribuídos",
+    "creditsConsumed": "Créditos consumidos",
+    "new7d": "Novos (7 dias)",
+    "new30d": "Novos (30 dias)",
+    "articles": "Artigos gerados",
+    "teste": "Contas de teste"
+  },
+  "users": {
+    "searchPh": "Buscar por nome ou e-mail...",
+    "allPlans": "Todos os planos",
+    "free": "Gratuito",
+    "pro": "Pro",
+    "premium": "Premium",
+    "teste": "Teste",
+    "columns": {
+      "user": "Usuário",
+      "plan": "Plano",
+      "credits": "Créditos",
+      "subscription": "Assinatura",
+      "createdAt": "Cadastro",
+      "lastSignIn": "Último acesso",
+      "actions": "Ações"
+    },
+    "creditsBtn": "Créditos",
+    "empty": "Nenhum usuário encontrado.",
+    "planUpdated": "Plano atualizado.",
+    "planError": "Erro ao alterar plano.",
+    "unlimited": "ilimitado"
+  },
+  "credits": {
+    "title": "Gerenciar créditos",
+    "balanceText": "{{name}} — saldo atual: {{balance}}",
+    "operation": "Operação",
+    "add": "Adicionar",
+    "remove": "Remover",
+    "set": "Definir",
+    "amount": "Quantidade",
+    "reason": "Motivo (opcional)",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "invalid": "Informe uma quantidade válida.",
+    "updated": "Créditos atualizados.",
+    "error": "Erro ao ajustar créditos."
+  },
+  "logs": {
+    "columns": {
+      "date": "Data",
+      "action": "Ação",
+      "admin": "Administrador",
+      "target": "Usuário alvo",
+      "details": "Detalhes"
+    },
+    "empty": "Nenhum registro ainda."
+  },
+  "feedback": {
+    "pageTitle": "Central de Feedback (Admin) — BlogAI Pro",
+    "title": "Central de Feedback",
+    "cards": {
+      "total": "Total",
+      "avg": "Nota média",
+      "pending": "Pendentes",
+      "replied": "Respondidos"
+    },
+    "distributionTitle": "Distribuição de notas",
+    "recent": "Feedbacks recentes",
+    "loading": "Carregando…",
+    "empty": "Nenhum feedback ainda.",
+    "suggestion": "Sugestão",
+    "issue": "Problema",
+    "replySent": "Resposta enviada",
+    "replyPh": "Responder ao usuário…",
+    "reply": "Responder",
+    "delete": "Excluir",
+    "sent": "Resposta enviada",
+    "genericError": "Erro"
+  }
 }
