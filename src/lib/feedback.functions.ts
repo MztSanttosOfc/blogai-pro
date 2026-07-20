@@ -64,13 +64,23 @@ export const deleteFeedback = createServerFn({ method: "POST" })
 
 // ---------- Admin ----------
 
+export interface FeedbackStats {
+  total: number;
+  average_rating: number;
+  by_rating: Record<string, number>;
+  pending: number;
+  replied: number;
+}
+
 export const adminFeedbackStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<Record<string, unknown>> => {
+  .handler(async ({ context }): Promise<FeedbackStats> => {
     await assertAdmin(context);
     const { data, error } = await context.supabase.rpc("admin_feedback_stats");
     if (error) throw new Error(error.message);
-    return (data as Record<string, unknown>) ?? {};
+    return (data as unknown as FeedbackStats) ?? {
+      total: 0, average_rating: 0, by_rating: {}, pending: 0, replied: 0,
+    };
   });
 
 export const adminListFeedbacks = createServerFn({ method: "POST" })
