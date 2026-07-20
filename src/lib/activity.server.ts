@@ -18,13 +18,15 @@ export type ActivityCategory =
   | "profile"
   | "invite";
 
+export type ActivityMetadata = Record<string, string | number | boolean | null>;
+
 export interface ActivityLogRow {
   id: string;
   user_id: string;
   category: ActivityCategory;
   event: string;
   description: string | null;
-  metadata: Record<string, unknown>;
+  metadata: ActivityMetadata;
   created_at: string;
 }
 
