@@ -85,6 +85,7 @@ if (!i18n.isInitialized) {
         "settings",
         "creator",
         "admin",
+        "finance",
       ],
       defaultNS: "common",
 
