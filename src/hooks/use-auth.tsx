@@ -70,13 +70,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
         setTimeout(() => {
           fetchProfile(newSession.user.id, newSession.user);
           fetchRole(newSession.user.id);
+          if (event === "SIGNED_IN") {
+            // Log login and, if there is a pending ?ref code from signup, redeem it.
+            void import("@/lib/activity.functions").then(({ logActivity }) =>
+              logActivity({
+                data: {
+                  category: "auth",
+                  event: "auth.signed_in",
+                  description: "Sessão iniciada",
+                },
+              }).catch(() => undefined),
+            );
+            try {
+              const pending = window.localStorage.getItem("blogai_pending_invite");
+              if (pending) {
+                void import("@/lib/invites.functions").then(({ redeemInviteCode }) =>
+                  redeemInviteCode({ data: { code: pending } })
+                    .catch(() => undefined)
+                    .finally(() => window.localStorage.removeItem("blogai_pending_invite")),
+                );
+              }
+            } catch {
+              /* ignore */
+            }
+          }
         }, 0);
       } else {
         setProfile(null);
