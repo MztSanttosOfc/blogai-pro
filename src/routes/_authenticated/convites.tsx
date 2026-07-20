@@ -43,18 +43,25 @@ function InvitesPage() {
 
   const [status, setStatus] = useState<InviteStatus | null>(null);
   const [busy, setBusy] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [loading, user, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
+  const load = () => {
     setBusy(true);
+    setError(null);
     getMyInviteStatus()
       .then((r) => setStatus(r))
-      .catch(() => toast.error("Erro ao carregar convites."))
+      .catch((e: Error) => setError(e?.message ?? "unknown"))
       .finally(() => setBusy(false));
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const copy = async () => {
@@ -82,7 +89,6 @@ function InvitesPage() {
         /* fall through */
       }
     }
-    // Fallback: copy
     try {
       await navigator.clipboard.writeText(text);
       toast.success(t("copied"));
@@ -93,10 +99,40 @@ function InvitesPage() {
 
   const qr = useMemo(() => (status ? qrUrl(status.invite_link) : ""), [status]);
 
-  if (busy || !status) {
+  if (busy) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!status) {
+    return (
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 py-10">
+        <header className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Gift className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="font-display text-3xl font-bold">{t("title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+          </div>
+        </header>
+        <Card className="flex flex-col items-center gap-4 p-10 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Gift className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-semibold">Não foi possível carregar seus convites agora.</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {error ? `Detalhe técnico: ${error}` : "Estamos preparando seu código de indicação."}
+            </p>
+          </div>
+          <Button variant="hero" onClick={load}>
+            Tentar novamente
+          </Button>
+        </Card>
       </div>
     );
   }
