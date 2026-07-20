@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
 import { Route as AuthenticatedRecompensasRouteImport } from './routes/_authenticated/recompensas'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedPerfilInteligenteRouteImport } from './routes/_authenticated/perfil-inteligente'
 import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
@@ -93,6 +94,12 @@ const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPerfilInteligenteRoute =
+  AuthenticatedPerfilInteligenteRouteImport.update({
+    id: '/perfil-inteligente',
+    path: '/perfil-inteligente',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPaginasRoute = AuthenticatedPaginasRouteImport.update({
   id: '/paginas',
   path: '/paginas',
@@ -321,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
+  '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
@@ -369,6 +377,7 @@ export interface FileRoutesByTo {
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
+  '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
@@ -419,6 +428,7 @@ export interface FileRoutesById {
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/_authenticated/paginas': typeof AuthenticatedPaginasRoute
+  '/_authenticated/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
@@ -469,6 +479,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/monetizacao'
     | '/paginas'
+    | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
     | '/verificar-blog'
@@ -517,6 +528,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/monetizacao'
     | '/paginas'
+    | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
     | '/verificar-blog'
@@ -566,6 +578,7 @@ export interface FileRouteTypes {
     | '/_authenticated/library'
     | '/_authenticated/monetizacao'
     | '/_authenticated/paginas'
+    | '/_authenticated/perfil-inteligente'
     | '/_authenticated/pricing'
     | '/_authenticated/recompensas'
     | '/_authenticated/verificar-blog'
@@ -677,6 +690,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof AuthenticatedPricingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/perfil-inteligente': {
+      id: '/_authenticated/perfil-inteligente'
+      path: '/perfil-inteligente'
+      fullPath: '/perfil-inteligente'
+      preLoaderRoute: typeof AuthenticatedPerfilInteligenteRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/paginas': {
@@ -988,6 +1008,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
   AuthenticatedPaginasRoute: typeof AuthenticatedPaginasRoute
+  AuthenticatedPerfilInteligenteRoute: typeof AuthenticatedPerfilInteligenteRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedRecompensasRoute: typeof AuthenticatedRecompensasRoute
   AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
@@ -1009,6 +1030,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
   AuthenticatedPaginasRoute: AuthenticatedPaginasRoute,
+  AuthenticatedPerfilInteligenteRoute: AuthenticatedPerfilInteligenteRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedRecompensasRoute: AuthenticatedRecompensasRoute,
   AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
