@@ -600,39 +600,57 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          birth_date: string | null
+          country: string | null
           created_at: string
           credits: number
+          display_name: string | null
           email: string | null
           full_name: string | null
           id: string
+          last_sign_in_at: string | null
           locale: string
           plan: Database["public"]["Enums"]["user_plan"]
           preferred_currency: string
           stripe_customer_id: string | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
+          birth_date?: string | null
+          country?: string | null
           created_at?: string
           credits?: number
+          display_name?: string | null
           email?: string | null
           full_name?: string | null
           id: string
+          last_sign_in_at?: string | null
           locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
           preferred_currency?: string
           stripe_customer_id?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
+          birth_date?: string | null
+          country?: string | null
           created_at?: string
           credits?: number
+          display_name?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          last_sign_in_at?: string | null
           locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
           preferred_currency?: string
           stripe_customer_id?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []

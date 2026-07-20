@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/sidebar";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
 import { PLAN_LABELS } from "@/lib/constants";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -56,6 +57,7 @@ const items = [
   { title: "Financeiro", url: "/financeiro", icon: Wallet },
   { title: "Atualizações Futuras", url: "/atualizacoes", icon: Rocket },
   { title: "Central de Ajuda", url: "/ajuda", icon: LifeBuoy },
+  { title: "Meu Perfil", url: "/meu-perfil", icon: UserCircle2 },
   { title: "Perfil Inteligente", url: "/perfil-inteligente", icon: SparklesIcon },
   { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
   { title: "Central de Feedback", url: "/feedback", icon: MessageSquare },
@@ -208,16 +210,25 @@ export function AppSidebar() {
         <div className="px-1">
           <LanguageSwitcher />
         </div>
-        <div className="flex items-center gap-3 px-1">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
-            {(profile?.full_name ?? user?.email ?? "U").charAt(0).toUpperCase()}
-          </div>
+        <Link
+          to="/meu-perfil"
+          onClick={closeMobileSidebar}
+          className="flex items-center gap-3 rounded-lg px-1 py-1 transition-colors hover:bg-sidebar-accent"
+        >
+          <UserAvatar
+            src={profile?.avatar_url}
+            name={profile?.display_name ?? profile?.full_name}
+            email={user?.email}
+            className="h-9 w-9"
+          />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-sidebar-foreground">
-              {profile?.full_name ?? "Usuário"}
+              {profile?.display_name ?? profile?.full_name ?? "Usuário"}
             </p>
             <p className="truncate text-xs text-sidebar-foreground/60">{user?.email}</p>
           </div>
+        </Link>
+        <div className="flex justify-end px-1">
           <Button
             size="icon"
             variant="ghost"

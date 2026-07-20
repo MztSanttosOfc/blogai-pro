@@ -20,6 +20,7 @@ import { Route as AuthenticatedPerfilInteligenteRouteImport } from './routes/_au
 import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
 import { Route as AuthenticatedMinhaAtividadeRouteImport } from './routes/_authenticated/minha-atividade'
+import { Route as AuthenticatedMeuPerfilRouteImport } from './routes/_authenticated/meu-perfil'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
@@ -125,6 +126,11 @@ const AuthenticatedMinhaAtividadeRoute =
     path: '/minha-atividade',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMeuPerfilRoute = AuthenticatedMeuPerfilRouteImport.update({
+  id: '/meu-perfil',
+  path: '/meu-perfil',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
@@ -379,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
@@ -436,6 +443,7 @@ export interface FileRoutesByTo {
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
@@ -495,6 +503,7 @@ export interface FileRoutesById {
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/_authenticated/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/_authenticated/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/_authenticated/paginas': typeof AuthenticatedPaginasRoute
@@ -554,6 +563,7 @@ export interface FileRouteTypes {
     | '/financeiro'
     | '/generate'
     | '/library'
+    | '/meu-perfil'
     | '/minha-atividade'
     | '/monetizacao'
     | '/paginas'
@@ -611,6 +621,7 @@ export interface FileRouteTypes {
     | '/financeiro'
     | '/generate'
     | '/library'
+    | '/meu-perfil'
     | '/minha-atividade'
     | '/monetizacao'
     | '/paginas'
@@ -669,6 +680,7 @@ export interface FileRouteTypes {
     | '/_authenticated/financeiro'
     | '/_authenticated/generate'
     | '/_authenticated/library'
+    | '/_authenticated/meu-perfil'
     | '/_authenticated/minha-atividade'
     | '/_authenticated/monetizacao'
     | '/_authenticated/paginas'
@@ -819,6 +831,13 @@ declare module '@tanstack/react-router' {
       path: '/minha-atividade'
       fullPath: '/minha-atividade'
       preLoaderRoute: typeof AuthenticatedMinhaAtividadeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/meu-perfil': {
+      id: '/_authenticated/meu-perfil'
+      path: '/meu-perfil'
+      fullPath: '/meu-perfil'
+      preLoaderRoute: typeof AuthenticatedMeuPerfilRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/library': {
@@ -1177,6 +1196,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
+  AuthenticatedMeuPerfilRoute: typeof AuthenticatedMeuPerfilRoute
   AuthenticatedMinhaAtividadeRoute: typeof AuthenticatedMinhaAtividadeRoute
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
   AuthenticatedPaginasRoute: typeof AuthenticatedPaginasRoute
@@ -1203,6 +1223,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
+  AuthenticatedMeuPerfilRoute: AuthenticatedMeuPerfilRoute,
   AuthenticatedMinhaAtividadeRoute: AuthenticatedMinhaAtividadeRoute,
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
   AuthenticatedPaginasRoute: AuthenticatedPaginasRoute,

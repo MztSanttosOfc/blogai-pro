@@ -7,8 +7,16 @@ export interface Profile {
   id: string;
   email: string | null;
   full_name: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
+  birth_date: string | null;
+  country: string | null;
+  timezone: string | null;
+  locale?: string | null;
   plan: "free" | "pro" | "premium";
   credits: number;
+  created_at?: string | null;
+  last_sign_in_at?: string | null;
 }
 
 interface AuthContextValue {
@@ -43,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = useCallback(async (userId: string, currentUser?: User | null) => {
     const { data } = await supabase
       .from("profiles")
-      .select("id, email, full_name, plan, credits")
+      .select("id, email, full_name, display_name, avatar_url, birth_date, country, timezone, locale, plan, credits, created_at, last_sign_in_at")
       .eq("id", userId)
       .maybeSingle();
     if (data) {
@@ -58,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: created } = await supabase
       .from("profiles")
       .insert({ id: userId, email, full_name: fullName })
-      .select("id, email, full_name, plan, credits")
+      .select("id, email, full_name, display_name, avatar_url, birth_date, country, timezone, locale, plan, credits, created_at, last_sign_in_at")
       .maybeSingle();
     if (created) setProfile(created as Profile);
   }, []);

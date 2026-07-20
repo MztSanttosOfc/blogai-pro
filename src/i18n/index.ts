@@ -32,6 +32,8 @@ import ptBrActivity from "./locales/pt-BR/activity.json";
 import enUsActivity from "./locales/en-US/activity.json";
 import ptBrInvites from "./locales/pt-BR/invites.json";
 import enUsInvites from "./locales/en-US/invites.json";
+import ptBrProfile from "./locales/pt-BR/profile.json";
+import enUsProfile from "./locales/en-US/profile.json";
 
 export type SupportedLanguage = "pt-BR" | "en-US";
 
@@ -68,6 +70,7 @@ if (!i18n.isInitialized) {
           analytics: ptBrAnalytics,
           activity: ptBrActivity,
           invites: ptBrInvites,
+          profile: ptBrProfile,
         },
         "en-US": {
           common: enUsCommon,
@@ -83,6 +86,7 @@ if (!i18n.isInitialized) {
           analytics: enUsAnalytics,
           activity: enUsActivity,
           invites: enUsInvites,
+          profile: enUsProfile,
         },
       },
       fallbackLng: DEFAULT_LANGUAGE,
@@ -101,6 +105,7 @@ if (!i18n.isInitialized) {
         "analytics",
         "activity",
         "invites",
+        "profile",
       ],
       defaultNS: "common",
 

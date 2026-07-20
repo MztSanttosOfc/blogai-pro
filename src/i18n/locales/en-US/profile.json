@@ -1,0 +1,77 @@
+{
+  "title": "My Profile",
+  "subtitle": "Manage your BlogAI Pro personal account details.",
+  "tabs": {
+    "account": "Account",
+    "security": "Security",
+    "integrations": "Integrations"
+  },
+  "avatar": {
+    "change": "Change photo",
+    "remove": "Remove photo",
+    "removed": "Photo removed.",
+    "success": "Photo updated successfully.",
+    "error": "Could not update the photo.",
+    "invalidType": "Invalid format. Use JPG, PNG or WEBP.",
+    "tooLarge": "The image must be at most 2 MB."
+  },
+  "fields": {
+    "fullName": "Full name",
+    "displayName": "Display name",
+    "displayNameHint": "How you want to be called across BlogAI Pro.",
+    "email": "Email",
+    "birthDate": "Date of birth",
+    "birthDateHint": "Optional. Used only for personalization.",
+    "language": "Language",
+    "country": "Country",
+    "timezone": "Time zone",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "Profile updated successfully.",
+    "saveError": "Could not save the profile."
+  },
+  "account": {
+    "title": "Personal information",
+    "description": "This data appears across the platform.",
+    "summaryTitle": "Account summary",
+    "plan": "Current plan",
+    "credits": "Credits",
+    "unlimited": "Unlimited",
+    "memberSince": "Member since",
+    "lastAccess": "Last access",
+    "subscriptionStatus": "Subscription status",
+    "renewsOn": "Renews on {{date}}",
+    "statusActive": "Active",
+    "statusTrialing": "Trial period",
+    "statusCanceled": "Canceled",
+    "statusInactive": "No subscription"
+  },
+  "security": {
+    "title": "Security",
+    "description": "Update your password and sign-in email.",
+    "changePassword": "Change password",
+    "changeEmail": "Change email",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "newEmail": "New email",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordUpdated": "Password updated successfully.",
+    "emailUpdated": "We sent a confirmation link to the new email.",
+    "updateError": "Could not complete the update."
+  },
+  "integrations": {
+    "title": "Connected integrations",
+    "description": "External accounts linked to this profile.",
+    "blogger": "Blogger",
+    "bloggerDesc": "Automatic article publishing.",
+    "gsc": "Google Search Console",
+    "gscDesc": "Official SEO performance metrics.",
+    "wordpress": "WordPress",
+    "wordpressDesc": "Publishing via the official plugin.",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "comingSoon": "Coming soon",
+    "manage": "Manage"
+  }
+}
