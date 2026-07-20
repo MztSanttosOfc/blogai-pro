@@ -21,7 +21,28 @@
     "smartProfile": "Smart Profile",
     "admin": "Administration",
     "monetization": "Monetization Center",
-    "verifyBlog": "Verify My Blog"
+    "verifyBlog": "Verify My Blog",
+    "feedback": "Feedback Center",
+    "adminFeedback": "Feedback (Admin)"
+  },
+  "feedback": {
+    "title": "Feedback Center",
+    "subtitle": "Your feedback shapes BlogAI Pro. Share praise, suggestions and issues.",
+    "newTitle": "New feedback",
+    "newHint": "Rate your experience and tell us more.",
+    "rating": "Overall rating",
+    "commentLabel": "Comment (optional)",
+    "commentPh": "What did you think?",
+    "suggestionLabel": "Suggestion",
+    "suggestionPh": "What could we add?",
+    "issueLabel": "Issue",
+    "issuePh": "Found a bug?",
+    "submit": "Send feedback",
+    "submitted": "Thanks! Feedback sent.",
+    "mineTitle": "My feedback",
+    "mineHint": "History of what you sent and the team's replies.",
+    "empty": "You haven't sent any feedback yet.",
+    "adminReply": "Team reply"
   },
   "common": {
     "save": "Save",

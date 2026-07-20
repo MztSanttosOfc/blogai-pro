@@ -19,6 +19,7 @@ import {
   BarChart3,
   LifeBuoy,
   UserCircle2,
+  MessageSquare,
   Sparkles as SparklesIcon,
 } from "lucide-react";
 
@@ -58,6 +59,7 @@ const items = [
   { title: "Central de Ajuda", url: "/ajuda", icon: LifeBuoy },
   { title: "Perfil Inteligente", url: "/perfil-inteligente", icon: SparklesIcon },
   { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
+  { title: "Central de Feedback", url: "/feedback", icon: MessageSquare },
 ];
 
 

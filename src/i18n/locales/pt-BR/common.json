@@ -21,7 +21,28 @@
     "smartProfile": "Perfil Inteligente",
     "admin": "Administração",
     "monetization": "Central de Monetização",
-    "verifyBlog": "Verificar Meu Blog"
+    "verifyBlog": "Verificar Meu Blog",
+    "feedback": "Central de Feedback",
+    "adminFeedback": "Feedback (Admin)"
+  },
+  "feedback": {
+    "title": "Central de Feedback",
+    "subtitle": "Sua opinião guia o rumo do BlogAI Pro. Compartilhe elogios, sugestões e problemas.",
+    "newTitle": "Novo feedback",
+    "newHint": "Avalie sua experiência e nos conte detalhes.",
+    "rating": "Avaliação geral",
+    "commentLabel": "Comentário (opcional)",
+    "commentPh": "O que você achou?",
+    "suggestionLabel": "Sugestão",
+    "suggestionPh": "O que poderíamos adicionar?",
+    "issueLabel": "Problema",
+    "issuePh": "Encontrou algum bug?",
+    "submit": "Enviar feedback",
+    "submitted": "Obrigado! Feedback enviado.",
+    "mineTitle": "Meus feedbacks",
+    "mineHint": "Histórico do que você enviou e as respostas da equipe.",
+    "empty": "Você ainda não enviou nenhum feedback.",
+    "adminReply": "Resposta da equipe"
   },
   "common": {
     "save": "Salvar",
