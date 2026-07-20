@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import {
   Sparkles,
   Rocket,
@@ -27,167 +28,87 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import creatorPortrait from "@/assets/creator-portrait.png";
+import i18n from "@/i18n";
 
 export const Route = createFileRoute("/_authenticated/criador")({
   head: () => ({
     meta: [
-      { title: "Conheça o Criador — BlogAI Pro" },
+      { title: i18n.t("pageTitle", { ns: "creator" }) },
       {
         name: "description",
-        content:
-          "Conheça Júnnior Monzart, criador do BlogAI Pro — blogueiro, especialista em SEO, monetização e desenvolvedor da plataforma.",
+        content: i18n.t("metaDescription", { ns: "creator" }),
       },
-      { property: "og:title", content: "Conheça o Criador — BlogAI Pro" },
+      { property: "og:title", content: i18n.t("pageTitle", { ns: "creator" }) },
       {
         property: "og:description",
-        content:
-          "A história por trás do BlogAI Pro: quem construiu, por que existe e para onde vamos.",
+        content: i18n.t("ogDescription", { ns: "creator" }),
       },
     ],
   }),
   component: CreatorPage,
 });
 
-const STATS = [
-  { label: "Anos criando conteúdo", value: "8+", icon: Calendar },
-  { label: "Projetos entregues", value: "40+", icon: Rocket },
-  { label: "Ferramentas desenvolvidas", value: "12", icon: Code2 },
-  { label: "Blogueiros impactados", value: "1k+", icon: Users },
-];
-
-const TIMELINE: Array<{ year: string; title: string; description: string }> = [
-  {
-    year: "2017",
-    title: "Primeiros passos no Blogger",
-    description:
-      "Início da jornada como blogueiro, publicando conteúdos sobre tecnologia, produtividade e SEO.",
-  },
-  {
-    year: "2019",
-    title: "Especialização em SEO",
-    description:
-      "Aprofundamento em SEO técnico, Search Console, Analytics e estratégias de tráfego orgânico.",
-  },
-  {
-    year: "2021",
-    title: "Monetização e AdSense",
-    description:
-      "Estudo intensivo de monetização de blogs com Google AdSense, parcerias e conteúdo evergreen.",
-  },
-  {
-    year: "2023",
-    title: "Ferramentas próprias",
-    description:
-      "Primeiros protótipos internos para automatizar geração de artigos, meta tags e clusters de conteúdo.",
-  },
-  {
-    year: "2025",
-    title: "Nasce o BlogAI Pro",
-    description:
-      "Lançamento oficial da plataforma unindo IA generativa, publicação no Blogger e desempenho SEO em um só lugar.",
-  },
-  {
-    year: "2026",
-    title: "Ecossistema oficial",
-    description:
-      "API pública v1, plugin oficial para WordPress e app Android via Capacitor — pronto para escalar.",
-  },
-];
-
-const EXPERTISE = [
-  {
-    icon: FileText,
-    title: "Blogger & Conteúdo",
-    text: "Anos publicando, otimizando e escalando blogs — do zero à monetização.",
-  },
-  {
-    icon: TrendingUp,
-    title: "SEO Técnico",
-    text: "Search Console, Core Web Vitals, schema, indexação e clusters de tópicos.",
-  },
-  {
-    icon: Award,
-    title: "Monetização",
-    text: "AdSense, parcerias e estratégias sustentáveis de receita para criadores.",
-  },
-  {
-    icon: Code2,
-    title: "Desenvolvimento",
-    text: "React, TypeScript, Supabase e IA aplicada — o BlogAI Pro é 100% autoral.",
-  },
-];
-
-const PROJECTS: Array<{
-  name: string;
-  role: string;
-  url?: string;
-  download?: string;
-  cta?: string;
-}> = [
-  {
-    name: "BlogAI Pro",
-    role: "Plataforma SaaS de IA para blogueiros",
-    url: "https://monzart.com.br",
-  },
-  {
-    name: "Blog Monzart",
-    role: "Blog oficial com tutoriais de SEO e Blogger",
-    url: "https://blog.monzart.com.br",
-  },
-  {
-    name: "DivPen",
-    role: "Editor online para HTML, CSS e JavaScript — criação e testes rápidos de código.",
-    url: "https://divpen.monzart.com.br/",
-  },
-  {
-    name: "Ferramentas Gratuitas",
-    role: "Coleção de ferramentas gratuitas para blogueiros, criadores de conteúdo e profissionais de SEO.",
-    url: "https://blog.monzart.com.br/p/28-ferramentas-gratuitas-para.html",
-  },
-  {
-    name: "Plugin Oficial do BlogAI Pro",
-    role: "Integração oficial WordPress ↔ BlogAI Pro para publicação automatizada.",
-    download: "/blogai-pro-plugin.zip",
-    cta: "Baixar Plugin",
-  },
-];
-
-const SOCIALS = [
-  { label: "Site oficial", href: "https://monzart.com.br", icon: Globe },
-  { label: "Blog", href: "https://blog.monzart.com.br", icon: FileText },
-  {
-    label: "Media Kit",
-    href: "https://blog.monzart.com.br/p/media-kit-monzart-santtos.html",
-    icon: ExternalLink,
-  },
-  {
-    label: "Contato",
-    href: "https://blog.monzart.com.br/p/contato_01435481532.html",
-    icon: Mail,
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/mzt.santtos.ofc",
-    icon: Instagram,
-  },
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/@Mzt_Santtos_ofc",
-    icon: Youtube,
-  },
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/jr.mzt.santtos",
-    icon: Facebook,
-  },
-  {
-    label: "Pinterest",
-    href: "https://www.pinterest.com/MztSanttosOfc",
-    icon: SiPinterest,
-  },
-];
+const TIMELINE_YEARS = ["2017", "2019", "2021", "2023", "2025", "2026"] as const;
 
 function CreatorPage() {
+  const { t } = useTranslation("creator");
+
+  const stats = [
+    { key: "years", value: "8+", icon: Calendar },
+    { key: "projects", value: "40+", icon: Rocket },
+    { key: "tools", value: "12", icon: Code2 },
+    { key: "impacted", value: "1k+", icon: Users },
+  ] as const;
+
+  const expertise = [
+    { icon: FileText, key: "blogger" as const },
+    { icon: TrendingUp, key: "seo" as const },
+    { icon: Award, key: "monetization" as const },
+    { icon: Code2, key: "dev" as const },
+  ];
+
+  const projects: Array<{
+    name: string;
+    roleKey: string;
+    url?: string;
+    download?: string;
+    ctaKey?: string;
+  }> = [
+    { name: "BlogAI Pro", roleKey: "blogaiPro", url: "https://monzart.com.br" },
+    { name: "Blog Monzart", roleKey: "blog", url: "https://blog.monzart.com.br" },
+    { name: "DivPen", roleKey: "divpen", url: "https://divpen.monzart.com.br/" },
+    {
+      name: "Ferramentas Gratuitas",
+      roleKey: "tools",
+      url: "https://blog.monzart.com.br/p/28-ferramentas-gratuitas-para.html",
+    },
+    {
+      name: "Plugin Oficial do BlogAI Pro",
+      roleKey: "plugin",
+      download: "/blogai-pro-plugin.zip",
+      ctaKey: "pluginCta",
+    },
+  ];
+
+  const socials = [
+    { labelKey: "site", href: "https://monzart.com.br", icon: Globe },
+    { labelKey: "blog", href: "https://blog.monzart.com.br", icon: FileText },
+    {
+      labelKey: "mediaKit",
+      href: "https://blog.monzart.com.br/p/media-kit-monzart-santtos.html",
+      icon: ExternalLink,
+    },
+    {
+      labelKey: "contact",
+      href: "https://blog.monzart.com.br/p/contato_01435481532.html",
+      icon: Mail,
+    },
+    { label: "Instagram", href: "https://www.instagram.com/mzt.santtos.ofc", icon: Instagram },
+    { label: "YouTube", href: "https://www.youtube.com/@Mzt_Santtos_ofc", icon: Youtube },
+    { label: "Facebook", href: "https://www.facebook.com/jr.mzt.santtos", icon: Facebook },
+    { label: "Pinterest", href: "https://www.pinterest.com/MztSanttosOfc", icon: SiPinterest },
+  ];
+
   return (
     <div className="mx-auto max-w-6xl space-y-12 animate-fade-in">
       {/* Hero */}
@@ -202,7 +123,7 @@ function CreatorPage() {
               />
               <img
                 src={creatorPortrait}
-                alt="Foto oficial de Júnnior Monzart, criador do BlogAI Pro"
+                alt={t("hero.portraitAlt")}
                 loading="lazy"
                 decoding="async"
                 width={1135}
@@ -213,19 +134,16 @@ function CreatorPage() {
           </div>
           <div className="min-w-0 space-y-4 text-center md:text-left">
             <Badge className="bg-primary/20 text-primary hover:bg-primary/20">
-              <Sparkles className="mr-1 h-3 w-3" /> Criador do BlogAI Pro
+              <Sparkles className="mr-1 h-3 w-3" /> {t("hero.badge")}
             </Badge>
             <h1 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
-              Júnnior Monzart
+              {t("hero.name")}
             </h1>
-            <p className="text-base text-white/80 md:text-lg">
-              Blogueiro, especialista em SEO, monetização e desenvolvedor por trás do BlogAI Pro — a
-              plataforma que une inteligência artificial e produção de conteúdo em escala.
-            </p>
+            <p className="text-base text-white/80 md:text-lg">{t("hero.description")}</p>
             <div className="flex flex-wrap justify-center gap-2 md:justify-start">
               <Button asChild variant="hero" size="lg">
                 <a href="https://blog.monzart.com.br" target="_blank" rel="noreferrer">
-                  <Globe className="h-4 w-4" /> Visitar site
+                  <Globe className="h-4 w-4" /> {t("hero.visitSite")}
                 </a>
               </Button>
               <Button asChild variant="secondary" size="lg">
@@ -234,7 +152,7 @@ function CreatorPage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <FileText className="h-4 w-4" /> Media Kit
+                  <FileText className="h-4 w-4" /> {t("hero.mediaKit")}
                 </a>
               </Button>
               <Button asChild variant="outline" size="lg">
@@ -243,7 +161,7 @@ function CreatorPage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Mail className="h-4 w-4" /> Contato
+                  <Mail className="h-4 w-4" /> {t("hero.contact")}
                 </a>
               </Button>
             </div>
@@ -253,14 +171,14 @@ function CreatorPage() {
 
       {/* Stats */}
       <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {STATS.map((s) => (
+        {stats.map((s) => (
           <Card
-            key={s.label}
+            key={s.key}
             className="flex flex-col items-start gap-2 p-5 transition-transform hover:-translate-y-0.5"
           >
             <s.icon className="h-5 w-5 text-primary" />
             <p className="text-2xl font-bold md:text-3xl">{s.value}</p>
-            <p className="text-xs text-muted-foreground md:text-sm">{s.label}</p>
+            <p className="text-xs text-muted-foreground md:text-sm">{t(`stats.${s.key}`)}</p>
           </Card>
         ))}
       </section>
@@ -270,64 +188,47 @@ function CreatorPage() {
         <Card className="space-y-3 p-6">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Minha história</h2>
+            <h2 className="text-xl font-semibold">{t("story.myStoryTitle")}</h2>
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            Tudo começou com um único blog no Blogger e a curiosidade de entender por que uns
-            artigos apareciam no Google e outros não. Anos depois, dezenas de blogs, milhares de
-            posts otimizados e muita leitura de documentação transformaram esse hobby em profissão —
-            e a profissão, em produto.
-          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">{t("story.myStoryText")}</p>
         </Card>
         <Card className="space-y-3 p-6">
           <div className="flex items-center gap-2">
             <Rocket className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Como surgiu o BlogAI Pro</h2>
+            <h2 className="text-xl font-semibold">{t("story.howTitle")}</h2>
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            O BlogAI Pro nasceu de uma dor real: publicar com consistência, manter qualidade e ainda
-            enxergar dados de SEO sem pular entre 10 abas. Decidi unir IA generativa, integração
-            nativa com Blogger e um painel de desempenho conectado ao Google Search Console — tudo
-            em uma plataforma só.
-          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">{t("story.howText")}</p>
         </Card>
         <Card className="space-y-3 p-6">
           <div className="flex items-center gap-2">
             <Target className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Missão</h2>
+            <h2 className="text-xl font-semibold">{t("story.missionTitle")}</h2>
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            Democratizar o acesso a ferramentas profissionais de conteúdo e SEO, permitindo que
-            qualquer blogueiro — iniciante ou avançado — publique com qualidade de agência.
-          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">{t("story.missionText")}</p>
         </Card>
         <Card className="space-y-3 p-6">
           <div className="flex items-center gap-2">
             <Compass className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Visão de futuro</h2>
+            <h2 className="text-xl font-semibold">{t("story.visionTitle")}</h2>
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            Tornar o BlogAI Pro o ecossistema oficial de publicação inteligente em português — com
-            API pública, plugin WordPress, apps Android e iOS e integrações que respeitam o criador
-            de conteúdo.
-          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">{t("story.visionText")}</p>
         </Card>
       </section>
 
       {/* Expertise */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-xl font-semibold md:text-2xl">Áreas de atuação</h2>
-          <p className="text-sm text-muted-foreground">
-            A base técnica e editorial que sustenta cada decisão do BlogAI Pro.
-          </p>
+          <h2 className="text-xl font-semibold md:text-2xl">{t("expertise.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("expertise.subtitle")}</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {EXPERTISE.map((e) => (
-            <Card key={e.title} className="space-y-2 p-5">
+          {expertise.map((e) => (
+            <Card key={e.key} className="space-y-2 p-5">
               <e.icon className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold">{e.title}</h3>
-              <p className="text-xs text-muted-foreground md:text-sm">{e.text}</p>
+              <h3 className="font-semibold">{t(`expertise.${e.key}.title`)}</h3>
+              <p className="text-xs text-muted-foreground md:text-sm">
+                {t(`expertise.${e.key}.text`)}
+              </p>
             </Card>
           ))}
         </div>
@@ -336,23 +237,23 @@ function CreatorPage() {
       {/* Timeline */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-xl font-semibold md:text-2xl">Trajetória</h2>
-          <p className="text-sm text-muted-foreground">
-            Uma linha do tempo até o lançamento oficial da versão 1.0.
-          </p>
+          <h2 className="text-xl font-semibold md:text-2xl">{t("timeline.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("timeline.subtitle")}</p>
         </div>
         <Card className="p-4 md:p-6">
           <ol className="relative space-y-6 border-l border-border pl-6">
-            {TIMELINE.map((item) => (
-              <li key={item.year} className="relative">
+            {TIMELINE_YEARS.map((year) => (
+              <li key={year} className="relative">
                 <span className="absolute -left-[31px] flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary bg-background">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 </span>
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-sm font-bold text-primary">{item.year}</span>
-                  <h3 className="font-semibold">{item.title}</h3>
+                  <span className="text-sm font-bold text-primary">{year}</span>
+                  <h3 className="font-semibold">{t(`timeline.items.${year}.title`)}</h3>
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t(`timeline.items.${year}.description`)}
+                </p>
               </li>
             ))}
           </ol>
@@ -362,13 +263,11 @@ function CreatorPage() {
       {/* Projetos */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-xl font-semibold md:text-2xl">Principais projetos</h2>
-          <p className="text-sm text-muted-foreground">
-            Iniciativas públicas ligadas à mesma missão.
-          </p>
+          <h2 className="text-xl font-semibold md:text-2xl">{t("projects.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("projects.subtitle")}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
-          {PROJECTS.map((p) => {
+          {projects.map((p) => {
             if (p.download) {
               return (
                 <Card key={p.name} className="flex h-full flex-col justify-between gap-3 p-5">
@@ -377,11 +276,14 @@ function CreatorPage() {
                       <h3 className="font-semibold">{p.name}</h3>
                       <Download className="h-4 w-4 text-primary" />
                     </div>
-                    <p className="text-xs text-muted-foreground md:text-sm">{p.role}</p>
+                    <p className="text-xs text-muted-foreground md:text-sm">
+                      {t(`projects.items.${p.roleKey}`)}
+                    </p>
                   </div>
                   <Button asChild variant="hero" size="sm" className="w-full">
                     <a href={p.download} download>
-                      <Download className="h-4 w-4" /> 📥 {p.cta ?? "Baixar"}
+                      <Download className="h-4 w-4" /> 📥{" "}
+                      {p.ctaKey ? t(`projects.items.${p.ctaKey}`) : t("projects.download")}
                     </a>
                   </Button>
                 </Card>
@@ -394,7 +296,9 @@ function CreatorPage() {
                     <h3 className="font-semibold">{p.name}</h3>
                     <ExternalLink className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
                   </div>
-                  <p className="text-xs text-muted-foreground md:text-sm">{p.role}</p>
+                  <p className="text-xs text-muted-foreground md:text-sm">
+                    {t(`projects.items.${p.roleKey}`)}
+                  </p>
                 </Card>
               </a>
             );
@@ -405,23 +309,26 @@ function CreatorPage() {
       {/* Redes sociais */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-xl font-semibold md:text-2xl">Onde me encontrar</h2>
-          <p className="text-sm text-muted-foreground">Links oficiais das minhas redes e canais.</p>
+          <h2 className="text-xl font-semibold md:text-2xl">{t("socials.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("socials.subtitle")}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-          {SOCIALS.map((s) => (
-            <Button
-              key={s.label}
-              asChild
-              variant="outline"
-              className="h-auto justify-start gap-3 py-3"
-            >
-              <a href={s.href} target="_blank" rel="noreferrer">
-                <s.icon className="h-4 w-4 text-primary" />
-                <span className="truncate">{s.label}</span>
-              </a>
-            </Button>
-          ))}
+          {socials.map((s) => {
+            const label = "labelKey" in s && s.labelKey ? t(`socials.${s.labelKey}`) : s.label;
+            return (
+              <Button
+                key={label as string}
+                asChild
+                variant="outline"
+                className="h-auto justify-start gap-3 py-3"
+              >
+                <a href={s.href} target="_blank" rel="noreferrer">
+                  <s.icon className="h-4 w-4 text-primary" />
+                  <span className="truncate">{label}</span>
+                </a>
+              </Button>
+            );
+          })}
         </div>
       </section>
     </div>

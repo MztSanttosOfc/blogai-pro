@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MessageSquare, Reply, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ interface StatsShape {
 }
 
 function AdminFeedbackPage() {
+  const { t, i18n } = useTranslation("admin");
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -61,10 +63,10 @@ function AdminFeedbackPage() {
   const replyMut = useMutation({
     mutationFn: (v: { id: string; reply: string }) => replyFn({ data: v }),
     onSuccess: () => {
-      toast.success("Resposta enviada");
+      toast.success(t("feedback.sent"));
       queryClient.invalidateQueries({ queryKey: ["feedback", "admin"] });
     },
-    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro"),
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : t("feedback.genericError")),
   });
 
   const removeMut = useMutation({
@@ -74,17 +76,21 @@ function AdminFeedbackPage() {
 
   if (isAdmin !== true) return null;
 
+  const locale = i18n.language === "en-US" ? "en-US" : "pt-BR";
+
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 p-4 sm:p-6">
       <header className="flex items-center gap-2">
         <MessageSquare className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl font-semibold sm:text-3xl">Central de Feedback</h1>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t("feedback.title")}</h1>
       </header>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t("feedback.cards.total")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{stats?.total ?? 0}</p>
@@ -92,7 +98,9 @@ function AdminFeedbackPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Nota média</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t("feedback.cards.avg")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">
@@ -102,7 +110,9 @@ function AdminFeedbackPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pendentes</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t("feedback.cards.pending")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{stats?.pending ?? 0}</p>
@@ -110,7 +120,9 @@ function AdminFeedbackPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Respondidos</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t("feedback.cards.replied")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{stats?.replied ?? 0}</p>
@@ -121,7 +133,7 @@ function AdminFeedbackPage() {
       {stats?.by_rating && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Distribuição de notas</CardTitle>
+            <CardTitle className="text-base">{t("feedback.distributionTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -148,13 +160,13 @@ function AdminFeedbackPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Feedbacks recentes</CardTitle>
+          <CardTitle>{t("feedback.recent")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Carregando…</p>
+            <p className="text-sm text-muted-foreground">{t("feedback.loading")}</p>
           ) : items.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nenhum feedback ainda.</p>
+            <p className="text-sm text-muted-foreground">{t("feedback.empty")}</p>
           ) : (
             <ul className="space-y-3">
               {items.map((f) => (
@@ -173,14 +185,14 @@ function AdminFeedbackPage() {
                         {f.user_name ?? f.user_email ?? f.user_id.slice(0, 8)}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {new Date(f.created_at).toLocaleString()}
+                        {new Date(f.created_at).toLocaleString(locale)}
                       </span>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => removeMut.mutate(f.id)}
-                      aria-label="Excluir"
+                      aria-label={t("feedback.delete")}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -189,7 +201,7 @@ function AdminFeedbackPage() {
                   {f.suggestion && (
                     <p className="mt-1 text-sm">
                       <Badge variant="secondary" className="mr-2">
-                        Sugestão
+                        {t("feedback.suggestion")}
                       </Badge>
                       {f.suggestion}
                     </p>
@@ -197,7 +209,7 @@ function AdminFeedbackPage() {
                   {f.issue && (
                     <p className="mt-1 text-sm">
                       <Badge variant="destructive" className="mr-2">
-                        Problema
+                        {t("feedback.issue")}
                       </Badge>
                       {f.issue}
                     </p>
@@ -205,14 +217,16 @@ function AdminFeedbackPage() {
 
                   {f.admin_reply ? (
                     <div className="mt-2 rounded-md border border-primary/20 bg-primary/5 p-2 text-sm">
-                      <p className="mb-1 text-xs font-semibold text-primary">Resposta enviada</p>
+                      <p className="mb-1 text-xs font-semibold text-primary">
+                        {t("feedback.replySent")}
+                      </p>
                       <p>{f.admin_reply}</p>
                     </div>
                   ) : (
                     <div className="mt-2 space-y-2">
                       <Textarea
                         rows={2}
-                        placeholder="Responder ao usuário…"
+                        placeholder={t("feedback.replyPh")}
                         value={replies[f.id] ?? ""}
                         onChange={(e) => setReplies((r) => ({ ...r, [f.id]: e.target.value }))}
                       />
@@ -224,7 +238,7 @@ function AdminFeedbackPage() {
                           }
                           disabled={!(replies[f.id] ?? "").trim() || replyMut.isPending}
                         >
-                          <Reply className="mr-2 h-4 w-4" /> Responder
+                          <Reply className="mr-2 h-4 w-4" /> {t("feedback.reply")}
                         </Button>
                       </div>
                     </div>

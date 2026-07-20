@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Shield, Users, BarChart3, ScrollText, Search, Loader2, Lock, Coins } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -52,12 +53,17 @@ function formatBRL(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-function formatDate(value: string | null) {
-  if (!value) return "—";
-  return new Date(value).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+function useDateFormatter() {
+  const { i18n } = useTranslation();
+  const locale = i18n.language === "en-US" ? "en-US" : "pt-BR";
+  return (value: string | null) =>
+    value
+      ? new Date(value).toLocaleString(locale, { dateStyle: "short", timeStyle: "short" })
+      : "—";
 }
 
 function AdminPage() {
+  const { t } = useTranslation("admin");
   const { isAdmin, loading } = useAuth();
 
   if (loading) {
@@ -75,8 +81,8 @@ function AdminPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
             <Lock className="h-7 w-7" />
           </div>
-          <h2 className="text-xl font-bold">Acesso restrito</h2>
-          <p className="text-muted-foreground">Esta área é exclusiva para administradores.</p>
+          <h2 className="text-xl font-bold">{t("restricted.title")}</h2>
+          <p className="text-muted-foreground">{t("restricted.text")}</p>
         </Card>
       </div>
     );
@@ -86,6 +92,7 @@ function AdminPage() {
 }
 
 function AdminDashboard() {
+  const { t } = useTranslation("admin");
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -93,21 +100,21 @@ function AdminDashboard() {
           <Shield className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold">Painel Administrativo</h1>
-          <p className="text-sm text-muted-foreground">Gestão completa do BlogAI Pro</p>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
       </div>
 
       <Tabs defaultValue="stats">
         <TabsList>
           <TabsTrigger value="stats" className="gap-2">
-            <BarChart3 className="h-4 w-4" /> Estatísticas
+            <BarChart3 className="h-4 w-4" /> {t("tabs.stats")}
           </TabsTrigger>
           <TabsTrigger value="users" className="gap-2">
-            <Users className="h-4 w-4" /> Usuários
+            <Users className="h-4 w-4" /> {t("tabs.users")}
           </TabsTrigger>
           <TabsTrigger value="logs" className="gap-2">
-            <ScrollText className="h-4 w-4" /> Logs
+            <ScrollText className="h-4 w-4" /> {t("tabs.logs")}
           </TabsTrigger>
         </TabsList>
 
@@ -135,6 +142,7 @@ function StatCardSimple({ label, value }: { label: string; value: string | numbe
 }
 
 function StatsTab() {
+  const { t } = useTranslation("admin");
   const fetchStats = useServerFn(adminGetStats);
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "stats"],
@@ -145,29 +153,31 @@ function StatsTab() {
     return <Loader2 className="h-6 w-6 animate-spin text-primary" />;
   }
   const s = data?.stats;
-  if (!s) return <p className="text-muted-foreground">Sem dados.</p>;
+  if (!s) return <p className="text-muted-foreground">{t("stats.empty")}</p>;
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <StatCardSimple label="Total de usuários" value={s.total_users} />
-        <StatCardSimple label="Gratuitos" value={s.free_users} />
-        <StatCardSimple label="Pro" value={s.pro_users} />
-        <StatCardSimple label="Premium" value={s.premium_users} />
-        <StatCardSimple label="Pagamentos confirmados" value={s.total_payments} />
-        <StatCardSimple label="Receita total" value={formatBRL(s.total_revenue_cents)} />
-        <StatCardSimple label="Créditos distribuídos" value={s.credits_distributed} />
-        <StatCardSimple label="Créditos consumidos" value={s.credits_consumed} />
-        <StatCardSimple label="Novos (7 dias)" value={s.new_users_7d} />
-        <StatCardSimple label="Novos (30 dias)" value={s.new_users_30d} />
-        <StatCardSimple label="Artigos gerados" value={s.total_articles} />
-        <StatCardSimple label="Contas de teste" value={s.teste_users} />
+        <StatCardSimple label={t("stats.totalUsers")} value={s.total_users} />
+        <StatCardSimple label={t("stats.free")} value={s.free_users} />
+        <StatCardSimple label={t("stats.pro")} value={s.pro_users} />
+        <StatCardSimple label={t("stats.premium")} value={s.premium_users} />
+        <StatCardSimple label={t("stats.payments")} value={s.total_payments} />
+        <StatCardSimple label={t("stats.revenue")} value={formatBRL(s.total_revenue_cents)} />
+        <StatCardSimple label={t("stats.creditsDistributed")} value={s.credits_distributed} />
+        <StatCardSimple label={t("stats.creditsConsumed")} value={s.credits_consumed} />
+        <StatCardSimple label={t("stats.new7d")} value={s.new_users_7d} />
+        <StatCardSimple label={t("stats.new30d")} value={s.new_users_30d} />
+        <StatCardSimple label={t("stats.articles")} value={s.total_articles} />
+        <StatCardSimple label={t("stats.teste")} value={s.teste_users} />
       </div>
     </div>
   );
 }
 
 function UsersTab() {
+  const { t } = useTranslation("admin");
+  const formatDate = useDateFormatter();
   const queryClient = useQueryClient();
   const fetchUsers = useServerFn(adminListUsers);
   const setPlan = useServerFn(adminSetPlan);
@@ -197,10 +207,10 @@ function UsersTab() {
   const handleSetPlan = async (userId: string, plan: PlanId) => {
     try {
       await setPlan({ data: { userId, plan } });
-      toast.success("Plano atualizado.");
+      toast.success(t("users.planUpdated"));
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao alterar plano.");
+      toast.error(err instanceof Error ? err.message : t("users.planError"));
     }
   };
 
@@ -210,7 +220,7 @@ function UsersTab() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar por nome ou e-mail..."
+            placeholder={t("users.searchPh")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -221,11 +231,11 @@ function UsersTab() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos os planos</SelectItem>
-            <SelectItem value="free">Gratuito</SelectItem>
-            <SelectItem value="pro">Pro</SelectItem>
-            <SelectItem value="premium">Premium</SelectItem>
-            <SelectItem value="teste">Teste</SelectItem>
+            <SelectItem value="all">{t("users.allPlans")}</SelectItem>
+            <SelectItem value="free">{t("users.free")}</SelectItem>
+            <SelectItem value="pro">{t("users.pro")}</SelectItem>
+            <SelectItem value="premium">{t("users.premium")}</SelectItem>
+            <SelectItem value="teste">{t("users.teste")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -237,13 +247,13 @@ function UsersTab() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Usuário</TableHead>
-                <TableHead>Plano</TableHead>
-                <TableHead>Créditos</TableHead>
-                <TableHead>Assinatura</TableHead>
-                <TableHead>Cadastro</TableHead>
-                <TableHead>Último acesso</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
+                <TableHead>{t("users.columns.user")}</TableHead>
+                <TableHead>{t("users.columns.plan")}</TableHead>
+                <TableHead>{t("users.columns.credits")}</TableHead>
+                <TableHead>{t("users.columns.subscription")}</TableHead>
+                <TableHead>{t("users.columns.createdAt")}</TableHead>
+                <TableHead>{t("users.columns.lastSignIn")}</TableHead>
+                <TableHead className="text-right">{t("users.columns.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -264,10 +274,10 @@ function UsersTab() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="free">Gratuito</SelectItem>
-                        <SelectItem value="pro">Pro</SelectItem>
-                        <SelectItem value="premium">Premium</SelectItem>
-                        <SelectItem value="teste">Teste</SelectItem>
+                        <SelectItem value="free">{t("users.free")}</SelectItem>
+                        <SelectItem value="pro">{t("users.pro")}</SelectItem>
+                        <SelectItem value="premium">{t("users.premium")}</SelectItem>
+                        <SelectItem value="teste">{t("users.teste")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
@@ -281,7 +291,7 @@ function UsersTab() {
                   <TableCell className="text-xs">{formatDate(u.last_sign_in_at)}</TableCell>
                   <TableCell className="text-right">
                     <Button size="sm" variant="outline" onClick={() => setCreditUser(u)}>
-                      <Coins className="h-3.5 w-3.5" /> Créditos
+                      <Coins className="h-3.5 w-3.5" /> {t("users.creditsBtn")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -289,7 +299,7 @@ function UsersTab() {
               {users.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
-                    Nenhum usuário encontrado.
+                    {t("users.empty")}
                   </TableCell>
                 </TableRow>
               )}
@@ -316,6 +326,7 @@ function CreditsDialog({
   onClose: () => void;
   onDone: () => void;
 }) {
+  const { t } = useTranslation("admin");
   const adjust = useServerFn(adminAdjustCredits);
   const [mode, setMode] = useState<"add" | "remove" | "set">("add");
   const [amount, setAmount] = useState("10");
@@ -326,7 +337,7 @@ function CreditsDialog({
     if (!user) return;
     const n = Number(amount);
     if (!Number.isFinite(n) || n < 0) {
-      toast.error("Informe uma quantidade válida.");
+      toast.error(t("credits.invalid"));
       return;
     }
     setSaving(true);
@@ -334,11 +345,11 @@ function CreditsDialog({
       await adjust({
         data: { userId: user.id, mode, amount: n, reason: reason.trim() || undefined },
       });
-      toast.success("Créditos atualizados.");
+      toast.success(t("credits.updated"));
       onDone();
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao ajustar créditos.");
+      toast.error(err instanceof Error ? err.message : t("credits.error"));
     } finally {
       setSaving(false);
     }
@@ -348,30 +359,32 @@ function CreditsDialog({
     <Dialog open={user !== null} onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Gerenciar créditos</DialogTitle>
+          <DialogTitle>{t("credits.title")}</DialogTitle>
         </DialogHeader>
         {user && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              {user.full_name ?? user.email} — saldo atual:{" "}
-              <strong>{user.credits >= 999999 ? "ilimitado" : user.credits}</strong>
+              {t("credits.balanceText", {
+                name: user.full_name ?? user.email,
+                balance: user.credits >= 999999 ? t("users.unlimited") : user.credits,
+              })}
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Operação</Label>
+                <Label>{t("credits.operation")}</Label>
                 <Select value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="add">Adicionar</SelectItem>
-                    <SelectItem value="remove">Remover</SelectItem>
-                    <SelectItem value="set">Definir</SelectItem>
+                    <SelectItem value="add">{t("credits.add")}</SelectItem>
+                    <SelectItem value="remove">{t("credits.remove")}</SelectItem>
+                    <SelectItem value="set">{t("credits.set")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label>Quantidade</Label>
+                <Label>{t("credits.amount")}</Label>
                 <Input
                   type="number"
                   min={0}
@@ -381,17 +394,17 @@ function CreditsDialog({
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>Motivo (opcional)</Label>
+              <Label>{t("credits.reason")}</Label>
               <Input value={reason} onChange={(e) => setReason(e.target.value)} />
             </div>
           </div>
         )}
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancelar
+            {t("credits.cancel")}
           </Button>
           <Button onClick={submit} disabled={saving}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin" />} Confirmar
+            {saving && <Loader2 className="h-4 w-4 animate-spin" />} {t("credits.confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -400,6 +413,8 @@ function CreditsDialog({
 }
 
 function LogsTab() {
+  const { t } = useTranslation("admin");
+  const formatDate = useDateFormatter();
   const fetchLogs = useServerFn(adminListAuditLogs);
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "logs"],
@@ -414,11 +429,11 @@ function LogsTab() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Data</TableHead>
-            <TableHead>Ação</TableHead>
-            <TableHead>Administrador</TableHead>
-            <TableHead>Usuário alvo</TableHead>
-            <TableHead>Detalhes</TableHead>
+            <TableHead>{t("logs.columns.date")}</TableHead>
+            <TableHead>{t("logs.columns.action")}</TableHead>
+            <TableHead>{t("logs.columns.admin")}</TableHead>
+            <TableHead>{t("logs.columns.target")}</TableHead>
+            <TableHead>{t("logs.columns.details")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -438,7 +453,7 @@ function LogsTab() {
           {logs.length === 0 && (
             <TableRow>
               <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
-                Nenhum registro ainda.
+                {t("logs.empty")}
               </TableCell>
             </TableRow>
           )}
