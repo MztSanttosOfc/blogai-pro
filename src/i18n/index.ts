@@ -24,6 +24,8 @@ import ptBrCreator from "./locales/pt-BR/creator.json";
 import enUsCreator from "./locales/en-US/creator.json";
 import ptBrAdmin from "./locales/pt-BR/admin.json";
 import enUsAdmin from "./locales/en-US/admin.json";
+import ptBrFinance from "./locales/pt-BR/finance.json";
+import enUsFinance from "./locales/en-US/finance.json";
 
 export type SupportedLanguage = "pt-BR" | "en-US";
 
