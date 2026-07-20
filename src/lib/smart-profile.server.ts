@@ -112,6 +112,7 @@ export async function loadSmartProfile(
   supabase: Client,
   userId: string,
 ): Promise<SmartProfileFull> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- table not in generated types
   const { data, error } = await (supabase.from("user_smart_profile") as any)
     .select("*")
     .eq("user_id", userId)
@@ -157,8 +158,10 @@ export async function saveSmartProfile(
   for (const [k, v] of Object.entries(patch)) {
     if (v !== undefined) payload[k] = v;
   }
-  const { error } = await (supabase.from("user_smart_profile") as any)
-    .upsert(payload, { onConflict: "user_id" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- table not in generated types
+  const { error } = await (supabase.from("user_smart_profile") as any).upsert(payload, {
+    onConflict: "user_id",
+  });
   if (error) throw new Error(error.message);
   return loadSmartProfile(supabase, userId);
 }

@@ -188,13 +188,17 @@ function AdminFeedbackPage() {
                   {f.comment && <p className="text-sm">{f.comment}</p>}
                   {f.suggestion && (
                     <p className="mt-1 text-sm">
-                      <Badge variant="secondary" className="mr-2">Sugestão</Badge>
+                      <Badge variant="secondary" className="mr-2">
+                        Sugestão
+                      </Badge>
                       {f.suggestion}
                     </p>
                   )}
                   {f.issue && (
                     <p className="mt-1 text-sm">
-                      <Badge variant="destructive" className="mr-2">Problema</Badge>
+                      <Badge variant="destructive" className="mr-2">
+                        Problema
+                      </Badge>
                       {f.issue}
                     </p>
                   )}

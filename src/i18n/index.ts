@@ -25,7 +25,6 @@ import enUsCreator from "./locales/en-US/creator.json";
 import ptBrAdmin from "./locales/pt-BR/admin.json";
 import enUsAdmin from "./locales/en-US/admin.json";
 
-
 export type SupportedLanguage = "pt-BR" | "en-US";
 
 export const SUPPORTED_LANGUAGES: {
@@ -72,7 +71,17 @@ if (!i18n.isInitialized) {
       },
       fallbackLng: DEFAULT_LANGUAGE,
       supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
-      ns: ["common", "dashboard", "generate", "pages", "library", "pricing", "settings", "creator", "admin"],
+      ns: [
+        "common",
+        "dashboard",
+        "generate",
+        "pages",
+        "library",
+        "pricing",
+        "settings",
+        "creator",
+        "admin",
+      ],
       defaultNS: "common",
 
       interpolation: { escapeValue: false },

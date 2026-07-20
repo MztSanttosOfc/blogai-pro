@@ -32,10 +32,15 @@ export const Route = createFileRoute("/api/v1/feedback/")({
         }
         const parsed = CreateSchema.safeParse(body);
         if (!parsed.success) {
-          throw new ApiError("validation_error", "Dados inválidos.", 422, parsed.error.issues.map((i) => ({
-            field: i.path.join("."),
-            message: i.message,
-          })));
+          throw new ApiError(
+            "validation_error",
+            "Dados inválidos.",
+            422,
+            parsed.error.issues.map((i) => ({
+              field: i.path.join("."),
+              message: i.message,
+            })),
+          );
         }
         const row = await createFeedback(ctx.supabase, ctx.userId, parsed.data);
         return jsonOk(row, { requestId, status: 201 });

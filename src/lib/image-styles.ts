@@ -99,13 +99,10 @@ const STYLE_MAP: Record<ImageStyleKey, ImageStyle> = IMAGE_STYLES.reduce(
   {} as Record<ImageStyleKey, ImageStyle>,
 );
 
-export function resolveImageStyle(
-  key: string | null | undefined,
-): ImageStyle {
+export function resolveImageStyle(key: string | null | undefined): ImageStyle {
   if (key && key in STYLE_MAP) return STYLE_MAP[key as ImageStyleKey];
   return STYLE_MAP[DEFAULT_IMAGE_STYLE];
 }
 
 /** Sufixo universal aplicado a TODO estilo — mantém consistência editorial. */
-export const UNIVERSAL_IMAGE_SUFFIX =
-  "No text, no watermark, no logos, no letters, no captions.";
+export const UNIVERSAL_IMAGE_SUFFIX = "No text, no watermark, no logos, no letters, no captions.";

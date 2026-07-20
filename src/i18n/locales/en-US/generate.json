@@ -1,4 +1,73 @@
 {
-  "title": "Article Generator",
-  "subtitle": "Create SEO-optimized articles with AI in minutes."
+  "title": "AI Content Assistant",
+  "subtitle": "From idea to rank-ready article — pick the level of control you prefer.",
+  "noCredits": "You don't have enough credits. Upgrade your plan to keep generating.",
+  "success": "Article generated successfully!",
+  "tabs": {
+    "smart": "Smart",
+    "auto": "Automatic",
+    "advanced": "Advanced"
+  },
+  "shared": {
+    "imageStyle": "Image style",
+    "smartProfileHint": "This article will automatically use your <1>Smart Profile</1> (author, tone, internal links, banned words).",
+    "language": "Language",
+    "tone": "Tone of voice"
+  },
+  "smart": {
+    "topicLabel": "What is your article about?",
+    "topicPlaceholder": "e.g. Dogs, AdSense, SEO, Digital Marketing...",
+    "topicHint": "Just enter the topic. The AI handles keywords, structure and SEO for you.",
+    "analyzing": "Analyzing topic...",
+    "analyze": "Analyze topic",
+    "invalidTopic": "Please enter a valid topic.",
+    "errorAnalyze": "Failed to analyze the topic.",
+    "errorGenerate": "Failed to generate the article.",
+    "traffic": "Traffic",
+    "competition": "Competition",
+    "mainKeyword": "Main keyword",
+    "title": "Title",
+    "recommendedSize": "Recommended size",
+    "wordsSuffix": "words",
+    "audience": "Target audience",
+    "secondaryKeywords": "Secondary keywords",
+    "structure": "Suggested structure",
+    "faq": "Suggested FAQ",
+    "strategy": "Strategy:",
+    "category": "Category:",
+    "slug": "Slug:",
+    "generating": "Generating article...",
+    "generate": "Generate article with these suggestions"
+  },
+  "auto": {
+    "banner": "<0>Automatic mode:</0> just enter the topic and the AI researches, picks keywords, creates the SEO structure, FAQ, meta description, tags and writes the full article — all by itself.",
+    "topicLabel": "Main topic",
+    "topicPlaceholder": "e.g. How to make money with Blogger",
+    "step1": "Researching topic and defining SEO strategy...",
+    "step2": "Writing the full article...",
+    "invalidTopic": "Please enter a valid topic.",
+    "errorGenerate": "Failed to generate the article.",
+    "generating": "Generating...",
+    "cta": "Generate Smart Article"
+  },
+  "advanced": {
+    "keywordLabel": "Main keyword *",
+    "keywordPlaceholder": "e.g. easy vegan recipes",
+    "secondaryLabel": "Secondary keywords",
+    "secondaryPlaceholder": "Comma-separated",
+    "titleLabel": "Title (optional)",
+    "titlePlaceholder": "Leave blank to let AI create",
+    "audienceLabel": "Target audience",
+    "audiencePlaceholder": "e.g. beginner bloggers",
+    "objectiveLabel": "Content objective",
+    "objectivePlaceholder": "e.g. build authority and traffic",
+    "words": "Words",
+    "tone": "Tone",
+    "language": "Language",
+    "country": "Country",
+    "invalidKeyword": "Please enter a valid keyword.",
+    "errorGenerate": "Failed to generate the article.",
+    "generating": "Generating article...",
+    "cta": "Generate article"
+  }
 }

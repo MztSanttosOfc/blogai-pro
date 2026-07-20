@@ -220,17 +220,13 @@ async function loadPageGenerationContext(
 }> {
   const settings = await loadSettings(userId);
   try {
-    const { loadSmartProfile, buildSmartProfilePromptContext } = await import(
-      "./smart-profile.server"
-    );
+    const { loadSmartProfile, buildSmartProfilePromptContext } =
+      await import("./smart-profile.server");
     const smart = await loadSmartProfile(supabase, userId);
     const merged: SiteSettings = {
       blog_name: settings.blog_name || smart.blogger.niche || "",
       owner_name:
-        settings.owner_name ||
-        smart.personal.author_name ||
-        smart.personal.full_name ||
-        "",
+        settings.owner_name || smart.personal.author_name || smart.personal.full_name || "",
       contact_email: settings.contact_email || smart.contacts.email || "",
       domain: settings.domain || smart.blogger.main_url || smart.contacts.website || "",
       niche: settings.niche || smart.blogger.niche || "",

@@ -73,13 +73,9 @@ export async function collectInternalLinkCandidates(
  * Constrói o bloco de instrução para a IA. Retorna string vazia quando não há
  * candidatos — nesse caso o prompt permanece idêntico ao comportamento v1.0.
  */
-export function buildInternalLinksPromptBlock(
-  candidates: InternalLinkCandidate[],
-): string {
+export function buildInternalLinksPromptBlock(candidates: InternalLinkCandidate[]): string {
   if (!candidates.length) return "";
-  const lines = candidates
-    .map((c, i) => `  ${i + 1}. "${c.title}" — ${c.url}`)
-    .join("\n");
+  const lines = candidates.map((c, i) => `  ${i + 1}. "${c.title}" — ${c.url}`).join("\n");
   return (
     `\n[Links internos disponíveis — use 2 a 4 deles como âncoras naturais dentro do artigo, ` +
     `apenas quando fizer sentido contextual. Formate em Markdown [texto](URL). ` +

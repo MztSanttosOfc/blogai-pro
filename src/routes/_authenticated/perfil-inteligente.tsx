@@ -6,7 +6,19 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Loader2, Save, User, Contact, Share2, Globe, Search, Sparkles, Link2, PenLine, ToggleRight } from "lucide-react";
+import {
+  Loader2,
+  Save,
+  User,
+  Contact,
+  Share2,
+  Globe,
+  Search,
+  Sparkles,
+  Link2,
+  PenLine,
+  ToggleRight,
+} from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,11 +70,7 @@ function SmartProfilePage() {
     setState((s) => (s ? { ...s, [key]: val } : s));
   };
 
-  const patchIn = <K extends keyof SmartProfileFull>(
-    key: K,
-    field: string,
-    val: unknown,
-  ) => {
+  const patchIn = <K extends keyof SmartProfileFull>(key: K, field: string, val: unknown) => {
     setState((s) => {
       if (!s) return s;
       const current = (s[key] ?? {}) as Record<string, unknown>;
@@ -152,28 +160,62 @@ function SmartProfilePage() {
         <TabsContent value="personal">
           <Card className="grid gap-4 p-6 sm:grid-cols-2">
             <Field label={t("smartProfile.fields.fullName")}>
-              <Input value={state.personal.full_name ?? ""} onChange={(e) => patchIn("personal", "full_name", e.target.value)} maxLength={120} />
+              <Input
+                value={state.personal.full_name ?? ""}
+                onChange={(e) => patchIn("personal", "full_name", e.target.value)}
+                maxLength={120}
+              />
             </Field>
             <Field label={t("smartProfile.fields.authorName")}>
-              <Input value={state.personal.author_name ?? ""} onChange={(e) => patchIn("personal", "author_name", e.target.value)} maxLength={120} />
+              <Input
+                value={state.personal.author_name ?? ""}
+                onChange={(e) => patchIn("personal", "author_name", e.target.value)}
+                maxLength={120}
+              />
             </Field>
             <Field label={t("smartProfile.fields.bio")} full>
-              <Textarea rows={3} value={state.personal.bio ?? ""} onChange={(e) => patchIn("personal", "bio", e.target.value)} maxLength={400} />
+              <Textarea
+                rows={3}
+                value={state.personal.bio ?? ""}
+                onChange={(e) => patchIn("personal", "bio", e.target.value)}
+                maxLength={400}
+              />
             </Field>
             <Field label={t("smartProfile.fields.role")}>
-              <Input value={state.personal.role ?? ""} onChange={(e) => patchIn("personal", "role", e.target.value)} maxLength={80} />
+              <Input
+                value={state.personal.role ?? ""}
+                onChange={(e) => patchIn("personal", "role", e.target.value)}
+                maxLength={80}
+              />
             </Field>
             <Field label={t("smartProfile.fields.company")}>
-              <Input value={state.personal.company ?? ""} onChange={(e) => patchIn("personal", "company", e.target.value)} maxLength={80} />
+              <Input
+                value={state.personal.company ?? ""}
+                onChange={(e) => patchIn("personal", "company", e.target.value)}
+                maxLength={80}
+              />
             </Field>
             <Field label={t("smartProfile.fields.city")}>
-              <Input value={state.personal.city ?? ""} onChange={(e) => patchIn("personal", "city", e.target.value)} maxLength={60} />
+              <Input
+                value={state.personal.city ?? ""}
+                onChange={(e) => patchIn("personal", "city", e.target.value)}
+                maxLength={60}
+              />
             </Field>
             <Field label={t("smartProfile.fields.country")}>
-              <Input value={state.personal.country ?? ""} onChange={(e) => patchIn("personal", "country", e.target.value)} maxLength={60} />
+              <Input
+                value={state.personal.country ?? ""}
+                onChange={(e) => patchIn("personal", "country", e.target.value)}
+                maxLength={60}
+              />
             </Field>
             <Field label={t("smartProfile.fields.primaryLanguage")}>
-              <Input value={state.personal.primary_language ?? ""} onChange={(e) => patchIn("personal", "primary_language", e.target.value)} placeholder="pt-BR" maxLength={12} />
+              <Input
+                value={state.personal.primary_language ?? ""}
+                onChange={(e) => patchIn("personal", "primary_language", e.target.value)}
+                placeholder="pt-BR"
+                maxLength={12}
+              />
             </Field>
           </Card>
         </TabsContent>
@@ -182,16 +224,34 @@ function SmartProfilePage() {
         <TabsContent value="contacts">
           <Card className="grid gap-4 p-6 sm:grid-cols-2">
             <Field label={t("smartProfile.fields.email")}>
-              <Input type="email" value={state.contacts.email ?? ""} onChange={(e) => patchIn("contacts", "email", e.target.value)} maxLength={160} />
+              <Input
+                type="email"
+                value={state.contacts.email ?? ""}
+                onChange={(e) => patchIn("contacts", "email", e.target.value)}
+                maxLength={160}
+              />
             </Field>
             <Field label={t("smartProfile.fields.whatsapp")}>
-              <Input value={state.contacts.whatsapp ?? ""} onChange={(e) => patchIn("contacts", "whatsapp", e.target.value)} maxLength={40} />
+              <Input
+                value={state.contacts.whatsapp ?? ""}
+                onChange={(e) => patchIn("contacts", "whatsapp", e.target.value)}
+                maxLength={40}
+              />
             </Field>
             <Field label={t("smartProfile.fields.phone")}>
-              <Input value={state.contacts.phone ?? ""} onChange={(e) => patchIn("contacts", "phone", e.target.value)} maxLength={40} />
+              <Input
+                value={state.contacts.phone ?? ""}
+                onChange={(e) => patchIn("contacts", "phone", e.target.value)}
+                maxLength={40}
+              />
             </Field>
             <Field label={t("smartProfile.fields.website")}>
-              <Input value={state.contacts.website ?? ""} onChange={(e) => patchIn("contacts", "website", e.target.value)} placeholder="https://" maxLength={240} />
+              <Input
+                value={state.contacts.website ?? ""}
+                onChange={(e) => patchIn("contacts", "website", e.target.value)}
+                placeholder="https://"
+                maxLength={240}
+              />
             </Field>
           </Card>
         </TabsContent>
@@ -199,7 +259,20 @@ function SmartProfilePage() {
         {/* SOCIAL */}
         <TabsContent value="social">
           <Card className="grid gap-4 p-6 sm:grid-cols-2">
-            {(["facebook", "instagram", "youtube", "tiktok", "pinterest", "linkedin", "telegram", "github", "twitter", "other"] as const).map((k) => (
+            {(
+              [
+                "facebook",
+                "instagram",
+                "youtube",
+                "tiktok",
+                "pinterest",
+                "linkedin",
+                "telegram",
+                "github",
+                "twitter",
+                "other",
+              ] as const
+            ).map((k) => (
               <Field key={k} label={t(`smartProfile.fields.${k}`)}>
                 <Input
                   value={(state.social_links[k] as string | undefined) ?? ""}
@@ -216,13 +289,26 @@ function SmartProfilePage() {
         <TabsContent value="blogger">
           <Card className="grid gap-4 p-6 sm:grid-cols-2">
             <Field label={t("smartProfile.fields.bloggerUrl")} full>
-              <Input value={state.blogger.main_url ?? ""} onChange={(e) => patchIn("blogger", "main_url", e.target.value)} placeholder="https://" maxLength={240} />
+              <Input
+                value={state.blogger.main_url ?? ""}
+                onChange={(e) => patchIn("blogger", "main_url", e.target.value)}
+                placeholder="https://"
+                maxLength={240}
+              />
             </Field>
             <Field label={t("smartProfile.fields.niche")}>
-              <Input value={state.blogger.niche ?? ""} onChange={(e) => patchIn("blogger", "niche", e.target.value)} maxLength={80} />
+              <Input
+                value={state.blogger.niche ?? ""}
+                onChange={(e) => patchIn("blogger", "niche", e.target.value)}
+                maxLength={80}
+              />
             </Field>
             <Field label={t("smartProfile.fields.audience")}>
-              <Input value={state.blogger.audience ?? ""} onChange={(e) => patchIn("blogger", "audience", e.target.value)} maxLength={200} />
+              <Input
+                value={state.blogger.audience ?? ""}
+                onChange={(e) => patchIn("blogger", "audience", e.target.value)}
+                maxLength={200}
+              />
             </Field>
           </Card>
         </TabsContent>
@@ -235,16 +321,36 @@ function SmartProfilePage() {
                 <Search className="h-4 w-4 text-primary" /> {t("smartProfile.sections.seo")}
               </h3>
               <Field label={t("smartProfile.fields.primaryKeywords")} full>
-                <Textarea rows={2} value={csv(state.seo_prefs.primary_keywords)} onChange={(e) => patchIn("seo_prefs", "primary_keywords", parseCsv(e.target.value))} placeholder="Separadas por vírgula" />
+                <Textarea
+                  rows={2}
+                  value={csv(state.seo_prefs.primary_keywords)}
+                  onChange={(e) =>
+                    patchIn("seo_prefs", "primary_keywords", parseCsv(e.target.value))
+                  }
+                  placeholder="Separadas por vírgula"
+                />
               </Field>
               <Field label={t("smartProfile.fields.bannedWords")} full>
-                <Textarea rows={2} value={csv(state.seo_prefs.banned_words)} onChange={(e) => patchIn("seo_prefs", "banned_words", parseCsv(e.target.value))} placeholder="Separadas por vírgula" />
+                <Textarea
+                  rows={2}
+                  value={csv(state.seo_prefs.banned_words)}
+                  onChange={(e) => patchIn("seo_prefs", "banned_words", parseCsv(e.target.value))}
+                  placeholder="Separadas por vírgula"
+                />
               </Field>
               <Field label={t("smartProfile.fields.writingStyle")}>
-                <Input value={state.seo_prefs.writing_style ?? ""} onChange={(e) => patchIn("seo_prefs", "writing_style", e.target.value)} maxLength={80} />
+                <Input
+                  value={state.seo_prefs.writing_style ?? ""}
+                  onChange={(e) => patchIn("seo_prefs", "writing_style", e.target.value)}
+                  maxLength={80}
+                />
               </Field>
               <Field label={t("smartProfile.fields.toneOfVoice")}>
-                <Input value={state.seo_prefs.tone_of_voice ?? ""} onChange={(e) => patchIn("seo_prefs", "tone_of_voice", e.target.value)} maxLength={80} />
+                <Input
+                  value={state.seo_prefs.tone_of_voice ?? ""}
+                  onChange={(e) => patchIn("seo_prefs", "tone_of_voice", e.target.value)}
+                  maxLength={80}
+                />
               </Field>
             </Card>
             <Card className="space-y-4 p-6">
@@ -252,19 +358,49 @@ function SmartProfilePage() {
                 <Sparkles className="h-4 w-4 text-primary" /> {t("smartProfile.sections.ai")}
               </h3>
               <Field label={t("smartProfile.fields.preferredWordCount")}>
-                <Input type="number" min={200} max={5000} value={state.ai_prefs.preferred_word_count ?? ""} onChange={(e) => patchIn("ai_prefs", "preferred_word_count", Number(e.target.value) || undefined)} />
+                <Input
+                  type="number"
+                  min={200}
+                  max={5000}
+                  value={state.ai_prefs.preferred_word_count ?? ""}
+                  onChange={(e) =>
+                    patchIn("ai_prefs", "preferred_word_count", Number(e.target.value) || undefined)
+                  }
+                />
               </Field>
               <Field label={t("smartProfile.fields.defaultHeadings")}>
-                <Input type="number" min={2} max={20} value={state.ai_prefs.default_headings ?? ""} onChange={(e) => patchIn("ai_prefs", "default_headings", Number(e.target.value) || undefined)} />
+                <Input
+                  type="number"
+                  min={2}
+                  max={20}
+                  value={state.ai_prefs.default_headings ?? ""}
+                  onChange={(e) =>
+                    patchIn("ai_prefs", "default_headings", Number(e.target.value) || undefined)
+                  }
+                />
               </Field>
               <Field label={t("smartProfile.fields.preferredStructure")}>
-                <Input value={state.ai_prefs.preferred_structure ?? ""} onChange={(e) => patchIn("ai_prefs", "preferred_structure", e.target.value)} maxLength={160} />
+                <Input
+                  value={state.ai_prefs.preferred_structure ?? ""}
+                  onChange={(e) => patchIn("ai_prefs", "preferred_structure", e.target.value)}
+                  maxLength={160}
+                />
               </Field>
               <Field label={t("smartProfile.fields.defaultLanguage")}>
-                <Input value={state.ai_prefs.default_language ?? ""} onChange={(e) => patchIn("ai_prefs", "default_language", e.target.value)} placeholder="Português" maxLength={40} />
+                <Input
+                  value={state.ai_prefs.default_language ?? ""}
+                  onChange={(e) => patchIn("ai_prefs", "default_language", e.target.value)}
+                  placeholder="Português"
+                  maxLength={40}
+                />
               </Field>
               <Field label={t("smartProfile.fields.preferredImageStyle")}>
-                <Input value={state.ai_prefs.preferred_image_style ?? ""} onChange={(e) => patchIn("ai_prefs", "preferred_image_style", e.target.value)} placeholder="Normal" maxLength={40} />
+                <Input
+                  value={state.ai_prefs.preferred_image_style ?? ""}
+                  onChange={(e) => patchIn("ai_prefs", "preferred_image_style", e.target.value)}
+                  placeholder="Normal"
+                  maxLength={40}
+                />
               </Field>
             </Card>
           </div>
@@ -289,8 +425,19 @@ function SmartProfilePage() {
               <h3 className="flex items-center gap-2 font-semibold">
                 <ToggleRight className="h-4 w-4 text-primary" /> {t("smartProfile.sections.flags")}
               </h3>
-              {(["useInArticles", "useInPages", "useInFaqs", "useSignature", "useSocialLinks"] as const).map((f) => (
-                <label key={f} className="flex cursor-pointer items-center justify-between rounded-lg border border-border p-3 text-sm">
+              {(
+                [
+                  "useInArticles",
+                  "useInPages",
+                  "useInFaqs",
+                  "useSignature",
+                  "useSocialLinks",
+                ] as const
+              ).map((f) => (
+                <label
+                  key={f}
+                  className="flex cursor-pointer items-center justify-between rounded-lg border border-border p-3 text-sm"
+                >
                   <span>{t(`smartProfile.flags.${f}`)}</span>
                   <Switch
                     checked={!!state.feature_flags[f]}
@@ -306,7 +453,8 @@ function SmartProfilePage() {
                 <Link2 className="h-4 w-4 text-primary" /> {t("smartProfile.sections.links")}
               </h3>
               <p className="text-xs text-muted-foreground">
-                Links reutilizáveis em geração de páginas e artigos. Reflete automaticamente no gerador quando ativado.
+                Links reutilizáveis em geração de páginas e artigos. Reflete automaticamente no
+                gerador quando ativado.
               </p>
               <DefaultLinksEditor
                 value={state.default_links}
@@ -327,7 +475,15 @@ function SmartProfilePage() {
   );
 }
 
-function Field({ label, children, full }: { label: string; children: React.ReactNode; full?: boolean }) {
+function Field({
+  label,
+  children,
+  full,
+}: {
+  label: string;
+  children: React.ReactNode;
+  full?: boolean;
+}) {
   return (
     <div className={`space-y-2 ${full ? "sm:col-span-2" : ""}`}>
       <Label>{label}</Label>
@@ -352,8 +508,18 @@ function DefaultLinksEditor({
     <div className="space-y-2">
       {value.map((row, i) => (
         <div key={i} className="grid gap-2 sm:grid-cols-[minmax(0,180px)_minmax(0,1fr)_auto]">
-          <Input placeholder="Rótulo" value={row.label} onChange={(e) => update(i, "label", e.target.value)} maxLength={80} />
-          <Input placeholder="https://" value={row.url} onChange={(e) => update(i, "url", e.target.value)} maxLength={500} />
+          <Input
+            placeholder="Rótulo"
+            value={row.label}
+            onChange={(e) => update(i, "label", e.target.value)}
+            maxLength={80}
+          />
+          <Input
+            placeholder="https://"
+            value={row.url}
+            onChange={(e) => update(i, "url", e.target.value)}
+            maxLength={500}
+          />
           <Button variant="outline" size="sm" onClick={() => remove(i)}>
             Remover
           </Button>

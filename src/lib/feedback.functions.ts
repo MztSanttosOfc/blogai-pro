@@ -35,7 +35,12 @@ const ReplySchema = z.object({
   reply: z.string().trim().min(1).max(4000),
 });
 
-async function assertAdmin(context: { supabase: import("@supabase/supabase-js").SupabaseClient<import("@/integrations/supabase/types").Database>; userId: string }) {
+async function assertAdmin(context: {
+  supabase: import("@supabase/supabase-js").SupabaseClient<
+    import("@/integrations/supabase/types").Database
+  >;
+  userId: string;
+}) {
   const { data, error } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
   if (error) throw new Error(error.message);
   if (!data) throw new Error("forbidden");
@@ -78,9 +83,15 @@ export const adminFeedbackStats = createServerFn({ method: "GET" })
     await assertAdmin(context);
     const { data, error } = await context.supabase.rpc("admin_feedback_stats");
     if (error) throw new Error(error.message);
-    return (data as unknown as FeedbackStats) ?? {
-      total: 0, average_rating: 0, by_rating: {}, pending: 0, replied: 0,
-    };
+    return (
+      (data as unknown as FeedbackStats) ?? {
+        total: 0,
+        average_rating: 0,
+        by_rating: {},
+        pending: 0,
+        replied: 0,
+      }
+    );
   });
 
 export const adminListFeedbacks = createServerFn({ method: "POST" })

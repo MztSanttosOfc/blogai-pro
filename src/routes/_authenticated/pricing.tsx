@@ -48,8 +48,8 @@ function PricingPage() {
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
             <strong>Pagamento em dólar disponível em breve.</strong> A infraestrutura já está
-            preparada para gateways internacionais. Enquanto isso, contas em USD podem visualizar
-            os planos, mas as compras seguem em BRL via Pix.
+            preparada para gateways internacionais. Enquanto isso, contas em USD podem visualizar os
+            planos, mas as compras seguem em BRL via Pix.
           </p>
         </div>
       )}
