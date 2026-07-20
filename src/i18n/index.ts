@@ -26,6 +26,12 @@ import ptBrAdmin from "./locales/pt-BR/admin.json";
 import enUsAdmin from "./locales/en-US/admin.json";
 import ptBrFinance from "./locales/pt-BR/finance.json";
 import enUsFinance from "./locales/en-US/finance.json";
+import ptBrAnalytics from "./locales/pt-BR/analytics.json";
+import enUsAnalytics from "./locales/en-US/analytics.json";
+import ptBrActivity from "./locales/pt-BR/activity.json";
+import enUsActivity from "./locales/en-US/activity.json";
+import ptBrInvites from "./locales/pt-BR/invites.json";
+import enUsInvites from "./locales/en-US/invites.json";
 
 export type SupportedLanguage = "pt-BR" | "en-US";
 
