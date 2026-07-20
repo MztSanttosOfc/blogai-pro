@@ -1,0 +1,25 @@
+{
+  "greeting": "Hi, {{name}} 👋",
+  "greetingFallback": "blogger",
+  "subtitle": "Here is a summary of your content production.",
+  "stats": {
+    "generated": "Articles generated",
+    "published": "Articles published",
+    "credits": "Available credits",
+    "plan": "Your plan"
+  },
+  "hero": {
+    "badge": "AI generator",
+    "title": "Create an SEO-optimized article in seconds",
+    "subtitle": "Enter a keyword and the AI generates title, meta description, headings, FAQ and tags.",
+    "cta": "Generate article"
+  },
+  "recent": {
+    "title": "Recent articles",
+    "viewAll": "View all",
+    "emptyText": "You haven't generated any articles yet. Ready to start?",
+    "emptyCta": "Create first article",
+    "statusPublished": "Published",
+    "statusDraft": "Draft"
+  }
+}
