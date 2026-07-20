@@ -45,7 +45,7 @@ const LogSchema = z.object({
   category: CategoryEnum,
   event: z.string().min(1).max(80),
   description: z.string().max(500).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+  metadata: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
 });
 
 /** Endpoint para logar eventos client-side (login, ações UI-only). */
