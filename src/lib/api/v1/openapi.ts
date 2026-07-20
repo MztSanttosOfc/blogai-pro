@@ -404,6 +404,5 @@ export function buildOpenApiDocument(origin: string) {
         },
       },
     },
-    },
   } as const;
 }
