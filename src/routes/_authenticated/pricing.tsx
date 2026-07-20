@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Info } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Check, Info, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +13,7 @@ import { useCurrency } from "@/hooks/use-currency";
 import { PLANS } from "@/lib/constants";
 import { PixCheckoutDialog } from "@/components/PixCheckoutDialog";
 import { CurrencySwitcher } from "@/components/CurrencySwitcher";
+import { createStripeCheckout } from "@/lib/payments-stripe.functions";
 
 export const Route = createFileRoute("/_authenticated/pricing")({
   head: () => ({
@@ -24,11 +27,24 @@ function PricingPage() {
   const { profile } = useAuth();
   const { currency } = useCurrency();
   const isUSD = currency === "USD";
+  const startStripe = useServerFn(createStripeCheckout);
+  const [stripeLoading, setStripeLoading] = useState<string | null>(null);
   const [checkout, setCheckout] = useState<{
     planId: "pro" | "premium" | "teste";
     name: string;
     price: string;
   } | null>(null);
+
+  const handleStripe = async (planId: "pro" | "premium" | "teste") => {
+    setStripeLoading(planId);
+    try {
+      const res = await startStripe({ data: { planId } });
+      window.location.href = res.url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao iniciar checkout.");
+      setStripeLoading(null);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
