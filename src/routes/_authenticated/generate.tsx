@@ -179,6 +179,20 @@ function ImageStylePicker({
   );
 }
 
+/** Aviso curto informando reutilização automática do Perfil Inteligente. */
+function SmartProfileHint() {
+  return (
+    <p className="rounded-md bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+      <Sparkles className="mr-1 inline h-3 w-3 text-primary" />
+      Este artigo usará automaticamente os dados do seu{" "}
+      <a href="/perfil-inteligente" className="font-medium text-primary underline">
+        Perfil Inteligente
+      </a>{" "}
+      (autor, tom, links internos, palavras banidas).
+    </p>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /* Smart mode — analyze topic, review/edit suggestions, then generate         */
 /* -------------------------------------------------------------------------- */
