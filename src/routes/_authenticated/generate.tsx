@@ -564,6 +564,8 @@ function AutoMode({ disabled }: { disabled: boolean }) {
             </SelectContent>
           </Select>
         </div>
+        <ImageStylePicker value={imageStyle} onChange={setImageStyle} />
+        <SmartProfileHint />
         {loading && step && (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" /> {step}
