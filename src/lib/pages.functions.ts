@@ -324,8 +324,16 @@ export const generateSitePage = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const settings = await loadSettings(context.userId);
-    const content = await generateContent(data.type as SitePageType, settings);
+    const { settings, smartCtx, customLinks } = await loadPageGenerationContext(
+      context.supabase,
+      context.userId,
+    );
+    const content = await generateContent(
+      data.type as SitePageType,
+      settings,
+      smartCtx,
+      customLinks,
+    );
     const page = await upsertPage(context.userId, data.type as SitePageType, content);
     return { page };
   });
@@ -334,10 +342,13 @@ export const generateSitePage = createServerFn({ method: "POST" })
 export const generateAdsenseKit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const settings = await loadSettings(context.userId);
+    const { settings, smartCtx, customLinks } = await loadPageGenerationContext(
+      context.supabase,
+      context.userId,
+    );
     const pages = [];
     for (const type of ADSENSE_KIT) {
-      const content = await generateContent(type, settings);
+      const content = await generateContent(type, settings, smartCtx, customLinks);
       pages.push(await upsertPage(context.userId, type, content));
     }
     return { pages };
