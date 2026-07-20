@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -198,6 +198,9 @@ function SmartMode({ disabled }: { disabled: boolean }) {
   const [title, setTitle] = useState("");
   const [tone, setTone] = useState("Profissional");
   const [wordCount, setWordCount] = useState(1200);
+  const defaultImageStyle = useDefaultImageStyle();
+  const [imageStyle, setImageStyle] = useState<ImageStyleKey>(defaultImageStyle);
+  useEffect(() => setImageStyle(defaultImageStyle), [defaultImageStyle]);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,6 +240,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
         slug: analysis.slug,
         metaHint: analysis.metaDescription,
         structure: analysis.structure,
+        imageStyle,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
