@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/criador")({
       {
         name: "description",
         content:
-          "Conheça Monzart Santtos, criador do BlogAI Pro — blogueiro, especialista em SEO, monetização e desenvolvedor da plataforma.",
+          "Conheça Júnnior Monzart, criador do BlogAI Pro — blogueiro, especialista em SEO, monetização e desenvolvedor da plataforma.",
       },
       { property: "og:title", content: "Conheça o Criador — BlogAI Pro" },
       {
