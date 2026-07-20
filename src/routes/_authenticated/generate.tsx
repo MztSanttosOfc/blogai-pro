@@ -610,6 +610,9 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
   const [language, setLanguage] = useState<string>("Português");
   const [country, setCountry] = useState<string>("Brasil");
   const [loading, setLoading] = useState(false);
+  const defaultImageStyle = useDefaultImageStyle();
+  const [imageStyle, setImageStyle] = useState<ImageStyleKey>(defaultImageStyle);
+  useEffect(() => setImageStyle(defaultImageStyle), [defaultImageStyle]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -633,6 +636,7 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
           .map((s) => s.trim())
           .filter(Boolean)
           .slice(0, 15),
+        imageStyle,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
