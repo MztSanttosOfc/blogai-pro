@@ -16,12 +16,13 @@ import {
   Instagram,
   Youtube,
   Facebook,
-  Github,
+  Download,
 } from "lucide-react";
+import { SiPinterest } from "react-icons/si";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import creatorPortrait from "@/assets/creator-portrait.jpg";
+import creatorPortrait from "@/assets/creator-portrait.png";
 
 export const Route = createFileRoute("/_authenticated/criador")({
   head: () => ({
@@ -112,7 +113,13 @@ const EXPERTISE = [
   },
 ];
 
-const PROJECTS = [
+const PROJECTS: Array<{
+  name: string;
+  role: string;
+  url?: string;
+  download?: string;
+  cta?: string;
+}> = [
   {
     name: "BlogAI Pro",
     role: "Plataforma SaaS de IA para blogueiros",
@@ -124,9 +131,20 @@ const PROJECTS = [
     url: "https://blog.monzart.com.br",
   },
   {
-    name: "Plugin WordPress BlogAI",
-    role: "Integração oficial WP ↔ BlogAI Pro",
-    url: "https://monzart.com.br",
+    name: "DivPen",
+    role: "Editor online para HTML, CSS e JavaScript — criação e testes rápidos de código.",
+    url: "https://divpen.monzart.com.br/",
+  },
+  {
+    name: "Ferramentas Gratuitas",
+    role: "Coleção de ferramentas gratuitas para blogueiros, criadores de conteúdo e profissionais de SEO.",
+    url: "https://blog.monzart.com.br/p/28-ferramentas-gratuitas-para.html",
+  },
+  {
+    name: "Plugin Oficial do BlogAI Pro",
+    role: "Integração oficial WordPress ↔ BlogAI Pro para publicação automatizada.",
+    download: "/blogai-pro-plugin.zip",
+    cta: "Baixar Plugin",
   },
 ];
 
@@ -143,10 +161,26 @@ const SOCIALS = [
     href: "https://blog.monzart.com.br/p/contato_01435481532.html",
     icon: Mail,
   },
-  { label: "Instagram", href: "https://instagram.com/monzartsanttos", icon: Instagram },
-  { label: "YouTube", href: "https://youtube.com/@monzartsanttos", icon: Youtube },
-  { label: "Facebook", href: "https://facebook.com/monzartsanttos", icon: Facebook },
-  { label: "GitHub", href: "https://github.com/MztSanttosOfc", icon: Github },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/mzt.santtos.ofc",
+    icon: Instagram,
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@Mzt_Santtos_ofc",
+    icon: Youtube,
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/jr.mzt.santtos",
+    icon: Facebook,
+  },
+  {
+    label: "Pinterest",
+    href: "https://www.pinterest.com/MztSanttosOfc",
+    icon: SiPinterest,
+  },
 ];
 
 function CreatorPage() {
@@ -157,15 +191,16 @@ function CreatorPage() {
         <div className="absolute inset-0 bg-gradient-glow opacity-70" aria-hidden />
         <div className="relative grid gap-8 md:grid-cols-[auto_minmax(0,1fr)] md:items-center">
           <div className="mx-auto md:mx-0">
-            <div className="relative">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-primary/40 blur-lg opacity-70" />
+            <div className="relative animate-scale-in">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-primary/40 blur-lg opacity-70" aria-hidden />
               <img
                 src={creatorPortrait}
-                alt="Retrato do criador do BlogAI Pro"
+                alt="Foto oficial de Monzart Santtos, criador do BlogAI Pro"
                 loading="lazy"
-                width={1024}
-                height={1024}
-                className="relative h-40 w-40 rounded-full object-cover shadow-2xl ring-4 ring-white/20 md:h-56 md:w-56"
+                decoding="async"
+                width={1135}
+                height={1136}
+                className="relative h-40 w-40 rounded-full object-cover shadow-2xl ring-4 ring-primary/40 md:h-56 md:w-56"
               />
             </div>
           </div>
@@ -182,7 +217,7 @@ function CreatorPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-2 md:justify-start">
               <Button asChild variant="hero" size="lg">
-                <a href="https://monzart.com.br" target="_blank" rel="noreferrer">
+                <a href="https://blog.monzart.com.br" target="_blank" rel="noreferrer">
                   <Globe className="h-4 w-4" /> Visitar site
                 </a>
               </Button>
@@ -326,23 +361,37 @@ function CreatorPage() {
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
-          {PROJECTS.map((p) => (
-            <a
-              key={p.name}
-              href={p.url}
-              target="_blank"
-              rel="noreferrer"
-              className="group"
-            >
-              <Card className="h-full space-y-2 p-5 transition-colors group-hover:border-primary/50">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{p.name}</h3>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
-                </div>
-                <p className="text-xs text-muted-foreground md:text-sm">{p.role}</p>
-              </Card>
-            </a>
-          ))}
+          {PROJECTS.map((p) => {
+            if (p.download) {
+              return (
+                <Card key={p.name} className="flex h-full flex-col justify-between gap-3 p-5">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">{p.name}</h3>
+                      <Download className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-xs text-muted-foreground md:text-sm">{p.role}</p>
+                  </div>
+                  <Button asChild variant="hero" size="sm" className="w-full">
+                    <a href={p.download} download>
+                      <Download className="h-4 w-4" /> 📥 {p.cta ?? "Baixar"}
+                    </a>
+                  </Button>
+                </Card>
+              );
+            }
+            return (
+              <a key={p.name} href={p.url} target="_blank" rel="noreferrer" className="group">
+                <Card className="h-full space-y-2 p-5 transition-colors group-hover:border-primary/50">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold">{p.name}</h3>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+                  </div>
+                  <p className="text-xs text-muted-foreground md:text-sm">{p.role}</p>
+                </Card>
+              </a>
+            );
+          })}
         </div>
       </section>
 
@@ -351,7 +400,7 @@ function CreatorPage() {
         <div>
           <h2 className="text-xl font-semibold md:text-2xl">Onde me encontrar</h2>
           <p className="text-sm text-muted-foreground">
-            Links oficiais extraídos do meu Media Kit público.
+            Links oficiais das minhas redes e canais.
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
