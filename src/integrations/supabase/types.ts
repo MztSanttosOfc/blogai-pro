@@ -551,6 +551,7 @@ export type Database = {
           locale: string
           plan: Database["public"]["Enums"]["user_plan"]
           preferred_currency: string
+          stripe_customer_id: string | null
           updated_at: string
         }
         Insert: {
@@ -562,6 +563,7 @@ export type Database = {
           locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
           preferred_currency?: string
+          stripe_customer_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -573,6 +575,7 @@ export type Database = {
           locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
           preferred_currency?: string
+          stripe_customer_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -987,6 +990,7 @@ export type Database = {
           plan_id: string
           started_at: string
           status: Database["public"]["Enums"]["subscription_status"]
+          stripe_subscription_id: string | null
           syncpay_subscription_id: string | null
           updated_at: string
           user_id: string
@@ -998,6 +1002,7 @@ export type Database = {
           plan_id?: string
           started_at?: string
           status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_subscription_id?: string | null
           syncpay_subscription_id?: string | null
           updated_at?: string
           user_id: string
@@ -1009,6 +1014,7 @@ export type Database = {
           plan_id?: string
           started_at?: string
           status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_subscription_id?: string | null
           syncpay_subscription_id?: string | null
           updated_at?: string
           user_id?: string
