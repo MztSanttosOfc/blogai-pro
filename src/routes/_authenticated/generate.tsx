@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Trans, useTranslation } from "react-i18next";
 import {
   Sparkles,
   Loader2,
@@ -37,7 +38,6 @@ import { generateArticle, analyzeTopic, type TopicAnalysis } from "@/lib/article
 import { TONES, LANGUAGES, WORD_COUNTS } from "@/lib/constants";
 import { IMAGE_STYLES, DEFAULT_IMAGE_STYLE, type ImageStyleKey } from "@/lib/image-styles";
 import { getSmartProfile } from "@/lib/smart-profile.functions";
-import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/generate")({
   component: GeneratePage,
@@ -54,6 +54,7 @@ const COUNTRIES = [
 ] as const;
 
 function GeneratePage() {
+  const { t } = useTranslation("generate");
   const { profile } = useAuth();
   const noCredits = profile?.plan !== "premium" && (profile?.credits ?? 0) <= 0;
 
@@ -61,29 +62,27 @@ function GeneratePage() {
     <div className="mx-auto max-w-3xl space-y-6">
       <div className="space-y-1">
         <h1 className="flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <Wand2 className="h-6 w-6 text-primary" /> Assistente de Conteúdo com IA
+          <Wand2 className="h-6 w-6 text-primary" /> {t("title")}
         </h1>
-        <p className="text-muted-foreground">
-          Da ideia ao artigo pronto para ranquear — escolha o nível de controle que preferir.
-        </p>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       {noCredits ? (
         <div className="rounded-lg bg-warning/10 p-4 text-sm text-warning-foreground">
-          Você não tem créditos suficientes. Faça upgrade do seu plano para continuar gerando.
+          {t("noCredits")}
         </div>
       ) : null}
 
       <Tabs defaultValue="smart" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="smart" className="gap-1.5">
-            <Brain className="h-4 w-4" /> Inteligente
+            <Brain className="h-4 w-4" /> {t("tabs.smart")}
           </TabsTrigger>
           <TabsTrigger value="auto" className="gap-1.5">
-            <Zap className="h-4 w-4" /> Automático
+            <Zap className="h-4 w-4" /> {t("tabs.auto")}
           </TabsTrigger>
           <TabsTrigger value="advanced" className="gap-1.5">
-            <SlidersHorizontal className="h-4 w-4" /> Avançado
+            <SlidersHorizontal className="h-4 w-4" /> {t("tabs.advanced")}
           </TabsTrigger>
         </TabsList>
 
@@ -124,6 +123,7 @@ interface GenerateInput {
 }
 
 function useGenerate() {
+  const { t } = useTranslation("generate");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { refreshProfile } = useAuth();
@@ -133,7 +133,7 @@ function useGenerate() {
     const result = await runGenerate({ data: input });
     await refreshProfile();
     await queryClient.invalidateQueries({ queryKey: ["articles"] });
-    toast.success("Artigo gerado com sucesso!");
+    toast.success(t("success"));
     navigate({ to: "/library/$id", params: { id: result.article.id } });
   };
 }
@@ -158,10 +158,11 @@ function ImageStylePicker({
   value: ImageStyleKey;
   onChange: (v: ImageStyleKey) => void;
 }) {
+  const { t } = useTranslation("generate");
   const current = IMAGE_STYLES.find((s) => s.key === value) ?? IMAGE_STYLES[0];
   return (
     <div className="space-y-2">
-      <Label>Estilo das imagens</Label>
+      <Label>{t("shared.imageStyle")}</Label>
       <Select value={value} onValueChange={(v) => onChange(v as ImageStyleKey)}>
         <SelectTrigger>
           <SelectValue />
@@ -184,11 +185,13 @@ function SmartProfileHint() {
   return (
     <p className="rounded-md bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
       <Sparkles className="mr-1 inline h-3 w-3 text-primary" />
-      Este artigo usará automaticamente os dados do seu{" "}
-      <a href="/perfil-inteligente" className="font-medium text-primary underline">
-        Perfil Inteligente
-      </a>{" "}
-      (autor, tom, links internos, palavras banidas).
+      <Trans
+        i18nKey="shared.smartProfileHint"
+        ns="generate"
+        components={{
+          1: <a href="/perfil-inteligente" className="font-medium text-primary underline" />,
+        }}
+      />
     </p>
   );
 }
@@ -198,6 +201,7 @@ function SmartProfileHint() {
 /* -------------------------------------------------------------------------- */
 
 function SmartMode({ disabled }: { disabled: boolean }) {
+  const { t } = useTranslation("generate");
   const runAnalyze = useServerFn(analyzeTopic);
   const generate = useGenerate();
 
@@ -207,7 +211,6 @@ function SmartMode({ disabled }: { disabled: boolean }) {
   const [generating, setGenerating] = useState(false);
   const [analysis, setAnalysis] = useState<TopicAnalysis | null>(null);
 
-  // Editable fields seeded from the analysis.
   const [keyword, setKeyword] = useState("");
   const [title, setTitle] = useState("");
   const [tone, setTone] = useState("Profissional");
@@ -219,7 +222,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim().length < 2) {
-      toast.error("Informe um tema válido.");
+      toast.error(t("smart.invalidTopic"));
       return;
     }
     setAnalyzing(true);
@@ -231,7 +234,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
       setTone(TONES.includes(result.tone as (typeof TONES)[number]) ? result.tone : "Profissional");
       setWordCount(result.recommendedWordCount);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao analisar o tema.");
+      toast.error(err instanceof Error ? err.message : t("smart.errorAnalyze"));
     } finally {
       setAnalyzing(false);
     }
@@ -257,7 +260,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
         imageStyle,
       });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
+      toast.error(err instanceof Error ? err.message : t("smart.errorGenerate"));
     } finally {
       setGenerating(false);
     }
@@ -268,21 +271,19 @@ function SmartMode({ disabled }: { disabled: boolean }) {
       <Card className="p-6 shadow-soft">
         <form onSubmit={handleAnalyze} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="topic">Qual é o tema do seu artigo?</Label>
+            <Label htmlFor="topic">{t("smart.topicLabel")}</Label>
             <Input
               id="topic"
-              placeholder="Ex.: Cachorros, AdSense, SEO, Marketing Digital..."
+              placeholder={t("smart.topicPlaceholder")}
               value={topic}
               maxLength={120}
               onChange={(e) => setTopic(e.target.value)}
             />
-            <p className="text-xs text-muted-foreground">
-              Informe apenas o tema. A IA cuida das palavras-chave, estrutura e SEO para você.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("smart.topicHint")}</p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Idioma</Label>
+              <Label>{t("shared.language")}</Label>
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger>
                   <SelectValue />
@@ -309,11 +310,11 @@ function SmartMode({ disabled }: { disabled: boolean }) {
           >
             {analyzing ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Analisando tema...
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("smart.analyzing")}
               </>
             ) : (
               <>
-                <Brain className="h-4 w-4" /> Analisar tema
+                <Brain className="h-4 w-4" /> {t("smart.analyze")}
               </>
             )}
           </Button>
@@ -324,10 +325,10 @@ function SmartMode({ disabled }: { disabled: boolean }) {
         <Card className="space-y-5 p-6 shadow-soft">
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary" className="gap-1">
-              <TrendingUp className="h-3 w-3" /> Tráfego: {analysis.trafficPotential}
+              <TrendingUp className="h-3 w-3" /> {t("smart.traffic")}: {analysis.trafficPotential}
             </Badge>
             <Badge variant="secondary" className="gap-1">
-              <Target className="h-3 w-3" /> Concorrência: {analysis.competition}
+              <Target className="h-3 w-3" /> {t("smart.competition")}: {analysis.competition}
             </Badge>
             <Badge variant="secondary" className="gap-1">
               <Search className="h-3 w-3" /> {analysis.searchIntent}
@@ -336,7 +337,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="smart-keyword">Palavra-chave principal</Label>
+              <Label htmlFor="smart-keyword">{t("smart.mainKeyword")}</Label>
               <Input
                 id="smart-keyword"
                 value={keyword}
@@ -345,7 +346,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="smart-title">Título</Label>
+              <Label htmlFor="smart-title">{t("smart.title")}</Label>
               <Input
                 id="smart-title"
                 value={title}
@@ -354,22 +355,22 @@ function SmartMode({ disabled }: { disabled: boolean }) {
               />
             </div>
             <div className="space-y-2">
-              <Label>Tom de voz</Label>
+              <Label>{t("shared.tone")}</Label>
               <Select value={tone} onValueChange={setTone}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {TONES.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t}
+                  {TONES.map((tv) => (
+                    <SelectItem key={tv} value={tv}>
+                      {tv}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Tamanho recomendado</Label>
+              <Label>{t("smart.recommendedSize")}</Label>
               <Select value={String(wordCount)} onValueChange={(v) => setWordCount(Number(v))}>
                 <SelectTrigger>
                   <SelectValue />
@@ -379,7 +380,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
                     .sort((a, b) => a - b)
                     .map((w) => (
                       <SelectItem key={w} value={String(w)}>
-                        {w} palavras
+                        {w} {t("smart.wordsSuffix")}
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -387,11 +388,11 @@ function SmartMode({ disabled }: { disabled: boolean }) {
             </div>
           </div>
 
-          <InfoBlock icon={Users} title="Público-alvo">
+          <InfoBlock icon={Users} title={t("smart.audience")}>
             <p className="text-sm text-muted-foreground">{analysis.audience}</p>
           </InfoBlock>
 
-          <InfoBlock icon={TagsIcon} title="Palavras-chave secundárias">
+          <InfoBlock icon={TagsIcon} title={t("smart.secondaryKeywords")}>
             <div className="flex flex-wrap gap-1.5">
               {analysis.secondaryKeywords.map((k) => (
                 <Badge key={k} variant="outline">
@@ -401,7 +402,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
             </div>
           </InfoBlock>
 
-          <InfoBlock icon={ListOrdered} title="Estrutura sugerida">
+          <InfoBlock icon={ListOrdered} title={t("smart.structure")}>
             <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
               {analysis.structure.map((s) => (
                 <li key={s}>{s}</li>
@@ -410,7 +411,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
           </InfoBlock>
 
           {analysis.faq.length > 0 && (
-            <InfoBlock icon={HelpCircle} title="FAQ sugerido">
+            <InfoBlock icon={HelpCircle} title={t("smart.faq")}>
               <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
                 {analysis.faq.map((q) => (
                   <li key={q}>{q}</li>
@@ -421,7 +422,7 @@ function SmartMode({ disabled }: { disabled: boolean }) {
 
           {analysis.strategy && (
             <div className="rounded-lg bg-primary/5 p-4 text-sm">
-              <span className="font-semibold text-primary">Estratégia: </span>
+              <span className="font-semibold text-primary">{t("smart.strategy")} </span>
               {analysis.strategy}
             </div>
           )}
@@ -429,12 +430,12 @@ function SmartMode({ disabled }: { disabled: boolean }) {
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
             {analysis.category && (
               <span>
-                Categoria: <strong>{analysis.category}</strong>
+                {t("smart.category")} <strong>{analysis.category}</strong>
               </span>
             )}
             {analysis.slug && (
               <span>
-                · Slug: <strong>{analysis.slug}</strong>
+                · {t("smart.slug")} <strong>{analysis.slug}</strong>
               </span>
             )}
           </div>
@@ -448,11 +449,11 @@ function SmartMode({ disabled }: { disabled: boolean }) {
           >
             {generating ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Gerando artigo...
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("smart.generating")}
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" /> Gerar artigo com estas sugestões
+                <Sparkles className="h-4 w-4" /> {t("smart.generate")}
               </>
             )}
           </Button>
@@ -486,6 +487,7 @@ function InfoBlock({
 /* -------------------------------------------------------------------------- */
 
 function AutoMode({ disabled }: { disabled: boolean }) {
+  const { t } = useTranslation("generate");
   const runAnalyze = useServerFn(analyzeTopic);
   const generate = useGenerate();
 
@@ -500,14 +502,14 @@ function AutoMode({ disabled }: { disabled: boolean }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim().length < 2) {
-      toast.error("Informe um tema válido.");
+      toast.error(t("auto.invalidTopic"));
       return;
     }
     setLoading(true);
     try {
-      setStep("Pesquisando o tema e definindo a estratégia de SEO...");
+      setStep(t("auto.step1"));
       const a = await runAnalyze({ data: { topic: topic.trim(), language } });
-      setStep("Escrevendo o artigo completo...");
+      setStep(t("auto.step2"));
       await generate({
         keyword: a.mainKeyword,
         title: a.titleSuggestion,
@@ -524,7 +526,7 @@ function AutoMode({ disabled }: { disabled: boolean }) {
         imageStyle,
       });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
+      toast.error(err instanceof Error ? err.message : t("auto.errorGenerate"));
     } finally {
       setLoading(false);
       setStep("");
@@ -535,22 +537,24 @@ function AutoMode({ disabled }: { disabled: boolean }) {
     <Card className="p-6 shadow-soft">
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="rounded-lg bg-primary/5 p-4 text-sm text-muted-foreground">
-          <strong className="text-primary">Modo Automático:</strong> informe apenas o tema e a IA
-          pesquisa, define as palavras-chave, cria a estrutura SEO, FAQ, meta descrição, tags e
-          escreve o artigo completo — tudo sozinha.
+          <Trans
+            i18nKey="auto.banner"
+            ns="generate"
+            components={{ 0: <strong className="text-primary" /> }}
+          />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="auto-topic">Tema principal</Label>
+          <Label htmlFor="auto-topic">{t("auto.topicLabel")}</Label>
           <Input
             id="auto-topic"
-            placeholder="Ex.: Como ganhar dinheiro com Blogger"
+            placeholder={t("auto.topicPlaceholder")}
             value={topic}
             maxLength={120}
             onChange={(e) => setTopic(e.target.value)}
           />
         </div>
         <div className="space-y-2">
-          <Label>Idioma</Label>
+          <Label>{t("shared.language")}</Label>
           <Select value={language} onValueChange={setLanguage}>
             <SelectTrigger>
               <SelectValue />
@@ -580,11 +584,11 @@ function AutoMode({ disabled }: { disabled: boolean }) {
         >
           {loading ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Gerando...
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("auto.generating")}
             </>
           ) : (
             <>
-              <Zap className="h-4 w-4" /> Gerar Artigo Inteligente
+              <Zap className="h-4 w-4" /> {t("auto.cta")}
             </>
           )}
         </Button>
@@ -598,6 +602,7 @@ function AutoMode({ disabled }: { disabled: boolean }) {
 /* -------------------------------------------------------------------------- */
 
 function AdvancedMode({ disabled }: { disabled: boolean }) {
+  const { t } = useTranslation("generate");
   const generate = useGenerate();
 
   const [keyword, setKeyword] = useState("");
@@ -617,7 +622,7 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (keyword.trim().length < 2) {
-      toast.error("Informe uma palavra-chave válida.");
+      toast.error(t("advanced.invalidKeyword"));
       return;
     }
     setLoading(true);
@@ -639,7 +644,7 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
         imageStyle,
       });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
+      toast.error(err instanceof Error ? err.message : t("advanced.errorGenerate"));
     } finally {
       setLoading(false);
     }
@@ -649,10 +654,10 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
     <Card className="p-6 shadow-soft">
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="adv-keyword">Palavra-chave principal *</Label>
+          <Label htmlFor="adv-keyword">{t("advanced.keywordLabel")}</Label>
           <Input
             id="adv-keyword"
-            placeholder="Ex.: receitas veganas fáceis"
+            placeholder={t("advanced.keywordPlaceholder")}
             value={keyword}
             maxLength={120}
             onChange={(e) => setKeyword(e.target.value)}
@@ -660,10 +665,10 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="adv-secondary">Palavras-chave secundárias</Label>
+          <Label htmlFor="adv-secondary">{t("advanced.secondaryLabel")}</Label>
           <Textarea
             id="adv-secondary"
-            placeholder="Separadas por vírgula"
+            placeholder={t("advanced.secondaryPlaceholder")}
             value={secondary}
             onChange={(e) => setSecondary(e.target.value)}
             rows={2}
@@ -671,10 +676,10 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="adv-title">Título (opcional)</Label>
+          <Label htmlFor="adv-title">{t("advanced.titleLabel")}</Label>
           <Input
             id="adv-title"
-            placeholder="Deixe em branco para a IA criar"
+            placeholder={t("advanced.titlePlaceholder")}
             value={title}
             maxLength={160}
             onChange={(e) => setTitle(e.target.value)}
@@ -683,20 +688,20 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="adv-audience">Público-alvo</Label>
+            <Label htmlFor="adv-audience">{t("advanced.audienceLabel")}</Label>
             <Input
               id="adv-audience"
-              placeholder="Ex.: iniciantes em blogs"
+              placeholder={t("advanced.audiencePlaceholder")}
               value={audience}
               maxLength={200}
               onChange={(e) => setAudience(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="adv-objective">Objetivo do conteúdo</Label>
+            <Label htmlFor="adv-objective">{t("advanced.objectiveLabel")}</Label>
             <Input
               id="adv-objective"
-              placeholder="Ex.: gerar autoridade e tráfego"
+              placeholder={t("advanced.objectivePlaceholder")}
               value={objective}
               maxLength={200}
               onChange={(e) => setObjective(e.target.value)}
@@ -706,7 +711,7 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-2">
-            <Label>Palavras</Label>
+            <Label>{t("advanced.words")}</Label>
             <Select value={wordCount} onValueChange={setWordCount}>
               <SelectTrigger>
                 <SelectValue />
@@ -721,22 +726,22 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Tom</Label>
+            <Label>{t("advanced.tone")}</Label>
             <Select value={tone} onValueChange={setTone}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {TONES.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
+                {TONES.map((tv) => (
+                  <SelectItem key={tv} value={tv}>
+                    {tv}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Idioma</Label>
+            <Label>{t("advanced.language")}</Label>
             <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger>
                 <SelectValue />
@@ -751,7 +756,7 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>País</Label>
+            <Label>{t("advanced.country")}</Label>
             <Select value={country} onValueChange={setCountry}>
               <SelectTrigger>
                 <SelectValue />
@@ -780,11 +785,11 @@ function AdvancedMode({ disabled }: { disabled: boolean }) {
         >
           {loading ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Gerando artigo...
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("advanced.generating")}
             </>
           ) : (
             <>
-              <Sparkles className="h-4 w-4" /> Gerar artigo
+              <Sparkles className="h-4 w-4" /> {t("advanced.cta")}
             </>
           )}
         </Button>
