@@ -128,33 +128,34 @@ function SmartProfilePage() {
         <p className="text-muted-foreground">{t("smartProfile.subtitle")}</p>
       </div>
 
-      <Tabs defaultValue="personal" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
-          <TabsTrigger value="personal" className="gap-1.5">
+      <Tabs defaultValue="personal" className="w-full space-y-4">
+        <TabsList className="grid h-auto w-full grid-cols-3 gap-1 md:grid-cols-6">
+          <TabsTrigger value="personal" className="h-9 gap-1.5">
             <User className="h-4 w-4" />
             <span className="hidden md:inline">{t("smartProfile.sections.personal")}</span>
           </TabsTrigger>
-          <TabsTrigger value="contacts" className="gap-1.5">
+          <TabsTrigger value="contacts" className="h-9 gap-1.5">
             <Contact className="h-4 w-4" />
             <span className="hidden md:inline">{t("smartProfile.sections.contacts")}</span>
           </TabsTrigger>
-          <TabsTrigger value="social" className="gap-1.5">
+          <TabsTrigger value="social" className="h-9 gap-1.5">
             <Share2 className="h-4 w-4" />
             <span className="hidden md:inline">{t("smartProfile.sections.social")}</span>
           </TabsTrigger>
-          <TabsTrigger value="blogger" className="gap-1.5">
+          <TabsTrigger value="blogger" className="h-9 gap-1.5">
             <Globe className="h-4 w-4" />
             <span className="hidden md:inline">{t("smartProfile.sections.blogger")}</span>
           </TabsTrigger>
-          <TabsTrigger value="seo-ai" className="gap-1.5">
+          <TabsTrigger value="seo-ai" className="h-9 gap-1.5">
             <Search className="h-4 w-4" />
             <span className="hidden md:inline">SEO / IA</span>
           </TabsTrigger>
-          <TabsTrigger value="signature" className="gap-1.5">
+          <TabsTrigger value="signature" className="h-9 gap-1.5">
             <PenLine className="h-4 w-4" />
             <span className="hidden md:inline">{t("smartProfile.sections.signature")}</span>
           </TabsTrigger>
         </TabsList>
+
 
         {/* PERSONAL */}
         <TabsContent value="personal">
