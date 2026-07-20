@@ -131,7 +131,9 @@ function PricingPage() {
             variant="outline"
             size="sm"
             className="mt-3"
-            onClick={() => setCheckout({ planId: "teste", name: t("testPlanName"), price: "R$ 1,00" })}
+            onClick={() =>
+              setCheckout({ planId: "teste", name: t("testPlanName"), price: "R$ 1,00" })
+            }
           >
             {t("testCta")}
           </Button>

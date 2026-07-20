@@ -66,7 +66,8 @@ function AdminFeedbackPage() {
       toast.success(t("feedback.sent"));
       queryClient.invalidateQueries({ queryKey: ["feedback", "admin"] });
     },
-    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : t("feedback.genericError")),
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : t("feedback.genericError")),
   });
 
   const removeMut = useMutation({
