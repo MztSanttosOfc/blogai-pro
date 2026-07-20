@@ -1,4 +1,73 @@
 {
-  "title": "Gerador de Artigos",
-  "subtitle": "Crie artigos otimizados com IA em minutos."
+  "title": "Assistente de Conteúdo com IA",
+  "subtitle": "Da ideia ao artigo pronto para ranquear — escolha o nível de controle que preferir.",
+  "noCredits": "Você não tem créditos suficientes. Faça upgrade do seu plano para continuar gerando.",
+  "success": "Artigo gerado com sucesso!",
+  "tabs": {
+    "smart": "Inteligente",
+    "auto": "Automático",
+    "advanced": "Avançado"
+  },
+  "shared": {
+    "imageStyle": "Estilo das imagens",
+    "smartProfileHint": "Este artigo usará automaticamente os dados do seu <1>Perfil Inteligente</1> (autor, tom, links internos, palavras banidas).",
+    "language": "Idioma",
+    "tone": "Tom de voz"
+  },
+  "smart": {
+    "topicLabel": "Qual é o tema do seu artigo?",
+    "topicPlaceholder": "Ex.: Cachorros, AdSense, SEO, Marketing Digital...",
+    "topicHint": "Informe apenas o tema. A IA cuida das palavras-chave, estrutura e SEO para você.",
+    "analyzing": "Analisando tema...",
+    "analyze": "Analisar tema",
+    "invalidTopic": "Informe um tema válido.",
+    "errorAnalyze": "Erro ao analisar o tema.",
+    "errorGenerate": "Erro ao gerar o artigo.",
+    "traffic": "Tráfego",
+    "competition": "Concorrência",
+    "mainKeyword": "Palavra-chave principal",
+    "title": "Título",
+    "recommendedSize": "Tamanho recomendado",
+    "wordsSuffix": "palavras",
+    "audience": "Público-alvo",
+    "secondaryKeywords": "Palavras-chave secundárias",
+    "structure": "Estrutura sugerida",
+    "faq": "FAQ sugerido",
+    "strategy": "Estratégia:",
+    "category": "Categoria:",
+    "slug": "Slug:",
+    "generating": "Gerando artigo...",
+    "generate": "Gerar artigo com estas sugestões"
+  },
+  "auto": {
+    "banner": "<0>Modo Automático:</0> informe apenas o tema e a IA pesquisa, define as palavras-chave, cria a estrutura SEO, FAQ, meta descrição, tags e escreve o artigo completo — tudo sozinha.",
+    "topicLabel": "Tema principal",
+    "topicPlaceholder": "Ex.: Como ganhar dinheiro com Blogger",
+    "step1": "Pesquisando o tema e definindo a estratégia de SEO...",
+    "step2": "Escrevendo o artigo completo...",
+    "invalidTopic": "Informe um tema válido.",
+    "errorGenerate": "Erro ao gerar o artigo.",
+    "generating": "Gerando...",
+    "cta": "Gerar Artigo Inteligente"
+  },
+  "advanced": {
+    "keywordLabel": "Palavra-chave principal *",
+    "keywordPlaceholder": "Ex.: receitas veganas fáceis",
+    "secondaryLabel": "Palavras-chave secundárias",
+    "secondaryPlaceholder": "Separadas por vírgula",
+    "titleLabel": "Título (opcional)",
+    "titlePlaceholder": "Deixe em branco para a IA criar",
+    "audienceLabel": "Público-alvo",
+    "audiencePlaceholder": "Ex.: iniciantes em blogs",
+    "objectiveLabel": "Objetivo do conteúdo",
+    "objectivePlaceholder": "Ex.: gerar autoridade e tráfego",
+    "words": "Palavras",
+    "tone": "Tom",
+    "language": "Idioma",
+    "country": "País",
+    "invalidKeyword": "Informe uma palavra-chave válida.",
+    "errorGenerate": "Erro ao gerar o artigo.",
+    "generating": "Gerando artigo...",
+    "cta": "Gerar artigo"
+  }
 }
