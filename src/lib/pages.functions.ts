@@ -62,14 +62,28 @@ function settingsBlock(s: SiteSettings): string {
   return lines.join("\n");
 }
 
-function promptForType(type: SitePageType, s: SiteSettings): string {
+function promptForType(
+  type: SitePageType,
+  s: SiteSettings,
+  smartCtx: string,
+  customLinks: { label: string; url: string }[],
+): string {
+  const linksBlock = customLinks.length
+    ? `\n[Links personalizados do autor — inclua-os naturalmente quando fizer sentido ` +
+      `(rodapé, seção "saiba mais", CTA). Formate em Markdown [texto](URL):\n` +
+      customLinks.map((l) => `  - ${l.label}: ${l.url}`).join("\n") +
+      `\nNunca invente URLs; use apenas as listadas.]\n`
+    : "";
   const base =
     `Você é um redator jurídico e de conteúdo especializado em blogs que buscam aprovação no Google AdSense. ` +
     `Escreva em português do Brasil, com tom profissional, claro e confiável. ` +
     `Use Markdown: títulos com ## e ###, parágrafos e listas quando fizer sentido. ` +
     `NÃO inclua o título principal da página (ele já existe). NÃO use blocos de código. ` +
     `Use a data atual quando precisar citar "última atualização". ` +
-    `Dados do site para personalização:\n${settingsBlock(s)}\n\n`;
+    `Dados do site para personalização:\n${settingsBlock(s)}\n` +
+    smartCtx +
+    linksBlock +
+    `\n`;
 
   switch (type) {
     case "sobre":
