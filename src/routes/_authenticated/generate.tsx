@@ -35,6 +35,9 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { generateArticle, analyzeTopic, type TopicAnalysis } from "@/lib/articles.functions";
 import { TONES, LANGUAGES, WORD_COUNTS } from "@/lib/constants";
+import { IMAGE_STYLES, DEFAULT_IMAGE_STYLE, type ImageStyleKey } from "@/lib/image-styles";
+import { getSmartProfile } from "@/lib/smart-profile.functions";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/generate")({
   component: GeneratePage,
