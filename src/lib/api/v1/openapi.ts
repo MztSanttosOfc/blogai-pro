@@ -78,9 +78,9 @@ export function buildOpenApiDocument(origin: string) {
     openapi: "3.1.0",
     info: {
       title: "BlogAI Pro — API Oficial",
-      version: "1.0.0",
+      version: "1.1.0",
       description:
-        "API REST oficial do BlogAI Pro. Base para Plugin do WordPress, Aplicativo Web, Android (Capacitor), futura versão iOS e integrações externas.",
+        "API REST oficial do BlogAI Pro (v1). Base para o Plugin Oficial do WordPress, Aplicativo Web, Android (Capacitor), futura versão iOS e integrações externas. Autenticação via JWT (Supabase) ou API Key (bap_live_...).",
       contact: { name: "BlogAI Pro", url: "https://monzart.com.br" },
     },
     servers: [{ url: `${origin}/api/v1`, description: "API v1" }],
@@ -344,6 +344,63 @@ export function buildOpenApiDocument(origin: string) {
         get: {
           summary: "Status do Google Search Console",
           responses: { "200": envelopeResponse("Status"), ...commonErrors },
+        },
+      },
+      "/feedback": {
+        get: {
+          summary: "Lista feedbacks do usuário",
+          parameters: paginationParams,
+          responses: { "200": envelopeResponse("Feedbacks"), ...commonErrors },
+        },
+        post: {
+          summary: "Envia um novo feedback",
+          parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["rating"],
+                  properties: {
+                    rating: { type: "integer", minimum: 1, maximum: 5 },
+                    comment: { type: "string", maxLength: 2000 },
+                    suggestion: { type: "string", maxLength: 2000 },
+                    issue: { type: "string", maxLength: 2000 },
+                  },
+                },
+              },
+            },
+          },
+          responses: { "201": envelopeResponse("Feedback criado"), ...commonErrors },
+        },
+      },
+      "/smart-profile": {
+        get: {
+          summary: "Retorna o Perfil Inteligente Global",
+          responses: { "200": envelopeResponse("Perfil Inteligente"), ...commonErrors },
+        },
+        put: {
+          summary: "Atualiza o Perfil Inteligente Global",
+          parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    niche: { type: "string", maxLength: 160 },
+                    audience: { type: "string", maxLength: 500 },
+                    tone: { type: "string", maxLength: 120 },
+                    keywords: { type: "array", items: { type: "string" } },
+                    default_language: { type: "string", enum: ["pt-BR", "en-US"] },
+                  },
+                },
+              },
+            },
+          },
+          responses: { "200": envelopeResponse("Perfil atualizado"), ...commonErrors },
         },
       },
     },
