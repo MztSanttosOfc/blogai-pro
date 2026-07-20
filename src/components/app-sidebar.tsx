@@ -19,6 +19,7 @@ import {
   BarChart3,
   LifeBuoy,
   UserCircle2,
+  Sparkles as SparklesIcon,
 } from "lucide-react";
 
 
@@ -39,6 +40,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { PLAN_LABELS } from "@/lib/constants";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -54,6 +56,7 @@ const items = [
   { title: "Financeiro", url: "/financeiro", icon: Wallet },
   { title: "Atualizações Futuras", url: "/atualizacoes", icon: Rocket },
   { title: "Central de Ajuda", url: "/ajuda", icon: LifeBuoy },
+  { title: "Perfil Inteligente", url: "/perfil-inteligente", icon: SparklesIcon },
   { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
 ];
 

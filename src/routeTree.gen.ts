@@ -35,6 +35,7 @@ import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
+import { Route as ApiV1SmartProfileIndexRouteImport } from './routes/api/v1/smart-profile/index'
 import { Route as ApiV1SchedulingIndexRouteImport } from './routes/api/v1/scheduling/index'
 import { Route as ApiV1ProfileIndexRouteImport } from './routes/api/v1/profile/index'
 import { Route as ApiV1PlansIndexRouteImport } from './routes/api/v1/plans/index'
@@ -192,6 +193,11 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiV1SmartProfileIndexRoute = ApiV1SmartProfileIndexRouteImport.update({
+  id: '/api/v1/smart-profile/',
+  path: '/api/v1/smart-profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1SchedulingIndexRoute = ApiV1SchedulingIndexRouteImport.update({
   id: '/api/v1/scheduling/',
   path: '/api/v1/scheduling/',
@@ -343,6 +349,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
+  '/api/v1/smart-profile/': typeof ApiV1SmartProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -390,6 +397,7 @@ export interface FileRoutesByTo {
   '/api/v1/plans': typeof ApiV1PlansIndexRoute
   '/api/v1/profile': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling': typeof ApiV1SchedulingIndexRoute
+  '/api/v1/smart-profile': typeof ApiV1SmartProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -439,6 +447,7 @@ export interface FileRoutesById {
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
+  '/api/v1/smart-profile/': typeof ApiV1SmartProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -488,6 +497,7 @@ export interface FileRouteTypes {
     | '/api/v1/plans/'
     | '/api/v1/profile/'
     | '/api/v1/scheduling/'
+    | '/api/v1/smart-profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -535,6 +545,7 @@ export interface FileRouteTypes {
     | '/api/v1/plans'
     | '/api/v1/profile'
     | '/api/v1/scheduling'
+    | '/api/v1/smart-profile'
   id:
     | '__root__'
     | '/'
@@ -583,6 +594,7 @@ export interface FileRouteTypes {
     | '/api/v1/plans/'
     | '/api/v1/profile/'
     | '/api/v1/scheduling/'
+    | '/api/v1/smart-profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -613,6 +625,7 @@ export interface RootRouteChildren {
   ApiV1PlansIndexRoute: typeof ApiV1PlansIndexRoute
   ApiV1ProfileIndexRoute: typeof ApiV1ProfileIndexRoute
   ApiV1SchedulingIndexRoute: typeof ApiV1SchedulingIndexRoute
+  ApiV1SmartProfileIndexRoute: typeof ApiV1SmartProfileIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -798,6 +811,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blogger/callback'
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/v1/smart-profile/': {
+      id: '/api/v1/smart-profile/'
+      path: '/api/v1/smart-profile'
+      fullPath: '/api/v1/smart-profile/'
+      preLoaderRoute: typeof ApiV1SmartProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/v1/scheduling/': {
       id: '/api/v1/scheduling/'
@@ -1027,6 +1047,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1PlansIndexRoute: ApiV1PlansIndexRoute,
   ApiV1ProfileIndexRoute: ApiV1ProfileIndexRoute,
   ApiV1SchedulingIndexRoute: ApiV1SchedulingIndexRoute,
+  ApiV1SmartProfileIndexRoute: ApiV1SmartProfileIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
