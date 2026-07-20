@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Info } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Check, Info, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +13,7 @@ import { useCurrency } from "@/hooks/use-currency";
 import { PLANS } from "@/lib/constants";
 import { PixCheckoutDialog } from "@/components/PixCheckoutDialog";
 import { CurrencySwitcher } from "@/components/CurrencySwitcher";
+import { createStripeCheckout } from "@/lib/payments-stripe.functions";
 
 export const Route = createFileRoute("/_authenticated/pricing")({
   head: () => ({
@@ -24,11 +27,24 @@ function PricingPage() {
   const { profile } = useAuth();
   const { currency } = useCurrency();
   const isUSD = currency === "USD";
+  const startStripe = useServerFn(createStripeCheckout);
+  const [stripeLoading, setStripeLoading] = useState<string | null>(null);
   const [checkout, setCheckout] = useState<{
     planId: "pro" | "premium" | "teste";
     name: string;
     price: string;
   } | null>(null);
+
+  const handleStripe = async (planId: "pro" | "premium" | "teste") => {
+    setStripeLoading(planId);
+    try {
+      const res = await startStripe({ data: { planId } });
+      window.location.href = res.url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao iniciar checkout.");
+      setStripeLoading(null);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
@@ -42,12 +58,13 @@ function PricingPage() {
 
       {isUSD && (
         <div
-          className="flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-800 dark:text-amber-200"
+          className="flex items-start gap-2 rounded-xl border border-primary/30 bg-primary/5 p-4 text-sm text-foreground"
           role="status"
         >
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
-            <strong>{t("usdSoonBoldPrefix")}</strong> {t("usdNotice")}
+            International payments are processed securely by Stripe in USD.
+            Brazilian customers continue paying in BRL via Pix.
           </p>
         </div>
       )}
@@ -56,7 +73,11 @@ function PricingPage() {
         {PLANS.map((plan) => {
           const current = profile?.plan === plan.id;
           const isPaid = plan.id === "pro" || plan.id === "premium";
-          const canCheckout = isPaid && !isUSD;
+          const usdLabel =
+            plan.id === "pro" ? "$9.90" : plan.id === "premium" ? "$24.90" : "$0";
+          const usdPeriod = "/mo";
+          const priceDisplay = isUSD ? usdLabel : plan.price;
+          const periodDisplay = isUSD ? usdPeriod : plan.period;
           return (
             <Card
               key={plan.id}
@@ -77,16 +98,8 @@ function PricingPage() {
                 <h3 className="text-lg font-bold">{plan.name}</h3>
               </div>
               <div className="mt-4 flex items-end gap-1">
-                {isUSD && isPaid ? (
-                  <span className="font-display text-xl font-semibold text-muted-foreground">
-                    {t("comingSoon")}
-                  </span>
-                ) : (
-                  <>
-                    <span className="font-display text-3xl font-bold">{plan.price}</span>
-                    <span className="mb-1 text-sm text-muted-foreground">{plan.period}</span>
-                  </>
-                )}
+                <span className="font-display text-3xl font-bold">{priceDisplay}</span>
+                <span className="mb-1 text-sm text-muted-foreground">{periodDisplay}</span>
               </div>
               <p className="mt-1 text-sm font-medium text-primary">{plan.credits}</p>
               <ul className="mt-5 flex-1 space-y-3">
@@ -100,28 +113,38 @@ function PricingPage() {
               <Button
                 variant={plan.highlight ? "hero" : "outline"}
                 className="mt-6 w-full"
-                disabled={current || !canCheckout}
-                onClick={() =>
-                  canCheckout &&
-                  setCheckout({
-                    planId: plan.id as "pro" | "premium",
-                    name: plan.name,
-                    price: `${plan.price}${plan.period}`,
-                  })
-                }
+                disabled={current || !isPaid || stripeLoading === plan.id}
+                onClick={() => {
+                  if (current || !isPaid) return;
+                  const id = plan.id as "pro" | "premium";
+                  if (isUSD) {
+                    void handleStripe(id);
+                  } else {
+                    setCheckout({
+                      planId: id,
+                      name: plan.name,
+                      price: `${plan.price}${plan.period}`,
+                    });
+                  }
+                }}
               >
-                {current
-                  ? t("currentPlan")
-                  : isUSD && isPaid
-                    ? t("usdSoon")
-                    : isPaid
-                      ? t("subscribe")
-                      : t("freePlan")}
+                {current ? (
+                  t("currentPlan")
+                ) : stripeLoading === plan.id ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Redirecting…
+                  </>
+                ) : isPaid ? (
+                  t("subscribe")
+                ) : (
+                  t("freePlan")
+                )}
               </Button>
             </Card>
           );
         })}
       </div>
+
 
       {!isUSD && (
         <div className="rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30 p-4 text-center">

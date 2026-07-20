@@ -78,9 +78,9 @@ export function buildOpenApiDocument(origin: string) {
     openapi: "3.1.0",
     info: {
       title: "BlogAI Pro — API Oficial",
-      version: "1.1.0",
+      version: "1.2.0",
       description:
-        "API REST oficial do BlogAI Pro (v1). Base para o Plugin Oficial do WordPress, Aplicativo Web, Android (Capacitor), futura versão iOS e integrações externas. Autenticação via JWT (Supabase) ou API Key (bap_live_...).",
+        "API REST oficial do BlogAI Pro (v1). Base para o Plugin Oficial do WordPress, Aplicativo Web, Android (Capacitor), futura versão iOS e integrações externas. Autenticação via JWT (Supabase) ou API Key (bap_live_...). Pagamentos BRL via SyncPay (Pix) e USD via Stripe Checkout.",
       contact: { name: "BlogAI Pro", url: "https://monzart.com.br" },
     },
     servers: [{ url: `${origin}/api/v1`, description: "API v1" }],
@@ -332,6 +332,37 @@ export function buildOpenApiDocument(origin: string) {
         get: {
           summary: "Assinatura atual",
           responses: { "200": envelopeResponse("Assinatura"), ...commonErrors },
+        },
+      },
+      "/payments/checkout": {
+        post: {
+          summary:
+            "Cria um checkout usando o gateway correto (BRL → SyncPay/Pix, USD → Stripe).",
+          parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["plan_id", "currency"],
+                  properties: {
+                    plan_id: { type: "string", enum: ["pro", "premium", "teste"] },
+                    currency: { type: "string", enum: ["BRL", "USD"] },
+                    recurring: { type: "boolean" },
+                    success_url: { type: "string", format: "uri" },
+                    cancel_url: { type: "string", format: "uri" },
+                    cpf: { type: "string", description: "Obrigatório para BRL." },
+                    phone: { type: "string", description: "Obrigatório para BRL." },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            "200": envelopeResponse("Checkout criado (URL Stripe ou Pix)"),
+            ...commonErrors,
+          },
         },
       },
       "/blogger/status": {
