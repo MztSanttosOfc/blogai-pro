@@ -1,0 +1,32 @@
+{
+  "title": "Refer and Earn",
+  "subtitle": "Share your link. Earn 30 credits for each qualified new user.",
+  "your_link": "Your unique link",
+  "your_code": "Your code",
+  "copy": "Copy link",
+  "copied": "Link copied!",
+  "share": "Share",
+  "share_text": "Try BlogAI Pro — AI blog generation. Use my link:",
+  "qr_code": "QR Code",
+  "stats": {
+    "total": "Invites",
+    "rewarded": "Rewarded",
+    "pending": "Pending",
+    "credits": "Credits earned"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No referrals yet. Share your link!",
+    "status": {
+      "pending": "Pending",
+      "qualified": "Qualified",
+      "rewarded": "Rewarded"
+    }
+  },
+  "how_it_works": {
+    "title": "How it works",
+    "step1": "Share your unique link or QR code.",
+    "step2": "A new user signs up through your link.",
+    "step3": "When they generate their first article, you get 30 credits automatically."
+  }
+}

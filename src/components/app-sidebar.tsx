@@ -59,6 +59,8 @@ const items = [
   { title: "Perfil Inteligente", url: "/perfil-inteligente", icon: SparklesIcon },
   { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
   { title: "Central de Feedback", url: "/feedback", icon: MessageSquare },
+  { title: "Minha Atividade", url: "/minha-atividade", icon: BarChart3 },
+  { title: "Indique e Ganhe", url: "/convites", icon: Gift },
 ];
 
 const premiumItems = [
@@ -150,13 +152,20 @@ export function AppSidebar() {
                     asChild
                     isActive={currentPath === "/admin" || currentPath.startsWith("/admin/")}
                   >
-                    <Link
-                      to="/admin"
-                      className="flex items-center gap-3"
-                      onClick={closeMobileSidebar}
-                    >
+                    <Link to="/admin" className="flex items-center gap-3" onClick={closeMobileSidebar}>
                       <Shield className="h-4 w-4 text-primary" />
                       <span>Administração</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={currentPath === "/analytics"}
+                  >
+                    <Link to="/analytics" className="flex items-center gap-3" onClick={closeMobileSidebar}>
+                      <BarChart3 className="h-4 w-4 text-primary" />
+                      <span>Analytics</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

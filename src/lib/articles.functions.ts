@@ -626,5 +626,23 @@ export const generateArticle = createServerFn({ method: "POST" })
       }
     }
 
+    // Timeline log + auto-qualify referral (fire-and-forget).
+    try {
+      await supabase.rpc("log_user_activity" as never, {
+        _user_id: userId,
+        _category: "content",
+        _event: "article.created",
+        _description: `Artigo criado: ${parsed.title || data.keyword}`,
+        _metadata: { article_id: inserted.id, keyword: data.keyword },
+      } as never);
+    } catch {
+      /* ignore */
+    }
+    try {
+      await supabase.rpc("invite_qualify_and_reward" as never, { _invitee_id: userId } as never);
+    } catch {
+      /* ignore */
+    }
+
     return { article: finalArticle };
   });

@@ -1,0 +1,40 @@
+{
+  "title": "Analytics",
+  "subtitle": "Global usage dashboard for BlogAI Pro (admins only).",
+  "sections": {
+    "content": "Content",
+    "users": "Users",
+    "credits": "Credits",
+    "usage": "Usage",
+    "ai": "AI & Invites"
+  },
+  "cards": {
+    "articles_total": "Articles generated",
+    "articles_published": "Articles published",
+    "articles_scheduled": "Articles scheduled",
+    "pages_total": "Pages generated",
+    "pages_published": "Pages published",
+    "users_total": "Total users",
+    "users_new_7d": "New (7 days)",
+    "users_new_30d": "New (30 days)",
+    "users_active_7d": "Active (7 days)",
+    "users_active_30d": "Active (30 days)",
+    "credits_granted": "Credits granted",
+    "credits_purchased": "Credits purchased",
+    "credits_consumed": "Credits consumed",
+    "credits_avg": "Average per user",
+    "articles_per_user": "Avg articles per user",
+    "pages_per_user": "Avg pages per user",
+    "events_24h": "Events (24h)",
+    "events_7d": "Events (7 days)",
+    "invites_total": "Invites redeemed",
+    "invites_rewarded": "Invites rewarded",
+    "invites_credits": "Credits distributed via invites"
+  },
+  "charts": {
+    "by_plan": "Plan distribution",
+    "top_categories": "Top categories"
+  },
+  "empty": "No data available.",
+  "forbidden": "Admins only."
+}
