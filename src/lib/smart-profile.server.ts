@@ -112,7 +112,7 @@ export async function loadSmartProfile(
   supabase: Client,
   userId: string,
 ): Promise<SmartProfileFull> {
-  const { data, error } = await (supabase.from("user_smart_profile") as any)
+  const { data, error } = await (supabase.from("user_smart_profile") as unknown as Client["from"] extends never ? never : ReturnType<Client["from"]>)
     .select("*")
     .eq("user_id", userId)
     .maybeSingle();
