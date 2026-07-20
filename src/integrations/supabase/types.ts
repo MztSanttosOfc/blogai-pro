@@ -448,6 +448,63 @@ export type Database = {
         }
         Relationships: []
       }
+      invite_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      invite_redemptions: {
+        Row: {
+          code: string
+          created_at: string
+          credits_awarded: number
+          id: string
+          invitee_id: string
+          inviter_id: string
+          qualified_at: string | null
+          rewarded_at: string | null
+          status: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          invitee_id: string
+          inviter_id: string
+          qualified_at?: string | null
+          rewarded_at?: string | null
+          status?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          invitee_id?: string
+          inviter_id?: string
+          qualified_at?: string | null
+          rewarded_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount_cents: number
@@ -1021,6 +1078,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activity_logs: {
+        Row: {
+          category: Database["public"]["Enums"]["activity_category"]
+          created_at: string
+          description: string | null
+          event: string
+          id: string
+          metadata: Json
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["activity_category"]
+          created_at?: string
+          description?: string | null
+          event: string
+          id?: string
+          metadata?: Json
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["activity_category"]
+          created_at?: string
+          description?: string | null
+          event?: string
+          id?: string
+          metadata?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_feedback: {
         Row: {
           admin_reply: string | null
@@ -1134,6 +1221,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _generate_invite_code: { Args: never; Returns: string }
       activate_payment: {
         Args: { p_external_id?: string; p_payment_id: string }
         Returns: Json
@@ -1191,10 +1279,12 @@ export type Database = {
         Returns: Json
       }
       admin_stats: { Args: never; Returns: Json }
+      analytics_user_overview: { Args: never; Returns: Json }
       api_count_recent_requests: {
         Args: { p_api_key_id: string; p_since: string; p_user_id: string }
         Returns: number
       }
+      ensure_invite_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1202,7 +1292,22 @@ export type Database = {
         }
         Returns: boolean
       }
+      invite_qualify_and_reward: {
+        Args: { _invitee_id: string }
+        Returns: Json
+      }
+      invite_redeem: { Args: { _code: string }; Returns: Json }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      log_user_activity: {
+        Args: {
+          _category: Database["public"]["Enums"]["activity_category"]
+          _description?: string
+          _event: string
+          _metadata?: Json
+          _user_id: string
+        }
+        Returns: string
+      }
       reward_admin_list_missions: { Args: never; Returns: Json }
       reward_admin_set_status: {
         Args: { p_id: string; p_status: string }
@@ -1230,6 +1335,17 @@ export type Database = {
       reward_upsert_mission: { Args: { p: Json }; Returns: Json }
     }
     Enums: {
+      activity_category:
+        | "content"
+        | "publish"
+        | "image"
+        | "payment"
+        | "plan"
+        | "credits"
+        | "auth"
+        | "feedback"
+        | "profile"
+        | "invite"
       app_role: "owner" | "admin" | "user"
       article_status: "draft" | "published"
       credit_txn_type:
@@ -1368,6 +1484,18 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      activity_category: [
+        "content",
+        "publish",
+        "image",
+        "payment",
+        "plan",
+        "credits",
+        "auth",
+        "feedback",
+        "profile",
+        "invite",
+      ],
       app_role: ["owner", "admin", "user"],
       article_status: ["draft", "published"],
       credit_txn_type: [
