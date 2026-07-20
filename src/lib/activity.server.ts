@@ -37,7 +37,7 @@ export function logUserActivity(
   category: ActivityCategory,
   event: string,
   description?: string,
-  metadata?: Record<string, unknown>,
+  metadata?: ActivityMetadata,
 ): void {
   try {
     void (supabase.rpc as unknown as (name: string, args: Record<string, unknown>) => Promise<unknown>)(
