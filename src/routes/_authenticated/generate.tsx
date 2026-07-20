@@ -493,6 +493,9 @@ function AutoMode({ disabled }: { disabled: boolean }) {
   const [language, setLanguage] = useState<string>("Português");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState("");
+  const defaultImageStyle = useDefaultImageStyle();
+  const [imageStyle, setImageStyle] = useState<ImageStyleKey>(defaultImageStyle);
+  useEffect(() => setImageStyle(defaultImageStyle), [defaultImageStyle]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -518,6 +521,7 @@ function AutoMode({ disabled }: { disabled: boolean }) {
         slug: a.slug,
         metaHint: a.metaDescription,
         structure: a.structure,
+        imageStyle,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao gerar o artigo.");
