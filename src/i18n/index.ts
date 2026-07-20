@@ -8,6 +8,23 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import ptBrCommon from "./locales/pt-BR/common.json";
 import enUsCommon from "./locales/en-US/common.json";
+import ptBrDashboard from "./locales/pt-BR/dashboard.json";
+import enUsDashboard from "./locales/en-US/dashboard.json";
+import ptBrGenerate from "./locales/pt-BR/generate.json";
+import enUsGenerate from "./locales/en-US/generate.json";
+import ptBrPages from "./locales/pt-BR/pages.json";
+import enUsPages from "./locales/en-US/pages.json";
+import ptBrLibrary from "./locales/pt-BR/library.json";
+import enUsLibrary from "./locales/en-US/library.json";
+import ptBrPricing from "./locales/pt-BR/pricing.json";
+import enUsPricing from "./locales/en-US/pricing.json";
+import ptBrSettings from "./locales/pt-BR/settings.json";
+import enUsSettings from "./locales/en-US/settings.json";
+import ptBrCreator from "./locales/pt-BR/creator.json";
+import enUsCreator from "./locales/en-US/creator.json";
+import ptBrAdmin from "./locales/pt-BR/admin.json";
+import enUsAdmin from "./locales/en-US/admin.json";
+
 
 export type SupportedLanguage = "pt-BR" | "en-US";
 
@@ -30,13 +47,34 @@ if (!i18n.isInitialized) {
     .use(initReactI18next)
     .init({
       resources: {
-        "pt-BR": { common: ptBrCommon },
-        "en-US": { common: enUsCommon },
+        "pt-BR": {
+          common: ptBrCommon,
+          dashboard: ptBrDashboard,
+          generate: ptBrGenerate,
+          pages: ptBrPages,
+          library: ptBrLibrary,
+          pricing: ptBrPricing,
+          settings: ptBrSettings,
+          creator: ptBrCreator,
+          admin: ptBrAdmin,
+        },
+        "en-US": {
+          common: enUsCommon,
+          dashboard: enUsDashboard,
+          generate: enUsGenerate,
+          pages: enUsPages,
+          library: enUsLibrary,
+          pricing: enUsPricing,
+          settings: enUsSettings,
+          creator: enUsCreator,
+          admin: enUsAdmin,
+        },
       },
       fallbackLng: DEFAULT_LANGUAGE,
       supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
-      ns: ["common"],
+      ns: ["common", "dashboard", "generate", "pages", "library", "pricing", "settings", "creator", "admin"],
       defaultNS: "common",
+
       interpolation: { escapeValue: false },
       detection: {
         order: ["localStorage", "navigator", "htmlTag"],
