@@ -1,1360 +1,1379 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5";
-  };
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       admin_audit_logs: {
         Row: {
-          action: string;
-          admin_email: string | null;
-          admin_id: string | null;
-          created_at: string;
-          details: string | null;
-          id: string;
-          new_value: Json | null;
-          old_value: Json | null;
-          target_email: string | null;
-          target_user_id: string | null;
-        };
+          action: string
+          admin_email: string | null
+          admin_id: string | null
+          created_at: string
+          details: string | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          target_email: string | null
+          target_user_id: string | null
+        }
         Insert: {
-          action: string;
-          admin_email?: string | null;
-          admin_id?: string | null;
-          created_at?: string;
-          details?: string | null;
-          id?: string;
-          new_value?: Json | null;
-          old_value?: Json | null;
-          target_email?: string | null;
-          target_user_id?: string | null;
-        };
+          action: string
+          admin_email?: string | null
+          admin_id?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          target_email?: string | null
+          target_user_id?: string | null
+        }
         Update: {
-          action?: string;
-          admin_email?: string | null;
-          admin_id?: string | null;
-          created_at?: string;
-          details?: string | null;
-          id?: string;
-          new_value?: Json | null;
-          old_value?: Json | null;
-          target_email?: string | null;
-          target_user_id?: string | null;
-        };
-        Relationships: [];
-      };
+          action?: string
+          admin_email?: string | null
+          admin_id?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          target_email?: string | null
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
       api_idempotency_keys: {
         Row: {
-          created_at: string;
-          expires_at: string;
-          id: string;
-          idempotency_key: string;
-          method: string;
-          path: string;
-          request_hash: string;
-          response_body: Json;
-          response_status: number;
-          user_id: string;
-        };
+          created_at: string
+          expires_at: string
+          id: string
+          idempotency_key: string
+          method: string
+          path: string
+          request_hash: string
+          response_body: Json
+          response_status: number
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          expires_at?: string;
-          id?: string;
-          idempotency_key: string;
-          method: string;
-          path: string;
-          request_hash: string;
-          response_body: Json;
-          response_status: number;
-          user_id: string;
-        };
+          created_at?: string
+          expires_at?: string
+          id?: string
+          idempotency_key: string
+          method: string
+          path: string
+          request_hash: string
+          response_body: Json
+          response_status: number
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          expires_at?: string;
-          id?: string;
-          idempotency_key?: string;
-          method?: string;
-          path?: string;
-          request_hash?: string;
-          response_body?: Json;
-          response_status?: number;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          expires_at?: string
+          id?: string
+          idempotency_key?: string
+          method?: string
+          path?: string
+          request_hash?: string
+          response_body?: Json
+          response_status?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
-          created_at: string;
-          expires_at: string | null;
-          id: string;
-          key_hash: string;
-          last_used_at: string | null;
-          name: string;
-          prefix: string;
-          rate_limit_per_minute: number;
-          revoked_at: string | null;
-          scopes: string[];
-          updated_at: string;
-          user_id: string;
-        };
+          created_at: string
+          expires_at: string | null
+          id: string
+          key_hash: string
+          last_used_at: string | null
+          name: string
+          prefix: string
+          rate_limit_per_minute: number
+          revoked_at: string | null
+          scopes: string[]
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          expires_at?: string | null;
-          id?: string;
-          key_hash: string;
-          last_used_at?: string | null;
-          name: string;
-          prefix: string;
-          rate_limit_per_minute?: number;
-          revoked_at?: string | null;
-          scopes?: string[];
-          updated_at?: string;
-          user_id: string;
-        };
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash: string
+          last_used_at?: string | null
+          name: string
+          prefix: string
+          rate_limit_per_minute?: number
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          expires_at?: string | null;
-          id?: string;
-          key_hash?: string;
-          last_used_at?: string | null;
-          name?: string;
-          prefix?: string;
-          rate_limit_per_minute?: number;
-          revoked_at?: string | null;
-          scopes?: string[];
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_hash?: string
+          last_used_at?: string | null
+          name?: string
+          prefix?: string
+          rate_limit_per_minute?: number
+          revoked_at?: string | null
+          scopes?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       api_request_logs: {
         Row: {
-          api_key_id: string | null;
-          auth_type: string;
-          created_at: string;
-          duration_ms: number | null;
-          error_code: string | null;
-          id: string;
-          ip_address: string | null;
-          method: string;
-          path: string;
-          request_id: string;
-          status_code: number;
-          user_agent: string | null;
-          user_id: string | null;
-        };
+          api_key_id: string | null
+          auth_type: string
+          created_at: string
+          duration_ms: number | null
+          error_code: string | null
+          id: string
+          ip_address: string | null
+          method: string
+          path: string
+          request_id: string
+          status_code: number
+          user_agent: string | null
+          user_id: string | null
+        }
         Insert: {
-          api_key_id?: string | null;
-          auth_type: string;
-          created_at?: string;
-          duration_ms?: number | null;
-          error_code?: string | null;
-          id?: string;
-          ip_address?: string | null;
-          method: string;
-          path: string;
-          request_id: string;
-          status_code: number;
-          user_agent?: string | null;
-          user_id?: string | null;
-        };
+          api_key_id?: string | null
+          auth_type: string
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          id?: string
+          ip_address?: string | null
+          method: string
+          path: string
+          request_id: string
+          status_code: number
+          user_agent?: string | null
+          user_id?: string | null
+        }
         Update: {
-          api_key_id?: string | null;
-          auth_type?: string;
-          created_at?: string;
-          duration_ms?: number | null;
-          error_code?: string | null;
-          id?: string;
-          ip_address?: string | null;
-          method?: string;
-          path?: string;
-          request_id?: string;
-          status_code?: number;
-          user_agent?: string | null;
-          user_id?: string | null;
-        };
+          api_key_id?: string | null
+          auth_type?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          id?: string
+          ip_address?: string | null
+          method?: string
+          path?: string
+          request_id?: string
+          status_code?: number
+          user_agent?: string | null
+          user_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "api_request_logs_api_key_id_fkey";
-            columns: ["api_key_id"];
-            isOneToOne: false;
-            referencedRelation: "api_keys";
-            referencedColumns: ["id"];
+            foreignKeyName: "api_request_logs_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       articles: {
         Row: {
-          blogger_post_id: string | null;
-          blogger_post_url: string | null;
-          content: string;
-          created_at: string;
-          faq: Json;
-          headings: Json;
-          id: string;
-          images: Json;
-          keyword: string;
-          language: string;
-          meta_description: string;
-          status: Database["public"]["Enums"]["article_status"];
-          tags: string[];
-          title: string;
-          tone: string;
-          updated_at: string;
-          user_id: string;
-          word_count: number;
-        };
+          blogger_post_id: string | null
+          blogger_post_url: string | null
+          content: string
+          created_at: string
+          faq: Json
+          headings: Json
+          id: string
+          images: Json
+          keyword: string
+          language: string
+          meta_description: string
+          status: Database["public"]["Enums"]["article_status"]
+          tags: string[]
+          title: string
+          tone: string
+          updated_at: string
+          user_id: string
+          word_count: number
+        }
         Insert: {
-          blogger_post_id?: string | null;
-          blogger_post_url?: string | null;
-          content?: string;
-          created_at?: string;
-          faq?: Json;
-          headings?: Json;
-          id?: string;
-          images?: Json;
-          keyword: string;
-          language?: string;
-          meta_description?: string;
-          status?: Database["public"]["Enums"]["article_status"];
-          tags?: string[];
-          title?: string;
-          tone?: string;
-          updated_at?: string;
-          user_id: string;
-          word_count?: number;
-        };
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          content?: string
+          created_at?: string
+          faq?: Json
+          headings?: Json
+          id?: string
+          images?: Json
+          keyword: string
+          language?: string
+          meta_description?: string
+          status?: Database["public"]["Enums"]["article_status"]
+          tags?: string[]
+          title?: string
+          tone?: string
+          updated_at?: string
+          user_id: string
+          word_count?: number
+        }
         Update: {
-          blogger_post_id?: string | null;
-          blogger_post_url?: string | null;
-          content?: string;
-          created_at?: string;
-          faq?: Json;
-          headings?: Json;
-          id?: string;
-          images?: Json;
-          keyword?: string;
-          language?: string;
-          meta_description?: string;
-          status?: Database["public"]["Enums"]["article_status"];
-          tags?: string[];
-          title?: string;
-          tone?: string;
-          updated_at?: string;
-          user_id?: string;
-          word_count?: number;
-        };
-        Relationships: [];
-      };
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          content?: string
+          created_at?: string
+          faq?: Json
+          headings?: Json
+          id?: string
+          images?: Json
+          keyword?: string
+          language?: string
+          meta_description?: string
+          status?: Database["public"]["Enums"]["article_status"]
+          tags?: string[]
+          title?: string
+          tone?: string
+          updated_at?: string
+          user_id?: string
+          word_count?: number
+        }
+        Relationships: []
+      }
       blog_checks: {
         Row: {
-          created_at: string;
-          id: string;
-          report: Json;
-          score: number;
-          url: string;
-          user_id: string;
-        };
+          created_at: string
+          id: string
+          report: Json
+          score: number
+          url: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          report?: Json;
-          score?: number;
-          url: string;
-          user_id: string;
-        };
+          created_at?: string
+          id?: string
+          report?: Json
+          score?: number
+          url: string
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          report?: Json;
-          score?: number;
-          url?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          report?: Json
+          score?: number
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blogger_connections: {
         Row: {
-          access_token: string;
-          created_at: string;
-          google_email: string | null;
-          id: string;
-          refresh_token: string | null;
-          selected_blog_id: string | null;
-          selected_blog_name: string | null;
-          token_expires_at: string | null;
-          updated_at: string;
-          user_id: string;
-        };
+          access_token: string
+          created_at: string
+          google_email: string | null
+          id: string
+          refresh_token: string | null
+          selected_blog_id: string | null
+          selected_blog_name: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          access_token: string;
-          created_at?: string;
-          google_email?: string | null;
-          id?: string;
-          refresh_token?: string | null;
-          selected_blog_id?: string | null;
-          selected_blog_name?: string | null;
-          token_expires_at?: string | null;
-          updated_at?: string;
-          user_id: string;
-        };
+          access_token: string
+          created_at?: string
+          google_email?: string | null
+          id?: string
+          refresh_token?: string | null
+          selected_blog_id?: string | null
+          selected_blog_name?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          access_token?: string;
-          created_at?: string;
-          google_email?: string | null;
-          id?: string;
-          refresh_token?: string | null;
-          selected_blog_id?: string | null;
-          selected_blog_name?: string | null;
-          token_expires_at?: string | null;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          access_token?: string
+          created_at?: string
+          google_email?: string | null
+          id?: string
+          refresh_token?: string | null
+          selected_blog_id?: string | null
+          selected_blog_name?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       content_clusters: {
         Row: {
-          created_at: string;
-          id: string;
-          internal_links: Json;
-          language: string;
-          pillar: Json;
-          primary_keywords: string[];
-          satellites: Json;
-          secondary_keywords: string[];
-          topic: string;
-          updated_at: string;
-          user_id: string;
-        };
+          created_at: string
+          id: string
+          internal_links: Json
+          language: string
+          pillar: Json
+          primary_keywords: string[]
+          satellites: Json
+          secondary_keywords: string[]
+          topic: string
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          internal_links?: Json;
-          language?: string;
-          pillar?: Json;
-          primary_keywords?: string[];
-          satellites?: Json;
-          secondary_keywords?: string[];
-          topic: string;
-          updated_at?: string;
-          user_id: string;
-        };
+          created_at?: string
+          id?: string
+          internal_links?: Json
+          language?: string
+          pillar?: Json
+          primary_keywords?: string[]
+          satellites?: Json
+          secondary_keywords?: string[]
+          topic: string
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          internal_links?: Json;
-          language?: string;
-          pillar?: Json;
-          primary_keywords?: string[];
-          satellites?: Json;
-          secondary_keywords?: string[];
-          topic?: string;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          internal_links?: Json
+          language?: string
+          pillar?: Json
+          primary_keywords?: string[]
+          satellites?: Json
+          secondary_keywords?: string[]
+          topic?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       course_progress: {
         Row: {
-          completed: boolean;
-          created_at: string;
-          id: string;
-          lesson_key: string;
-          updated_at: string;
-          user_id: string;
-        };
+          completed: boolean
+          created_at: string
+          id: string
+          lesson_key: string
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          completed?: boolean;
-          created_at?: string;
-          id?: string;
-          lesson_key: string;
-          updated_at?: string;
-          user_id: string;
-        };
+          completed?: boolean
+          created_at?: string
+          id?: string
+          lesson_key: string
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          completed?: boolean;
-          created_at?: string;
-          id?: string;
-          lesson_key?: string;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          completed?: boolean
+          created_at?: string
+          id?: string
+          lesson_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       credit_transactions: {
         Row: {
-          amount: number;
-          balance_after: number | null;
-          created_at: string;
-          description: string;
-          id: string;
-          type: Database["public"]["Enums"]["credit_txn_type"];
-          user_id: string;
-        };
+          amount: number
+          balance_after: number | null
+          created_at: string
+          description: string
+          id: string
+          type: Database["public"]["Enums"]["credit_txn_type"]
+          user_id: string
+        }
         Insert: {
-          amount: number;
-          balance_after?: number | null;
-          created_at?: string;
-          description?: string;
-          id?: string;
-          type: Database["public"]["Enums"]["credit_txn_type"];
-          user_id: string;
-        };
+          amount: number
+          balance_after?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          type: Database["public"]["Enums"]["credit_txn_type"]
+          user_id: string
+        }
         Update: {
-          amount?: number;
-          balance_after?: number | null;
-          created_at?: string;
-          description?: string;
-          id?: string;
-          type?: Database["public"]["Enums"]["credit_txn_type"];
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          amount?: number
+          balance_after?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          type?: Database["public"]["Enums"]["credit_txn_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       financial_logs: {
         Row: {
-          created_at: string;
-          event: string;
-          id: string;
-          level: string;
-          payload: Json;
-          user_id: string | null;
-        };
+          created_at: string
+          event: string
+          id: string
+          level: string
+          payload: Json
+          user_id: string | null
+        }
         Insert: {
-          created_at?: string;
-          event: string;
-          id?: string;
-          level?: string;
-          payload?: Json;
-          user_id?: string | null;
-        };
+          created_at?: string
+          event: string
+          id?: string
+          level?: string
+          payload?: Json
+          user_id?: string | null
+        }
         Update: {
-          created_at?: string;
-          event?: string;
-          id?: string;
-          level?: string;
-          payload?: Json;
-          user_id?: string | null;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          event?: string
+          id?: string
+          level?: string
+          payload?: Json
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
-          amount_cents: number;
-          created_at: string;
-          currency: string;
-          external_id: string | null;
-          id: string;
-          metadata: Json;
-          method: string;
-          paid_at: string | null;
-          pix_copy_paste: string | null;
-          pix_qr_code: string | null;
-          plan_id: string;
-          status: Database["public"]["Enums"]["payment_status"];
-          updated_at: string;
-          user_id: string;
-        };
+          amount_cents: number
+          created_at: string
+          currency: string
+          external_id: string | null
+          id: string
+          metadata: Json
+          method: string
+          paid_at: string | null
+          pix_copy_paste: string | null
+          pix_qr_code: string | null
+          plan_id: string
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          amount_cents?: number;
-          created_at?: string;
-          currency?: string;
-          external_id?: string | null;
-          id?: string;
-          metadata?: Json;
-          method?: string;
-          paid_at?: string | null;
-          pix_copy_paste?: string | null;
-          pix_qr_code?: string | null;
-          plan_id: string;
-          status?: Database["public"]["Enums"]["payment_status"];
-          updated_at?: string;
-          user_id: string;
-        };
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          external_id?: string | null
+          id?: string
+          metadata?: Json
+          method?: string
+          paid_at?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          plan_id: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          amount_cents?: number;
-          created_at?: string;
-          currency?: string;
-          external_id?: string | null;
-          id?: string;
-          metadata?: Json;
-          method?: string;
-          paid_at?: string | null;
-          pix_copy_paste?: string | null;
-          pix_qr_code?: string | null;
-          plan_id?: string;
-          status?: Database["public"]["Enums"]["payment_status"];
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          external_id?: string | null
+          id?: string
+          metadata?: Json
+          method?: string
+          paid_at?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          plan_id?: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
-          active: boolean;
-          created_at: string;
-          features: Json;
-          id: string;
-          is_unlimited: boolean;
-          monthly_credits: number;
-          name: string;
-          price_cents: number;
-          price_usd_cents: number | null;
-          sort_order: number;
-          updated_at: string;
-        };
+          active: boolean
+          created_at: string
+          features: Json
+          id: string
+          is_unlimited: boolean
+          monthly_credits: number
+          name: string
+          price_cents: number
+          price_usd_cents: number | null
+          sort_order: number
+          updated_at: string
+        }
         Insert: {
-          active?: boolean;
-          created_at?: string;
-          features?: Json;
-          id: string;
-          is_unlimited?: boolean;
-          monthly_credits?: number;
-          name: string;
-          price_cents?: number;
-          price_usd_cents?: number | null;
-          sort_order?: number;
-          updated_at?: string;
-        };
+          active?: boolean
+          created_at?: string
+          features?: Json
+          id: string
+          is_unlimited?: boolean
+          monthly_credits?: number
+          name: string
+          price_cents?: number
+          price_usd_cents?: number | null
+          sort_order?: number
+          updated_at?: string
+        }
         Update: {
-          active?: boolean;
-          created_at?: string;
-          features?: Json;
-          id?: string;
-          is_unlimited?: boolean;
-          monthly_credits?: number;
-          name?: string;
-          price_cents?: number;
-          price_usd_cents?: number | null;
-          sort_order?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          active?: boolean
+          created_at?: string
+          features?: Json
+          id?: string
+          is_unlimited?: boolean
+          monthly_credits?: number
+          name?: string
+          price_cents?: number
+          price_usd_cents?: number | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
-          created_at: string;
-          credits: number;
-          email: string | null;
-          full_name: string | null;
-          id: string;
-          locale: string;
-          plan: Database["public"]["Enums"]["user_plan"];
-          preferred_currency: string;
-          updated_at: string;
-        };
+          created_at: string
+          credits: number
+          email: string | null
+          full_name: string | null
+          id: string
+          locale: string
+          plan: Database["public"]["Enums"]["user_plan"]
+          preferred_currency: string
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          credits?: number;
-          email?: string | null;
-          full_name?: string | null;
-          id: string;
-          locale?: string;
-          plan?: Database["public"]["Enums"]["user_plan"];
-          preferred_currency?: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          credits?: number
+          email?: string | null
+          full_name?: string | null
+          id: string
+          locale?: string
+          plan?: Database["public"]["Enums"]["user_plan"]
+          preferred_currency?: string
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          credits?: number;
-          email?: string | null;
-          full_name?: string | null;
-          id?: string;
-          locale?: string;
-          plan?: Database["public"]["Enums"]["user_plan"];
-          preferred_currency?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          credits?: number
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          locale?: string
+          plan?: Database["public"]["Enums"]["user_plan"]
+          preferred_currency?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reward_completions: {
         Row: {
-          correct_answers: number;
-          created_at: string;
-          credits_awarded: number;
-          id: string;
-          mission_id: string;
-          read_seconds: number;
-          score: number;
-          scroll_percent: number;
-          total_questions: number;
-          user_id: string;
-        };
+          correct_answers: number
+          created_at: string
+          credits_awarded: number
+          id: string
+          mission_id: string
+          read_seconds: number
+          score: number
+          scroll_percent: number
+          total_questions: number
+          user_id: string
+        }
         Insert: {
-          correct_answers?: number;
-          created_at?: string;
-          credits_awarded?: number;
-          id?: string;
-          mission_id: string;
-          read_seconds?: number;
-          score?: number;
-          scroll_percent?: number;
-          total_questions?: number;
-          user_id: string;
-        };
+          correct_answers?: number
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          mission_id: string
+          read_seconds?: number
+          score?: number
+          scroll_percent?: number
+          total_questions?: number
+          user_id: string
+        }
         Update: {
-          correct_answers?: number;
-          created_at?: string;
-          credits_awarded?: number;
-          id?: string;
-          mission_id?: string;
-          read_seconds?: number;
-          score?: number;
-          scroll_percent?: number;
-          total_questions?: number;
-          user_id?: string;
-        };
+          correct_answers?: number
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          mission_id?: string
+          read_seconds?: number
+          score?: number
+          scroll_percent?: number
+          total_questions?: number
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "reward_completions_mission_id_fkey";
-            columns: ["mission_id"];
-            isOneToOne: false;
-            referencedRelation: "reward_missions";
-            referencedColumns: ["id"];
+            foreignKeyName: "reward_completions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "reward_missions"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       reward_missions: {
         Row: {
-          category: string;
-          completion_count: number;
-          content: string;
-          created_at: string;
-          credits: number;
-          difficulty: string;
-          estimated_read_seconds: number;
-          excerpt: string;
-          external_id: string;
-          id: string;
-          published_at: string | null;
-          quiz: Json | null;
-          read_count: number;
-          source: string;
-          status: string;
-          title: string;
-          updated_at: string;
-          url: string;
-          word_count: number;
-        };
+          category: string
+          completion_count: number
+          content: string
+          created_at: string
+          credits: number
+          difficulty: string
+          estimated_read_seconds: number
+          excerpt: string
+          external_id: string
+          id: string
+          published_at: string | null
+          quiz: Json | null
+          read_count: number
+          source: string
+          status: string
+          title: string
+          updated_at: string
+          url: string
+          word_count: number
+        }
         Insert: {
-          category?: string;
-          completion_count?: number;
-          content?: string;
-          created_at?: string;
-          credits?: number;
-          difficulty?: string;
-          estimated_read_seconds?: number;
-          excerpt?: string;
-          external_id: string;
-          id?: string;
-          published_at?: string | null;
-          quiz?: Json | null;
-          read_count?: number;
-          source?: string;
-          status?: string;
-          title: string;
-          updated_at?: string;
-          url: string;
-          word_count?: number;
-        };
+          category?: string
+          completion_count?: number
+          content?: string
+          created_at?: string
+          credits?: number
+          difficulty?: string
+          estimated_read_seconds?: number
+          excerpt?: string
+          external_id: string
+          id?: string
+          published_at?: string | null
+          quiz?: Json | null
+          read_count?: number
+          source?: string
+          status?: string
+          title: string
+          updated_at?: string
+          url: string
+          word_count?: number
+        }
         Update: {
-          category?: string;
-          completion_count?: number;
-          content?: string;
-          created_at?: string;
-          credits?: number;
-          difficulty?: string;
-          estimated_read_seconds?: number;
-          excerpt?: string;
-          external_id?: string;
-          id?: string;
-          published_at?: string | null;
-          quiz?: Json | null;
-          read_count?: number;
-          source?: string;
-          status?: string;
-          title?: string;
-          updated_at?: string;
-          url?: string;
-          word_count?: number;
-        };
-        Relationships: [];
-      };
+          category?: string
+          completion_count?: number
+          content?: string
+          created_at?: string
+          credits?: number
+          difficulty?: string
+          estimated_read_seconds?: number
+          excerpt?: string
+          external_id?: string
+          id?: string
+          published_at?: string | null
+          quiz?: Json | null
+          read_count?: number
+          source?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          url?: string
+          word_count?: number
+        }
+        Relationships: []
+      }
       reward_settings: {
         Row: {
-          auto_approve: boolean;
-          blog_url: string;
-          content_source: string;
-          credits_by_category: Json;
-          credits_by_difficulty: Json;
-          credits_per_article: number;
-          daily_credit_limit: number;
-          daily_mission_limit: number;
-          eligible_categories: string[];
-          enabled: boolean;
-          id: boolean;
-          min_scroll_percent: number;
-          pass_threshold: number;
-          seconds_per_100_words: number;
-          updated_at: string;
-        };
+          auto_approve: boolean
+          blog_url: string
+          content_source: string
+          credits_by_category: Json
+          credits_by_difficulty: Json
+          credits_per_article: number
+          daily_credit_limit: number
+          daily_mission_limit: number
+          eligible_categories: string[]
+          enabled: boolean
+          id: boolean
+          min_scroll_percent: number
+          pass_threshold: number
+          seconds_per_100_words: number
+          updated_at: string
+        }
         Insert: {
-          auto_approve?: boolean;
-          blog_url?: string;
-          content_source?: string;
-          credits_by_category?: Json;
-          credits_by_difficulty?: Json;
-          credits_per_article?: number;
-          daily_credit_limit?: number;
-          daily_mission_limit?: number;
-          eligible_categories?: string[];
-          enabled?: boolean;
-          id?: boolean;
-          min_scroll_percent?: number;
-          pass_threshold?: number;
-          seconds_per_100_words?: number;
-          updated_at?: string;
-        };
+          auto_approve?: boolean
+          blog_url?: string
+          content_source?: string
+          credits_by_category?: Json
+          credits_by_difficulty?: Json
+          credits_per_article?: number
+          daily_credit_limit?: number
+          daily_mission_limit?: number
+          eligible_categories?: string[]
+          enabled?: boolean
+          id?: boolean
+          min_scroll_percent?: number
+          pass_threshold?: number
+          seconds_per_100_words?: number
+          updated_at?: string
+        }
         Update: {
-          auto_approve?: boolean;
-          blog_url?: string;
-          content_source?: string;
-          credits_by_category?: Json;
-          credits_by_difficulty?: Json;
-          credits_per_article?: number;
-          daily_credit_limit?: number;
-          daily_mission_limit?: number;
-          eligible_categories?: string[];
-          enabled?: boolean;
-          id?: boolean;
-          min_scroll_percent?: number;
-          pass_threshold?: number;
-          seconds_per_100_words?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          auto_approve?: boolean
+          blog_url?: string
+          content_source?: string
+          credits_by_category?: Json
+          credits_by_difficulty?: Json
+          credits_per_article?: number
+          daily_credit_limit?: number
+          daily_mission_limit?: number
+          eligible_categories?: string[]
+          enabled?: boolean
+          id?: boolean
+          min_scroll_percent?: number
+          pass_threshold?: number
+          seconds_per_100_words?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       scheduled_post_logs: {
         Row: {
-          created_at: string;
-          id: string;
-          level: string;
-          message: string;
-          scheduled_post_id: string;
-          user_id: string;
-        };
+          created_at: string
+          id: string
+          level: string
+          message: string
+          scheduled_post_id: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          level?: string;
-          message: string;
-          scheduled_post_id: string;
-          user_id: string;
-        };
+          created_at?: string
+          id?: string
+          level?: string
+          message: string
+          scheduled_post_id: string
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          level?: string;
-          message?: string;
-          scheduled_post_id?: string;
-          user_id?: string;
-        };
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string
+          scheduled_post_id?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "scheduled_post_logs_scheduled_post_id_fkey";
-            columns: ["scheduled_post_id"];
-            isOneToOne: false;
-            referencedRelation: "scheduled_posts";
-            referencedColumns: ["id"];
+            foreignKeyName: "scheduled_post_logs_scheduled_post_id_fkey"
+            columns: ["scheduled_post_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_posts"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       scheduled_posts: {
         Row: {
-          article_id: string;
-          attempts: number;
-          blogger_post_id: string | null;
-          blogger_post_url: string | null;
-          created_at: string;
-          error: string | null;
-          executed_at: string | null;
-          id: string;
-          scheduled_at: string;
-          status: string;
-          updated_at: string;
-          user_id: string;
-        };
+          article_id: string
+          attempts: number
+          blogger_post_id: string | null
+          blogger_post_url: string | null
+          created_at: string
+          error: string | null
+          executed_at: string | null
+          id: string
+          scheduled_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          article_id: string;
-          attempts?: number;
-          blogger_post_id?: string | null;
-          blogger_post_url?: string | null;
-          created_at?: string;
-          error?: string | null;
-          executed_at?: string | null;
-          id?: string;
-          scheduled_at: string;
-          status?: string;
-          updated_at?: string;
-          user_id: string;
-        };
+          article_id: string
+          attempts?: number
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          article_id?: string;
-          attempts?: number;
-          blogger_post_id?: string | null;
-          blogger_post_url?: string | null;
-          created_at?: string;
-          error?: string | null;
-          executed_at?: string | null;
-          id?: string;
-          scheduled_at?: string;
-          status?: string;
-          updated_at?: string;
-          user_id?: string;
-        };
+          article_id?: string
+          attempts?: number
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "scheduled_posts_article_id_fkey";
-            columns: ["article_id"];
-            isOneToOne: false;
-            referencedRelation: "articles";
-            referencedColumns: ["id"];
+            foreignKeyName: "scheduled_posts_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       seo_cache: {
         Row: {
-          cache_key: string;
-          created_at: string;
-          expires_at: string;
-          id: string;
-          payload: Json;
-          site_url: string | null;
-          updated_at: string;
-          user_id: string;
-        };
+          cache_key: string
+          created_at: string
+          expires_at: string
+          id: string
+          payload: Json
+          site_url: string | null
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          cache_key: string;
-          created_at?: string;
-          expires_at: string;
-          id?: string;
-          payload: Json;
-          site_url?: string | null;
-          updated_at?: string;
-          user_id: string;
-        };
+          cache_key: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          payload: Json
+          site_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          cache_key?: string;
-          created_at?: string;
-          expires_at?: string;
-          id?: string;
-          payload?: Json;
-          site_url?: string | null;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          cache_key?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          payload?: Json
+          site_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       seo_property_map: {
         Row: {
-          blog_id: string;
-          blog_url: string;
-          created_at: string;
-          id: string;
-          last_seen_at: string;
-          matched_by: string | null;
-          permission_level: string | null;
-          site_url: string | null;
-          updated_at: string;
-          user_id: string;
-          verified: boolean;
-        };
+          blog_id: string
+          blog_url: string
+          created_at: string
+          id: string
+          last_seen_at: string
+          matched_by: string | null
+          permission_level: string | null
+          site_url: string | null
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }
         Insert: {
-          blog_id: string;
-          blog_url: string;
-          created_at?: string;
-          id?: string;
-          last_seen_at?: string;
-          matched_by?: string | null;
-          permission_level?: string | null;
-          site_url?: string | null;
-          updated_at?: string;
-          user_id: string;
-          verified?: boolean;
-        };
+          blog_id: string
+          blog_url: string
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          matched_by?: string | null
+          permission_level?: string | null
+          site_url?: string | null
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+        }
         Update: {
-          blog_id?: string;
-          blog_url?: string;
-          created_at?: string;
-          id?: string;
-          last_seen_at?: string;
-          matched_by?: string | null;
-          permission_level?: string | null;
-          site_url?: string | null;
-          updated_at?: string;
-          user_id?: string;
-          verified?: boolean;
-        };
-        Relationships: [];
-      };
+          blog_id?: string
+          blog_url?: string
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          matched_by?: string | null
+          permission_level?: string | null
+          site_url?: string | null
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       site_pages: {
         Row: {
-          blogger_post_id: string | null;
-          blogger_post_url: string | null;
-          content: string;
-          created_at: string;
-          id: string;
-          status: string;
-          title: string;
-          type: string;
-          updated_at: string;
-          user_id: string;
-        };
+          blogger_post_id: string | null
+          blogger_post_url: string | null
+          content: string
+          created_at: string
+          id: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          blogger_post_id?: string | null;
-          blogger_post_url?: string | null;
-          content?: string;
-          created_at?: string;
-          id?: string;
-          status?: string;
-          title?: string;
-          type: string;
-          updated_at?: string;
-          user_id: string;
-        };
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          blogger_post_id?: string | null;
-          blogger_post_url?: string | null;
-          content?: string;
-          created_at?: string;
-          id?: string;
-          status?: string;
-          title?: string;
-          type?: string;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          blogger_post_id?: string | null
+          blogger_post_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
-          blog_name: string;
-          contact_email: string;
-          created_at: string;
-          domain: string;
-          niche: string;
-          owner_name: string;
-          updated_at: string;
-          user_id: string;
-        };
+          blog_name: string
+          contact_email: string
+          created_at: string
+          domain: string
+          niche: string
+          owner_name: string
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          blog_name?: string;
-          contact_email?: string;
-          created_at?: string;
-          domain?: string;
-          niche?: string;
-          owner_name?: string;
-          updated_at?: string;
-          user_id: string;
-        };
+          blog_name?: string
+          contact_email?: string
+          created_at?: string
+          domain?: string
+          niche?: string
+          owner_name?: string
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          blog_name?: string;
-          contact_email?: string;
-          created_at?: string;
-          domain?: string;
-          niche?: string;
-          owner_name?: string;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          blog_name?: string
+          contact_email?: string
+          created_at?: string
+          domain?: string
+          niche?: string
+          owner_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
-          created_at: string;
-          current_period_end: string | null;
-          id: string;
-          plan_id: string;
-          started_at: string;
-          status: Database["public"]["Enums"]["subscription_status"];
-          syncpay_subscription_id: string | null;
-          updated_at: string;
-          user_id: string;
-        };
+          created_at: string
+          current_period_end: string | null
+          id: string
+          plan_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          syncpay_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          current_period_end?: string | null;
-          id?: string;
-          plan_id?: string;
-          started_at?: string;
-          status?: Database["public"]["Enums"]["subscription_status"];
-          syncpay_subscription_id?: string | null;
-          updated_at?: string;
-          user_id: string;
-        };
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          syncpay_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          current_period_end?: string | null;
-          id?: string;
-          plan_id?: string;
-          started_at?: string;
-          status?: Database["public"]["Enums"]["subscription_status"];
-          syncpay_subscription_id?: string | null;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          syncpay_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_feedback: {
         Row: {
-          admin_reply: string | null;
-          admin_reply_at: string | null;
-          admin_reply_by: string | null;
-          comment: string | null;
-          created_at: string;
-          id: string;
-          issue: string | null;
-          rating: number;
-          suggestion: string | null;
-          updated_at: string;
-          user_id: string;
-        };
+          admin_reply: string | null
+          admin_reply_at: string | null
+          admin_reply_by: string | null
+          comment: string | null
+          created_at: string
+          id: string
+          issue: string | null
+          rating: number
+          suggestion: string | null
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          admin_reply?: string | null;
-          admin_reply_at?: string | null;
-          admin_reply_by?: string | null;
-          comment?: string | null;
-          created_at?: string;
-          id?: string;
-          issue?: string | null;
-          rating: number;
-          suggestion?: string | null;
-          updated_at?: string;
-          user_id: string;
-        };
+          admin_reply?: string | null
+          admin_reply_at?: string | null
+          admin_reply_by?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          issue?: string | null
+          rating: number
+          suggestion?: string | null
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          admin_reply?: string | null;
-          admin_reply_at?: string | null;
-          admin_reply_by?: string | null;
-          comment?: string | null;
-          created_at?: string;
-          id?: string;
-          issue?: string | null;
-          rating?: number;
-          suggestion?: string | null;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          admin_reply?: string | null
+          admin_reply_at?: string | null
+          admin_reply_by?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          issue?: string | null
+          rating?: number
+          suggestion?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
-          created_at: string;
-          id: string;
-          role: Database["public"]["Enums"]["app_role"];
-          user_id: string;
-        };
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          role: Database["public"]["Enums"]["app_role"];
-          user_id: string;
-        };
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          role?: Database["public"]["Enums"]["app_role"];
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_smart_profile: {
         Row: {
-          ai_prefs: Json;
-          blogger: Json;
-          contacts: Json;
-          created_at: string;
-          default_links: Json;
-          feature_flags: Json;
-          personal: Json;
-          seo_prefs: Json;
-          signature: string | null;
-          social_links: Json;
-          updated_at: string;
-          user_id: string;
-        };
+          ai_prefs: Json
+          blogger: Json
+          contacts: Json
+          created_at: string
+          default_links: Json
+          feature_flags: Json
+          personal: Json
+          seo_prefs: Json
+          signature: string | null
+          social_links: Json
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          ai_prefs?: Json;
-          blogger?: Json;
-          contacts?: Json;
-          created_at?: string;
-          default_links?: Json;
-          feature_flags?: Json;
-          personal?: Json;
-          seo_prefs?: Json;
-          signature?: string | null;
-          social_links?: Json;
-          updated_at?: string;
-          user_id: string;
-        };
+          ai_prefs?: Json
+          blogger?: Json
+          contacts?: Json
+          created_at?: string
+          default_links?: Json
+          feature_flags?: Json
+          personal?: Json
+          seo_prefs?: Json
+          signature?: string | null
+          social_links?: Json
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          ai_prefs?: Json;
-          blogger?: Json;
-          contacts?: Json;
-          created_at?: string;
-          default_links?: Json;
-          feature_flags?: Json;
-          personal?: Json;
-          seo_prefs?: Json;
-          signature?: string | null;
-          social_links?: Json;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-    };
+          ai_prefs?: Json
+          blogger?: Json
+          contacts?: Json
+          created_at?: string
+          default_links?: Json
+          feature_flags?: Json
+          personal?: Json
+          seo_prefs?: Json
+          signature?: string | null
+          social_links?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
       activate_payment: {
-        Args: { p_external_id?: string; p_payment_id: string };
-        Returns: Json;
-      };
+        Args: { p_external_id?: string; p_payment_id: string }
+        Returns: Json
+      }
       admin_adjust_credits: {
         Args: {
-          p_amount: number;
-          p_mode: string;
-          p_reason?: string;
-          p_user_id: string;
-        };
-        Returns: Json;
-      };
-      admin_feedback_stats: { Args: never; Returns: Json };
+          p_amount: number
+          p_mode: string
+          p_reason?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_feedback_stats: { Args: never; Returns: Json }
       admin_list_audit_logs: {
-        Args: { p_limit?: number };
+        Args: { p_limit?: number }
         Returns: {
-          action: string;
-          admin_email: string | null;
-          admin_id: string | null;
-          created_at: string;
-          details: string | null;
-          id: string;
-          new_value: Json | null;
-          old_value: Json | null;
-          target_email: string | null;
-          target_user_id: string | null;
-        }[];
+          action: string
+          admin_email: string | null
+          admin_id: string | null
+          created_at: string
+          details: string | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          target_email: string | null
+          target_user_id: string | null
+        }[]
         SetofOptions: {
-          from: "*";
-          to: "admin_audit_logs";
-          isOneToOne: false;
-          isSetofReturn: true;
-        };
-      };
+          from: "*"
+          to: "admin_audit_logs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       admin_list_users: {
-        Args: never;
+        Args: never
         Returns: {
-          created_at: string;
-          credits: number;
-          email: string;
-          full_name: string;
-          id: string;
-          last_sign_in_at: string;
-          plan: Database["public"]["Enums"]["user_plan"];
-          role: Database["public"]["Enums"]["app_role"];
-          subscription_status: string;
-        }[];
-      };
+          created_at: string
+          credits: number
+          email: string
+          full_name: string
+          id: string
+          last_sign_in_at: string
+          plan: Database["public"]["Enums"]["user_plan"]
+          role: Database["public"]["Enums"]["app_role"]
+          subscription_status: string
+        }[]
+      }
       admin_set_plan: {
         Args: {
-          p_plan: Database["public"]["Enums"]["user_plan"];
-          p_user_id: string;
-        };
-        Returns: Json;
-      };
-      admin_stats: { Args: never; Returns: Json };
+          p_plan: Database["public"]["Enums"]["user_plan"]
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_stats: { Args: never; Returns: Json }
       api_count_recent_requests: {
-        Args: { p_api_key_id: string; p_since: string; p_user_id: string };
-        Returns: number;
-      };
+        Args: { p_api_key_id: string; p_since: string; p_user_id: string }
+        Returns: number
+      }
       has_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"];
-          _user_id: string;
-        };
-        Returns: boolean;
-      };
-      is_admin: { Args: { _user_id: string }; Returns: boolean };
-      reward_admin_list_missions: { Args: never; Returns: Json };
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
+      reward_admin_list_missions: { Args: never; Returns: Json }
       reward_admin_set_status: {
-        Args: { p_id: string; p_status: string };
-        Returns: Json;
-      };
-      reward_admin_stats: { Args: never; Returns: Json };
-      reward_admin_update_settings: { Args: { p: Json }; Returns: Json };
+        Args: { p_id: string; p_status: string }
+        Returns: Json
+      }
+      reward_admin_stats: { Args: never; Returns: Json }
+      reward_admin_update_settings: { Args: { p: Json }; Returns: Json }
       reward_claim: {
         Args: {
-          p_correct: number;
-          p_mission_id: string;
-          p_read_seconds: number;
-          p_scroll_percent: number;
-          p_total: number;
-        };
-        Returns: Json;
-      };
-      reward_config: { Args: never; Returns: Json };
-      reward_get_mission: { Args: { p_id: string }; Returns: Json };
-      reward_list_missions: { Args: never; Returns: Json };
+          p_correct: number
+          p_mission_id: string
+          p_read_seconds: number
+          p_scroll_percent: number
+          p_total: number
+        }
+        Returns: Json
+      }
+      reward_config: { Args: never; Returns: Json }
+      reward_get_mission: { Args: { p_id: string }; Returns: Json }
+      reward_list_missions: { Args: never; Returns: Json }
       reward_save_quiz: {
-        Args: { p_id: string; p_quiz: Json };
-        Returns: undefined;
-      };
-      reward_upsert_mission: { Args: { p: Json }; Returns: Json };
-    };
+        Args: { p_id: string; p_quiz: Json }
+        Returns: undefined
+      }
+      reward_upsert_mission: { Args: { p: Json }; Returns: Json }
+    }
     Enums: {
-      app_role: "owner" | "admin" | "user";
-      article_status: "draft" | "published";
-      credit_txn_type: "grant" | "consume" | "renewal" | "purchase" | "adjustment";
-      payment_status: "pending" | "paid" | "failed" | "refunded" | "canceled";
-      subscription_status: "active" | "pending" | "canceled" | "expired";
-      user_plan: "free" | "pro" | "premium" | "teste";
-    };
+      app_role: "owner" | "admin" | "user"
+      article_status: "draft" | "published"
+      credit_txn_type:
+        | "grant"
+        | "consume"
+        | "renewal"
+        | "purchase"
+        | "adjustment"
+      payment_status: "pending" | "paid" | "failed" | "refunded" | "canceled"
+      subscription_status: "active" | "pending" | "canceled" | "expired"
+      user_plan: "free" | "pro" | "premium" | "teste"
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R;
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never;
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never;
+    : never
 
 export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "admin", "user"],
       article_status: ["draft", "published"],
-      credit_txn_type: ["grant", "consume", "renewal", "purchase", "adjustment"],
+      credit_txn_type: [
+        "grant",
+        "consume",
+        "renewal",
+        "purchase",
+        "adjustment",
+      ],
       payment_status: ["pending", "paid", "failed", "refunded", "canceled"],
       subscription_status: ["active", "pending", "canceled", "expired"],
       user_plan: ["free", "pro", "premium", "teste"],
     },
   },
-} as const;
+} as const
