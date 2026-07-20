@@ -32,12 +32,15 @@ export const Route = createFileRoute("/api/v1/payments/checkout")({
         const raw = await request.json().catch(() => ({}));
         const parsed = Body.safeParse(raw);
         if (!parsed.success) {
-          throw new ApiError("validation_error", "Payload inválido", 422, {
-            details: parsed.error.issues.map((i) => ({
+          throw new ApiError(
+            "validation_error",
+            "Payload inválido",
+            422,
+            parsed.error.issues.map((i) => ({
               field: i.path.join("."),
               message: i.message,
             })),
-          });
+          );
         }
         const input = parsed.data;
         const { supabase, userId } = ctx;
@@ -49,14 +52,14 @@ export const Route = createFileRoute("/api/v1/payments/checkout")({
             .eq("id", input.plan_id)
             .single();
           if (!plan || !plan.active || !plan.price_usd_cents) {
-            throw new ApiError("plan_unavailable", "Plano indisponível em USD.", 422);
+            throw new ApiError("validation_error", "Plano indisponível em USD.", 422);
           }
           const { createStripeCheckoutSession, isStripeConfigured } = await import(
             "@/lib/stripe.server"
           );
           if (!isStripeConfigured()) {
             throw new ApiError(
-              "gateway_unavailable",
+              "payment_provider_error",
               "Stripe ainda não configurado no servidor.",
               503,
             );

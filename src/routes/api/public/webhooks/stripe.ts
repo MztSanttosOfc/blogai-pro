@@ -87,10 +87,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 async function handleInvoicePaid(invoice: Stripe.Invoice) {
   // Recurring renewals: create a fresh payment row per invoice and reactivate.
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // Stripe SDK types vary across versions; the `subscription` field on
+  // Invoice is present at runtime for subscription invoices.
+  const rawSub = (invoice as unknown as { subscription?: string | { id: string } | null })
+    .subscription;
   const subscriptionId =
-    typeof invoice.subscription === "string"
-      ? invoice.subscription
-      : invoice.subscription?.id ?? null;
+    typeof rawSub === "string" ? rawSub : rawSub?.id ?? null;
   if (!subscriptionId) return;
 
   const customerId =
