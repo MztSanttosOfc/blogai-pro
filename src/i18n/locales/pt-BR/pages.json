@@ -1,4 +1,67 @@
 {
-  "title": "Páginas",
-  "subtitle": "Gere páginas institucionais e de aterrissagem."
+  "title": "Páginas Essenciais",
+  "subtitle": "Gere páginas profissionais prontas para a aprovação no Google AdSense e compatíveis com a LGPD.",
+  "settings": {
+    "title": "Dados do site (personalização automática)",
+    "blogName": "Nome do blog",
+    "blogNamePh": "Ex.: Monzart Tech",
+    "ownerName": "Nome do proprietário",
+    "ownerNamePh": "Ex.: Junior Santos",
+    "contactEmail": "E-mail de contato",
+    "contactEmailPh": "contato@seudominio.com.br",
+    "domain": "Domínio",
+    "domainPh": "seudominio.com.br",
+    "niche": "Nicho / Assunto do site",
+    "nichePh": "Ex.: tecnologia, inteligência artificial e produtividade",
+    "save": "Salvar dados",
+    "saved": "Configurações salvas.",
+    "saveError": "Erro ao salvar."
+  },
+  "kit": {
+    "title": "Gerar Kit Completo AdSense",
+    "subtitle": "Cria de uma vez Sobre Nós, Contato, Política de Privacidade e Termos de Uso.",
+    "cta": "Gerar kit",
+    "loading": "Gerando kit...",
+    "success": "Kit Completo AdSense gerado! Revise e publique.",
+    "error": "Erro ao gerar o kit."
+  },
+  "descriptions": {
+    "sobre": "Apresente seu site, missão e autoridade (E-E-A-T).",
+    "contato": "Canal de contato para leitores e anunciantes.",
+    "privacidade": "Compatível com LGPD e exigida pelo AdSense.",
+    "termos": "Regras de uso e direitos autorais do conteúdo.",
+    "disclaimer": "Aviso legal sobre o caráter informativo do conteúdo.",
+    "cookies": "Uso de cookies e consentimento (LGPD)."
+  },
+  "status": {
+    "published": "Publicada",
+    "draft": "Rascunho",
+    "notCreated": "Não criada"
+  },
+  "actions": {
+    "generate": "Gerar",
+    "regenerate": "Regerar",
+    "edit": "Editar",
+    "publish": "Publicar",
+    "update": "Atualizar",
+    "seeOnBlog": "Ver no blog",
+    "delete": "Excluir",
+    "close": "Fechar",
+    "save": "Salvar",
+    "publishToBlogger": "Publicar no Blogger"
+  },
+  "editor": {
+    "title": "Editar:",
+    "pageTitle": "Título da página"
+  },
+  "toasts": {
+    "generated": "{{page}} gerada com sucesso!",
+    "generateError": "Erro ao gerar a página.",
+    "saved": "Página salva.",
+    "saveError": "Erro ao salvar.",
+    "published": "Publicado no Blogger",
+    "publishError": "Erro ao publicar.",
+    "deleted": "Página excluída.",
+    "deleteError": "Erro ao excluir."
+  }
 }
