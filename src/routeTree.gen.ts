@@ -19,6 +19,7 @@ import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedPerfilInteligenteRouteImport } from './routes/_authenticated/perfil-inteligente'
 import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
+import { Route as AuthenticatedMinhaAtividadeRouteImport } from './routes/_authenticated/minha-atividade'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
@@ -26,9 +27,11 @@ import { Route as AuthenticatedFeedbackRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDesempenhoRouteImport } from './routes/_authenticated/desempenho'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCriadorRouteImport } from './routes/_authenticated/criador'
+import { Route as AuthenticatedConvitesRouteImport } from './routes/_authenticated/convites'
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedClustersRouteImport } from './routes/_authenticated/clusters'
 import { Route as AuthenticatedAtualizacoesRouteImport } from './routes/_authenticated/atualizacoes'
+import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedAjudaRouteImport } from './routes/_authenticated/ajuda'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -116,6 +119,12 @@ const AuthenticatedMonetizacaoRoute =
     path: '/monetizacao',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMinhaAtividadeRoute =
+  AuthenticatedMinhaAtividadeRouteImport.update({
+    id: '/minha-atividade',
+    path: '/minha-atividade',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
@@ -151,6 +160,11 @@ const AuthenticatedCriadorRoute = AuthenticatedCriadorRouteImport.update({
   path: '/criador',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedConvitesRoute = AuthenticatedConvitesRouteImport.update({
+  id: '/convites',
+  path: '/convites',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedConnectionsRoute =
   AuthenticatedConnectionsRouteImport.update({
     id: '/connections',
@@ -168,6 +182,11 @@ const AuthenticatedAtualizacoesRoute =
     path: '/atualizacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAjudaRoute = AuthenticatedAjudaRouteImport.update({
   id: '/ajuda',
   path: '/ajuda',
@@ -348,9 +367,11 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/ajuda': typeof AuthenticatedAjudaRoute
+  '/analytics': typeof AuthenticatedAnalyticsRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
+  '/convites': typeof AuthenticatedConvitesRoute
   '/criador': typeof AuthenticatedCriadorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/desempenho': typeof AuthenticatedDesempenhoRoute
@@ -358,6 +379,7 @@ export interface FileRoutesByFullPath {
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
   '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
@@ -402,9 +424,11 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/ajuda': typeof AuthenticatedAjudaRoute
+  '/analytics': typeof AuthenticatedAnalyticsRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/clusters': typeof AuthenticatedClustersRoute
   '/connections': typeof AuthenticatedConnectionsRoute
+  '/convites': typeof AuthenticatedConvitesRoute
   '/criador': typeof AuthenticatedCriadorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/desempenho': typeof AuthenticatedDesempenhoRoute
@@ -412,6 +436,7 @@ export interface FileRoutesByTo {
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
   '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
@@ -458,9 +483,11 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/_authenticated/ajuda': typeof AuthenticatedAjudaRoute
+  '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/atualizacoes': typeof AuthenticatedAtualizacoesRoute
   '/_authenticated/clusters': typeof AuthenticatedClustersRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
+  '/_authenticated/convites': typeof AuthenticatedConvitesRoute
   '/_authenticated/criador': typeof AuthenticatedCriadorRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/desempenho': typeof AuthenticatedDesempenhoRoute
@@ -468,6 +495,7 @@ export interface FileRoutesById {
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
+  '/_authenticated/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/_authenticated/paginas': typeof AuthenticatedPaginasRoute
   '/_authenticated/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
@@ -514,9 +542,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamentos'
     | '/ajuda'
+    | '/analytics'
     | '/atualizacoes'
     | '/clusters'
     | '/connections'
+    | '/convites'
     | '/criador'
     | '/dashboard'
     | '/desempenho'
@@ -524,6 +554,7 @@ export interface FileRouteTypes {
     | '/financeiro'
     | '/generate'
     | '/library'
+    | '/minha-atividade'
     | '/monetizacao'
     | '/paginas'
     | '/perfil-inteligente'
@@ -568,9 +599,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamentos'
     | '/ajuda'
+    | '/analytics'
     | '/atualizacoes'
     | '/clusters'
     | '/connections'
+    | '/convites'
     | '/criador'
     | '/dashboard'
     | '/desempenho'
@@ -578,6 +611,7 @@ export interface FileRouteTypes {
     | '/financeiro'
     | '/generate'
     | '/library'
+    | '/minha-atividade'
     | '/monetizacao'
     | '/paginas'
     | '/perfil-inteligente'
@@ -623,9 +657,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/agendamentos'
     | '/_authenticated/ajuda'
+    | '/_authenticated/analytics'
     | '/_authenticated/atualizacoes'
     | '/_authenticated/clusters'
     | '/_authenticated/connections'
+    | '/_authenticated/convites'
     | '/_authenticated/criador'
     | '/_authenticated/dashboard'
     | '/_authenticated/desempenho'
@@ -633,6 +669,7 @@ export interface FileRouteTypes {
     | '/_authenticated/financeiro'
     | '/_authenticated/generate'
     | '/_authenticated/library'
+    | '/_authenticated/minha-atividade'
     | '/_authenticated/monetizacao'
     | '/_authenticated/paginas'
     | '/_authenticated/perfil-inteligente'
@@ -777,6 +814,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMonetizacaoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/minha-atividade': {
+      id: '/_authenticated/minha-atividade'
+      path: '/minha-atividade'
+      fullPath: '/minha-atividade'
+      preLoaderRoute: typeof AuthenticatedMinhaAtividadeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/library': {
       id: '/_authenticated/library'
       path: '/library'
@@ -826,6 +870,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCriadorRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/convites': {
+      id: '/_authenticated/convites'
+      path: '/convites'
+      fullPath: '/convites'
+      preLoaderRoute: typeof AuthenticatedConvitesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/connections': {
       id: '/_authenticated/connections'
       path: '/connections'
@@ -845,6 +896,13 @@ declare module '@tanstack/react-router' {
       path: '/atualizacoes'
       fullPath: '/atualizacoes'
       preLoaderRoute: typeof AuthenticatedAtualizacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/analytics': {
+      id: '/_authenticated/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/ajuda': {
@@ -1107,9 +1165,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAgendamentosRoute: typeof AuthenticatedAgendamentosRoute
   AuthenticatedAjudaRoute: typeof AuthenticatedAjudaRoute
+  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedAtualizacoesRoute: typeof AuthenticatedAtualizacoesRoute
   AuthenticatedClustersRoute: typeof AuthenticatedClustersRoute
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
+  AuthenticatedConvitesRoute: typeof AuthenticatedConvitesRoute
   AuthenticatedCriadorRoute: typeof AuthenticatedCriadorRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDesempenhoRoute: typeof AuthenticatedDesempenhoRoute
@@ -1117,6 +1177,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
+  AuthenticatedMinhaAtividadeRoute: typeof AuthenticatedMinhaAtividadeRoute
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
   AuthenticatedPaginasRoute: typeof AuthenticatedPaginasRoute
   AuthenticatedPerfilInteligenteRoute: typeof AuthenticatedPerfilInteligenteRoute
@@ -1130,9 +1191,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAgendamentosRoute: AuthenticatedAgendamentosRoute,
   AuthenticatedAjudaRoute: AuthenticatedAjudaRoute,
+  AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedAtualizacoesRoute: AuthenticatedAtualizacoesRoute,
   AuthenticatedClustersRoute: AuthenticatedClustersRoute,
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
+  AuthenticatedConvitesRoute: AuthenticatedConvitesRoute,
   AuthenticatedCriadorRoute: AuthenticatedCriadorRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDesempenhoRoute: AuthenticatedDesempenhoRoute,
@@ -1140,6 +1203,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
+  AuthenticatedMinhaAtividadeRoute: AuthenticatedMinhaAtividadeRoute,
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
   AuthenticatedPaginasRoute: AuthenticatedPaginasRoute,
   AuthenticatedPerfilInteligenteRoute: AuthenticatedPerfilInteligenteRoute,
