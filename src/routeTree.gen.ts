@@ -22,6 +22,7 @@ import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenti
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
+import { Route as AuthenticatedFeedbackRouteImport } from './routes/_authenticated/feedback'
 import { Route as AuthenticatedDesempenhoRouteImport } from './routes/_authenticated/desempenho'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCriadorRouteImport } from './routes/_authenticated/criador'
@@ -36,10 +37,12 @@ import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
+import { Route as AuthenticatedAdminFeedbackRouteImport } from './routes/_authenticated/admin.feedback'
 import { Route as ApiV1SmartProfileIndexRouteImport } from './routes/api/v1/smart-profile/index'
 import { Route as ApiV1SchedulingIndexRouteImport } from './routes/api/v1/scheduling/index'
 import { Route as ApiV1ProfileIndexRouteImport } from './routes/api/v1/profile/index'
 import { Route as ApiV1PlansIndexRouteImport } from './routes/api/v1/plans/index'
+import { Route as ApiV1FeedbackIndexRouteImport } from './routes/api/v1/feedback/index'
 import { Route as ApiV1CreditsIndexRouteImport } from './routes/api/v1/credits/index'
 import { Route as ApiV1ClustersIndexRouteImport } from './routes/api/v1/clusters/index'
 import { Route as ApiV1ArticlesIndexRouteImport } from './routes/api/v1/articles/index'
@@ -126,6 +129,11 @@ const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
   path: '/financeiro',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFeedbackRoute = AuthenticatedFeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDesempenhoRoute = AuthenticatedDesempenhoRouteImport.update({
   id: '/desempenho',
   path: '/desempenho',
@@ -200,6 +208,12 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminFeedbackRoute =
+  AuthenticatedAdminFeedbackRouteImport.update({
+    id: '/feedback',
+    path: '/feedback',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const ApiV1SmartProfileIndexRoute = ApiV1SmartProfileIndexRouteImport.update({
   id: '/api/v1/smart-profile/',
   path: '/api/v1/smart-profile/',
@@ -218,6 +232,11 @@ const ApiV1ProfileIndexRoute = ApiV1ProfileIndexRouteImport.update({
 const ApiV1PlansIndexRoute = ApiV1PlansIndexRouteImport.update({
   id: '/api/v1/plans/',
   path: '/api/v1/plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1FeedbackIndexRoute = ApiV1FeedbackIndexRouteImport.update({
+  id: '/api/v1/feedback/',
+  path: '/api/v1/feedback/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1CreditsIndexRoute = ApiV1CreditsIndexRouteImport.update({
@@ -314,7 +333,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/ajuda': typeof AuthenticatedAjudaRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
@@ -323,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/criador': typeof AuthenticatedCriadorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/desempenho': typeof AuthenticatedDesempenhoRoute
+  '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
@@ -332,6 +352,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
+  '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -354,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/articles/': typeof ApiV1ArticlesIndexRoute
   '/api/v1/clusters/': typeof ApiV1ClustersIndexRoute
   '/api/v1/credits/': typeof ApiV1CreditsIndexRoute
+  '/api/v1/feedback/': typeof ApiV1FeedbackIndexRoute
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
@@ -363,7 +385,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/ajuda': typeof AuthenticatedAjudaRoute
   '/atualizacoes': typeof AuthenticatedAtualizacoesRoute
@@ -372,6 +394,7 @@ export interface FileRoutesByTo {
   '/criador': typeof AuthenticatedCriadorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/desempenho': typeof AuthenticatedDesempenhoRoute
+  '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
@@ -381,6 +404,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
+  '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -403,6 +427,7 @@ export interface FileRoutesByTo {
   '/api/v1/articles': typeof ApiV1ArticlesIndexRoute
   '/api/v1/clusters': typeof ApiV1ClustersIndexRoute
   '/api/v1/credits': typeof ApiV1CreditsIndexRoute
+  '/api/v1/feedback': typeof ApiV1FeedbackIndexRoute
   '/api/v1/plans': typeof ApiV1PlansIndexRoute
   '/api/v1/profile': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling': typeof ApiV1SchedulingIndexRoute
@@ -414,7 +439,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/_authenticated/ajuda': typeof AuthenticatedAjudaRoute
   '/_authenticated/atualizacoes': typeof AuthenticatedAtualizacoesRoute
@@ -423,6 +448,7 @@ export interface FileRoutesById {
   '/_authenticated/criador': typeof AuthenticatedCriadorRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/desempenho': typeof AuthenticatedDesempenhoRoute
+  '/_authenticated/feedback': typeof AuthenticatedFeedbackRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
@@ -432,6 +458,7 @@ export interface FileRoutesById {
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
+  '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -454,6 +481,7 @@ export interface FileRoutesById {
   '/api/v1/articles/': typeof ApiV1ArticlesIndexRoute
   '/api/v1/clusters/': typeof ApiV1ClustersIndexRoute
   '/api/v1/credits/': typeof ApiV1CreditsIndexRoute
+  '/api/v1/feedback/': typeof ApiV1FeedbackIndexRoute
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
@@ -474,6 +502,7 @@ export interface FileRouteTypes {
     | '/criador'
     | '/dashboard'
     | '/desempenho'
+    | '/feedback'
     | '/financeiro'
     | '/generate'
     | '/library'
@@ -483,6 +512,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/recompensas'
     | '/verificar-blog'
+    | '/admin/feedback'
     | '/blogger/callback'
     | '/library/$id'
     | '/api/v1/health'
@@ -505,6 +535,7 @@ export interface FileRouteTypes {
     | '/api/v1/articles/'
     | '/api/v1/clusters/'
     | '/api/v1/credits/'
+    | '/api/v1/feedback/'
     | '/api/v1/plans/'
     | '/api/v1/profile/'
     | '/api/v1/scheduling/'
@@ -523,6 +554,7 @@ export interface FileRouteTypes {
     | '/criador'
     | '/dashboard'
     | '/desempenho'
+    | '/feedback'
     | '/financeiro'
     | '/generate'
     | '/library'
@@ -532,6 +564,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/recompensas'
     | '/verificar-blog'
+    | '/admin/feedback'
     | '/blogger/callback'
     | '/library/$id'
     | '/api/v1/health'
@@ -554,6 +587,7 @@ export interface FileRouteTypes {
     | '/api/v1/articles'
     | '/api/v1/clusters'
     | '/api/v1/credits'
+    | '/api/v1/feedback'
     | '/api/v1/plans'
     | '/api/v1/profile'
     | '/api/v1/scheduling'
@@ -573,6 +607,7 @@ export interface FileRouteTypes {
     | '/_authenticated/criador'
     | '/_authenticated/dashboard'
     | '/_authenticated/desempenho'
+    | '/_authenticated/feedback'
     | '/_authenticated/financeiro'
     | '/_authenticated/generate'
     | '/_authenticated/library'
@@ -582,6 +617,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pricing'
     | '/_authenticated/recompensas'
     | '/_authenticated/verificar-blog'
+    | '/_authenticated/admin/feedback'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
     | '/api/v1/health'
@@ -604,6 +640,7 @@ export interface FileRouteTypes {
     | '/api/v1/articles/'
     | '/api/v1/clusters/'
     | '/api/v1/credits/'
+    | '/api/v1/feedback/'
     | '/api/v1/plans/'
     | '/api/v1/profile/'
     | '/api/v1/scheduling/'
@@ -635,6 +672,7 @@ export interface RootRouteChildren {
   ApiV1ArticlesIndexRoute: typeof ApiV1ArticlesIndexRoute
   ApiV1ClustersIndexRoute: typeof ApiV1ClustersIndexRoute
   ApiV1CreditsIndexRoute: typeof ApiV1CreditsIndexRoute
+  ApiV1FeedbackIndexRoute: typeof ApiV1FeedbackIndexRoute
   ApiV1PlansIndexRoute: typeof ApiV1PlansIndexRoute
   ApiV1ProfileIndexRoute: typeof ApiV1ProfileIndexRoute
   ApiV1SchedulingIndexRoute: typeof ApiV1SchedulingIndexRoute
@@ -732,6 +770,13 @@ declare module '@tanstack/react-router' {
       path: '/financeiro'
       fullPath: '/financeiro'
       preLoaderRoute: typeof AuthenticatedFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/feedback': {
+      id: '/_authenticated/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof AuthenticatedFeedbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/desempenho': {
@@ -832,6 +877,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/feedback': {
+      id: '/_authenticated/admin/feedback'
+      path: '/feedback'
+      fullPath: '/admin/feedback'
+      preLoaderRoute: typeof AuthenticatedAdminFeedbackRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/api/v1/smart-profile/': {
       id: '/api/v1/smart-profile/'
       path: '/api/v1/smart-profile'
@@ -858,6 +910,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/plans'
       fullPath: '/api/v1/plans/'
       preLoaderRoute: typeof ApiV1PlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/feedback/': {
+      id: '/api/v1/feedback/'
+      path: '/api/v1/feedback'
+      fullPath: '/api/v1/feedback/'
+      preLoaderRoute: typeof ApiV1FeedbackIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/credits/': {
@@ -982,6 +1041,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminFeedbackRoute: typeof AuthenticatedAdminFeedbackRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminFeedbackRoute: AuthenticatedAdminFeedbackRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedLibraryRouteChildren {
   AuthenticatedLibraryIdRoute: typeof AuthenticatedLibraryIdRoute
 }
@@ -994,7 +1064,7 @@ const AuthenticatedLibraryRouteWithChildren =
   AuthenticatedLibraryRoute._addFileChildren(AuthenticatedLibraryRouteChildren)
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAgendamentosRoute: typeof AuthenticatedAgendamentosRoute
   AuthenticatedAjudaRoute: typeof AuthenticatedAjudaRoute
   AuthenticatedAtualizacoesRoute: typeof AuthenticatedAtualizacoesRoute
@@ -1003,6 +1073,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCriadorRoute: typeof AuthenticatedCriadorRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDesempenhoRoute: typeof AuthenticatedDesempenhoRoute
+  AuthenticatedFeedbackRoute: typeof AuthenticatedFeedbackRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
@@ -1016,7 +1087,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAgendamentosRoute: AuthenticatedAgendamentosRoute,
   AuthenticatedAjudaRoute: AuthenticatedAjudaRoute,
   AuthenticatedAtualizacoesRoute: AuthenticatedAtualizacoesRoute,
@@ -1025,6 +1096,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCriadorRoute: AuthenticatedCriadorRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDesempenhoRoute: AuthenticatedDesempenhoRoute,
+  AuthenticatedFeedbackRoute: AuthenticatedFeedbackRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
@@ -1066,6 +1138,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1ArticlesIndexRoute: ApiV1ArticlesIndexRoute,
   ApiV1ClustersIndexRoute: ApiV1ClustersIndexRoute,
   ApiV1CreditsIndexRoute: ApiV1CreditsIndexRoute,
+  ApiV1FeedbackIndexRoute: ApiV1FeedbackIndexRoute,
   ApiV1PlansIndexRoute: ApiV1PlansIndexRoute,
   ApiV1ProfileIndexRoute: ApiV1ProfileIndexRoute,
   ApiV1SchedulingIndexRoute: ApiV1SchedulingIndexRoute,
