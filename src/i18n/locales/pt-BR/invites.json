@@ -1,0 +1,32 @@
+{
+  "title": "Indique e Ganhe",
+  "subtitle": "Compartilhe seu link. Ganhe 30 créditos para cada novo usuário qualificado.",
+  "your_link": "Seu link exclusivo",
+  "your_code": "Seu código",
+  "copy": "Copiar link",
+  "copied": "Link copiado!",
+  "share": "Compartilhar",
+  "share_text": "Descubra o BlogAI Pro — geração de blog com IA. Use meu link:",
+  "qr_code": "QR Code",
+  "stats": {
+    "total": "Convites",
+    "rewarded": "Recompensados",
+    "pending": "Pendentes",
+    "credits": "Créditos ganhos"
+  },
+  "history": {
+    "title": "Histórico",
+    "empty": "Nenhuma indicação ainda. Compartilhe seu link!",
+    "status": {
+      "pending": "Aguardando",
+      "qualified": "Qualificado",
+      "rewarded": "Recompensado"
+    }
+  },
+  "how_it_works": {
+    "title": "Como funciona",
+    "step1": "Compartilhe seu link único ou QR Code.",
+    "step2": "Um novo usuário cria a conta pelo seu link.",
+    "step3": "Quando ele gerar o primeiro artigo, você ganha 30 créditos automaticamente."
+  }
+}

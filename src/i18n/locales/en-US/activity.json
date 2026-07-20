@@ -1,0 +1,27 @@
+{
+  "title": "My Activity",
+  "subtitle": "Timeline of your important events on BlogAI Pro.",
+  "filters": {
+    "range": "Range",
+    "category": "Category",
+    "today": "Today",
+    "7d": "Last 7 days",
+    "30d": "Last 30 days",
+    "all": "All",
+    "all_categories": "All categories"
+  },
+  "categories": {
+    "content": "Content",
+    "publish": "Publishing",
+    "image": "Image",
+    "payment": "Payment",
+    "plan": "Plan",
+    "credits": "Credits",
+    "auth": "Access",
+    "feedback": "Feedback",
+    "profile": "Profile",
+    "invite": "Invite"
+  },
+  "empty": "No events in this range.",
+  "load_more": "Load more"
+}

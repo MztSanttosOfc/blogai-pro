@@ -1,0 +1,40 @@
+{
+  "title": "Analytics",
+  "subtitle": "Painel global de uso do BlogAI Pro (apenas administradores).",
+  "sections": {
+    "content": "Conteúdo",
+    "users": "Usuários",
+    "credits": "Créditos",
+    "usage": "Uso",
+    "ai": "IA e Convites"
+  },
+  "cards": {
+    "articles_total": "Artigos gerados",
+    "articles_published": "Artigos publicados",
+    "articles_scheduled": "Artigos agendados",
+    "pages_total": "Páginas geradas",
+    "pages_published": "Páginas publicadas",
+    "users_total": "Usuários totais",
+    "users_new_7d": "Novos (7 dias)",
+    "users_new_30d": "Novos (30 dias)",
+    "users_active_7d": "Ativos (7 dias)",
+    "users_active_30d": "Ativos (30 dias)",
+    "credits_granted": "Créditos concedidos",
+    "credits_purchased": "Créditos comprados",
+    "credits_consumed": "Créditos consumidos",
+    "credits_avg": "Média por usuário",
+    "articles_per_user": "Média de artigos por usuário",
+    "pages_per_user": "Média de páginas por usuário",
+    "events_24h": "Eventos (24h)",
+    "events_7d": "Eventos (7 dias)",
+    "invites_total": "Convites resgatados",
+    "invites_rewarded": "Convites recompensados",
+    "invites_credits": "Créditos distribuídos por indicação"
+  },
+  "charts": {
+    "by_plan": "Distribuição por plano",
+    "top_categories": "Categorias mais utilizadas"
+  },
+  "empty": "Sem dados disponíveis.",
+  "forbidden": "Acesso restrito a administradores."
+}

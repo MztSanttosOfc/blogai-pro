@@ -1,0 +1,27 @@
+{
+  "title": "Minha Atividade",
+  "subtitle": "Timeline dos seus eventos importantes no BlogAI Pro.",
+  "filters": {
+    "range": "Período",
+    "category": "Categoria",
+    "today": "Hoje",
+    "7d": "Últimos 7 dias",
+    "30d": "Últimos 30 dias",
+    "all": "Tudo",
+    "all_categories": "Todas categorias"
+  },
+  "categories": {
+    "content": "Conteúdo",
+    "publish": "Publicação",
+    "image": "Imagem",
+    "payment": "Pagamento",
+    "plan": "Plano",
+    "credits": "Créditos",
+    "auth": "Acesso",
+    "feedback": "Feedback",
+    "profile": "Perfil",
+    "invite": "Convite"
+  },
+  "empty": "Nenhum evento neste período.",
+  "load_more": "Carregar mais"
+}
