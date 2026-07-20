@@ -146,7 +146,7 @@ function useDefaultImageStyle(): ImageStyleKey {
     queryFn: () => fetchSmart(),
     staleTime: 5 * 60 * 1000,
   });
-  const key = q.data?.profile?.ai_prefs?.preferred_image_style as ImageStyleKey | undefined;
+  const key = q.data?.ai_prefs?.preferred_image_style as ImageStyleKey | undefined;
   return key && IMAGE_STYLES.some((s) => s.key === key) ? key : DEFAULT_IMAGE_STYLE;
 }
 
