@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Library, Copy, Trash2, Eye, Search, FileText, Send, Loader2, Pencil } from "lucide-react";
 import { publishArticleToBlogger, getBloggerStatus } from "@/lib/blogger.functions";
@@ -37,6 +38,7 @@ function LibraryRoutePage() {
 }
 
 function LibraryPage() {
+  const { t, i18n } = useTranslation("library");
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -70,11 +72,11 @@ function LibraryPage() {
       .from("articles")
       .insert({ ...rest, title: `${rest.title} (cópia)`, status: "draft" });
     if (error) {
-      toast.error("Erro ao duplicar artigo.");
+      toast.error(t("toasts.duplicateError"));
       return;
     }
     await queryClient.invalidateQueries({ queryKey: ["articles"] });
-    toast.success("Artigo duplicado!");
+    toast.success(t("toasts.duplicated"));
   };
 
   const handleDelete = async () => {
@@ -82,11 +84,11 @@ function LibraryPage() {
     const { error } = await supabase.from("articles").delete().eq("id", deleteId);
     setDeleteId(null);
     if (error) {
-      toast.error("Erro ao excluir artigo.");
+      toast.error(t("toasts.deleteError"));
       return;
     }
     await queryClient.invalidateQueries({ queryKey: ["articles"] });
-    toast.success("Artigo excluído.");
+    toast.success(t("toasts.deleted"));
   };
 
   const handlePublish = async (articleId: string) => {
@@ -94,46 +96,44 @@ function LibraryPage() {
     try {
       const status = await bloggerStatusFn();
       if (!status.connected || !status.selectedBlogId) {
-        toast.error(
-          status.connected
-            ? "Selecione um blog de destino na página de conexões."
-            : "Conecte sua conta do Blogger primeiro.",
-        );
+        toast.error(status.connected ? t("toasts.selectBlog") : t("toasts.connectFirst"));
         navigate({ to: "/connections" });
         return;
       }
       const res = await publishFn({ data: { articleId } });
       await queryClient.invalidateQueries({ queryKey: ["articles"] });
-      toast.success("Artigo publicado no Blogger!", {
+      toast.success(t("toasts.published"), {
         action: res.url
-          ? { label: "Abrir", onClick: () => window.open(res.url, "_blank") }
+          ? { label: t("actions.open"), onClick: () => window.open(res.url, "_blank") }
           : undefined,
       });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao publicar no Blogger.");
+      toast.error(e instanceof Error ? e.message : t("toasts.publishError"));
     } finally {
       setPublishingId(null);
     }
   };
+
+  const dateLocale = i18n.language === "en-US" ? "en-US" : "pt-BR";
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <h1 className="flex items-center gap-2 text-2xl font-bold md:text-3xl">
-            <Library className="h-6 w-6 text-primary" /> Biblioteca
+            <Library className="h-6 w-6 text-primary" /> {t("title")}
           </h1>
-          <p className="text-muted-foreground">Gerencie todos os seus artigos gerados.</p>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         <Button asChild variant="hero">
-          <Link to="/generate">Novo artigo</Link>
+          <Link to="/generate">{t("newArticle")}</Link>
         </Button>
       </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Buscar por título ou palavra-chave..."
+          placeholder={t("searchPh")}
           className="pl-9"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -141,13 +141,13 @@ function LibraryPage() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Carregando...</p>
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
       ) : filtered.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
           <FileText className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">Nenhum artigo encontrado.</p>
+          <p className="text-sm text-muted-foreground">{t("empty")}</p>
           <Button asChild variant="hero">
-            <Link to="/generate">Gerar artigo</Link>
+            <Link to="/generate">{t("generateArticle")}</Link>
           </Button>
         </Card>
       ) : (
@@ -161,25 +161,26 @@ function LibraryPage() {
                 <div className="flex items-center gap-2">
                   <h3 className="truncate font-semibold">{a.title || a.keyword}</h3>
                   <Badge variant={a.status === "published" ? "default" : "secondary"}>
-                    {a.status === "published" ? "Publicado" : "Rascunho"}
+                    {a.status === "published" ? t("status.published") : t("status.draft")}
                   </Badge>
                 </div>
                 <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">
                   {a.meta_description || a.keyword}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {a.word_count} palavras · {new Date(a.created_at).toLocaleDateString("pt-BR")}
+                  {t("wordsCount", { count: a.word_count })} ·{" "}
+                  {new Date(a.created_at).toLocaleDateString(dateLocale)}
                 </p>
               </div>
               <div className="flex items-center gap-1">
                 <Button asChild variant="outline" size="sm">
                   <Link to="/library/$id" params={{ id: a.id }}>
-                    <Eye className="h-4 w-4" /> Ver
+                    <Eye className="h-4 w-4" /> {t("actions.view")}
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="sm">
                   <Link to="/library/$id" params={{ id: a.id }} search={{ edit: true }}>
-                    <Pencil className="h-4 w-4" /> Editar
+                    <Pencil className="h-4 w-4" /> {t("actions.edit")}
                   </Link>
                 </Button>
                 <Button
@@ -193,13 +194,13 @@ function LibraryPage() {
                   ) : (
                     <Send className="h-4 w-4" />
                   )}
-                  Publicar
+                  {t("actions.publish")}
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDuplicate(a)}
-                  aria-label="Duplicar"
+                  aria-label={t("actions.duplicate")}
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -208,7 +209,7 @@ function LibraryPage() {
                   size="icon"
                   className="text-destructive hover:text-destructive"
                   onClick={() => setDeleteId(a.id)}
-                  aria-label="Excluir"
+                  aria-label={t("actions.delete")}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -221,14 +222,12 @@ function LibraryPage() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir artigo?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta ação não pode ser desfeita. O artigo será removido permanentemente.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("delete.description")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Excluir</AlertDialogAction>
+            <AlertDialogCancel>{t("delete.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>{t("delete.confirm")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
