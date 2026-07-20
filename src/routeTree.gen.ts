@@ -50,6 +50,7 @@ import { Route as ApiV1ApiKeysIndexRouteImport } from './routes/api/v1/api-keys/
 import { Route as ApiV1SubscriptionsCurrentRouteImport } from './routes/api/v1/subscriptions/current'
 import { Route as ApiV1SeoStatusRouteImport } from './routes/api/v1/seo/status'
 import { Route as ApiV1SchedulingIdRouteImport } from './routes/api/v1/scheduling/$id'
+import { Route as ApiV1PaymentsCheckoutRouteImport } from './routes/api/v1/payments/checkout'
 import { Route as ApiV1CreditsTransactionsRouteImport } from './routes/api/v1/credits/transactions'
 import { Route as ApiV1ClustersIdRouteImport } from './routes/api/v1/clusters/$id'
 import { Route as ApiV1BloggerStatusRouteImport } from './routes/api/v1/blogger/status'
@@ -59,6 +60,7 @@ import { Route as ApiV1AuthLoginRouteImport } from './routes/api/v1/auth/login'
 import { Route as ApiV1ArticlesIdRouteImport } from './routes/api/v1/articles/$id'
 import { Route as ApiV1ApiKeysIdRouteImport } from './routes/api/v1/api-keys/$id'
 import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/public/webhooks/syncpay'
+import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicHooksPublishScheduledRouteImport } from './routes/api/public/hooks/publish-scheduled'
 
 const SignupRoute = SignupRouteImport.update({
@@ -275,6 +277,11 @@ const ApiV1SchedulingIdRoute = ApiV1SchedulingIdRouteImport.update({
   path: '/api/v1/scheduling/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1PaymentsCheckoutRoute = ApiV1PaymentsCheckoutRouteImport.update({
+  id: '/api/v1/payments/checkout',
+  path: '/api/v1/payments/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1CreditsTransactionsRoute =
   ApiV1CreditsTransactionsRouteImport.update({
     id: '/api/v1/credits/transactions',
@@ -322,6 +329,11 @@ const ApiPublicWebhooksSyncpayRoute =
     path: '/api/public/webhooks/syncpay',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
+  id: '/api/public/webhooks/stripe',
+  path: '/api/public/webhooks/stripe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksPublishScheduledRoute =
   ApiPublicHooksPublishScheduledRouteImport.update({
     id: '/api/public/hooks/publish-scheduled',
@@ -359,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
@@ -368,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/payments/checkout': typeof ApiV1PaymentsCheckoutRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
@@ -411,6 +425,7 @@ export interface FileRoutesByTo {
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
@@ -420,6 +435,7 @@ export interface FileRoutesByTo {
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/payments/checkout': typeof ApiV1PaymentsCheckoutRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
@@ -465,6 +481,7 @@ export interface FileRoutesById {
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
   '/api/v1/api-keys/$id': typeof ApiV1ApiKeysIdRoute
   '/api/v1/articles/$id': typeof ApiV1ArticlesIdRoute
@@ -474,6 +491,7 @@ export interface FileRoutesById {
   '/api/v1/blogger/status': typeof ApiV1BloggerStatusRoute
   '/api/v1/clusters/$id': typeof ApiV1ClustersIdRoute
   '/api/v1/credits/transactions': typeof ApiV1CreditsTransactionsRoute
+  '/api/v1/payments/checkout': typeof ApiV1PaymentsCheckoutRoute
   '/api/v1/scheduling/$id': typeof ApiV1SchedulingIdRoute
   '/api/v1/seo/status': typeof ApiV1SeoStatusRoute
   '/api/v1/subscriptions/current': typeof ApiV1SubscriptionsCurrentRoute
@@ -519,6 +537,7 @@ export interface FileRouteTypes {
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
     | '/api/public/hooks/publish-scheduled'
+    | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
@@ -528,6 +547,7 @@ export interface FileRouteTypes {
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
+    | '/api/v1/payments/checkout'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
@@ -571,6 +591,7 @@ export interface FileRouteTypes {
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
     | '/api/public/hooks/publish-scheduled'
+    | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
@@ -580,6 +601,7 @@ export interface FileRouteTypes {
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
+    | '/api/v1/payments/checkout'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
@@ -624,6 +646,7 @@ export interface FileRouteTypes {
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
     | '/api/public/hooks/publish-scheduled'
+    | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
     | '/api/v1/api-keys/$id'
     | '/api/v1/articles/$id'
@@ -633,6 +656,7 @@ export interface FileRouteTypes {
     | '/api/v1/blogger/status'
     | '/api/v1/clusters/$id'
     | '/api/v1/credits/transactions'
+    | '/api/v1/payments/checkout'
     | '/api/v1/scheduling/$id'
     | '/api/v1/seo/status'
     | '/api/v1/subscriptions/current'
@@ -656,6 +680,7 @@ export interface RootRouteChildren {
   ApiV1LogsRoute: typeof ApiV1LogsRoute
   ApiV1OpenapiDotjsonRoute: typeof ApiV1OpenapiDotjsonRoute
   ApiPublicHooksPublishScheduledRoute: typeof ApiPublicHooksPublishScheduledRoute
+  ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicWebhooksSyncpayRoute: typeof ApiPublicWebhooksSyncpayRoute
   ApiV1ApiKeysIdRoute: typeof ApiV1ApiKeysIdRoute
   ApiV1ArticlesIdRoute: typeof ApiV1ArticlesIdRoute
@@ -665,6 +690,7 @@ export interface RootRouteChildren {
   ApiV1BloggerStatusRoute: typeof ApiV1BloggerStatusRoute
   ApiV1ClustersIdRoute: typeof ApiV1ClustersIdRoute
   ApiV1CreditsTransactionsRoute: typeof ApiV1CreditsTransactionsRoute
+  ApiV1PaymentsCheckoutRoute: typeof ApiV1PaymentsCheckoutRoute
   ApiV1SchedulingIdRoute: typeof ApiV1SchedulingIdRoute
   ApiV1SeoStatusRoute: typeof ApiV1SeoStatusRoute
   ApiV1SubscriptionsCurrentRoute: typeof ApiV1SubscriptionsCurrentRoute
@@ -968,6 +994,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SchedulingIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/payments/checkout': {
+      id: '/api/v1/payments/checkout'
+      path: '/api/v1/payments/checkout'
+      fullPath: '/api/v1/payments/checkout'
+      preLoaderRoute: typeof ApiV1PaymentsCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/credits/transactions': {
       id: '/api/v1/credits/transactions'
       path: '/api/v1/credits/transactions'
@@ -1029,6 +1062,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/webhooks/syncpay'
       fullPath: '/api/public/webhooks/syncpay'
       preLoaderRoute: typeof ApiPublicWebhooksSyncpayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/stripe': {
+      id: '/api/public/webhooks/stripe'
+      path: '/api/public/webhooks/stripe'
+      fullPath: '/api/public/webhooks/stripe'
+      preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/publish-scheduled': {
@@ -1122,6 +1162,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1LogsRoute: ApiV1LogsRoute,
   ApiV1OpenapiDotjsonRoute: ApiV1OpenapiDotjsonRoute,
   ApiPublicHooksPublishScheduledRoute: ApiPublicHooksPublishScheduledRoute,
+  ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicWebhooksSyncpayRoute: ApiPublicWebhooksSyncpayRoute,
   ApiV1ApiKeysIdRoute: ApiV1ApiKeysIdRoute,
   ApiV1ArticlesIdRoute: ApiV1ArticlesIdRoute,
@@ -1131,6 +1172,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1BloggerStatusRoute: ApiV1BloggerStatusRoute,
   ApiV1ClustersIdRoute: ApiV1ClustersIdRoute,
   ApiV1CreditsTransactionsRoute: ApiV1CreditsTransactionsRoute,
+  ApiV1PaymentsCheckoutRoute: ApiV1PaymentsCheckoutRoute,
   ApiV1SchedulingIdRoute: ApiV1SchedulingIdRoute,
   ApiV1SeoStatusRoute: ApiV1SeoStatusRoute,
   ApiV1SubscriptionsCurrentRoute: ApiV1SubscriptionsCurrentRoute,
