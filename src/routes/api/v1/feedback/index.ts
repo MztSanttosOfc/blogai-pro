@@ -28,7 +28,7 @@ export const Route = createFileRoute("/api/v1/feedback/")({
         try {
           body = await request.json();
         } catch {
-          throw new ApiError("bad_request", "Body inválido.", 400);
+          throw new ApiError("invalid_body", "Body inválido.", 400);
         }
         const parsed = CreateSchema.safeParse(body);
         if (!parsed.success) {
