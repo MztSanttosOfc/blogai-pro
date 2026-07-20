@@ -120,6 +120,7 @@ interface GenerateInput {
   slug?: string;
   metaHint?: string;
   structure?: string[];
+  imageStyle?: string;
 }
 
 function useGenerate() {
@@ -135,6 +136,47 @@ function useGenerate() {
     toast.success("Artigo gerado com sucesso!");
     navigate({ to: "/library/$id", params: { id: result.article.id } });
   };
+}
+
+/** Hook: lê o estilo padrão de imagem do Perfil Inteligente (fonte única). */
+function useDefaultImageStyle(): ImageStyleKey {
+  const fetchSmart = useServerFn(getSmartProfile);
+  const q = useQuery({
+    queryKey: ["smart-profile", "image-style-default"],
+    queryFn: () => fetchSmart(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const key = q.data?.profile?.ai_prefs?.preferred_image_style as ImageStyleKey | undefined;
+  return key && IMAGE_STYLES.some((s) => s.key === key) ? key : DEFAULT_IMAGE_STYLE;
+}
+
+/** Seletor reutilizável de estilo de imagem. */
+function ImageStylePicker({
+  value,
+  onChange,
+}: {
+  value: ImageStyleKey;
+  onChange: (v: ImageStyleKey) => void;
+}) {
+  const current = IMAGE_STYLES.find((s) => s.key === value) ?? IMAGE_STYLES[0];
+  return (
+    <div className="space-y-2">
+      <Label>Estilo das imagens</Label>
+      <Select value={value} onValueChange={(v) => onChange(v as ImageStyleKey)}>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {IMAGE_STYLES.map((s) => (
+            <SelectItem key={s.key} value={s.key}>
+              {s.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground">{current.description}</p>
+    </div>
+  );
 }
 
 /* -------------------------------------------------------------------------- */
