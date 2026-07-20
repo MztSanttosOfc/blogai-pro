@@ -334,6 +334,37 @@ export function buildOpenApiDocument(origin: string) {
           responses: { "200": envelopeResponse("Assinatura"), ...commonErrors },
         },
       },
+      "/payments/checkout": {
+        post: {
+          summary:
+            "Cria um checkout usando o gateway correto (BRL → SyncPay/Pix, USD → Stripe).",
+          parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["plan_id", "currency"],
+                  properties: {
+                    plan_id: { type: "string", enum: ["pro", "premium", "teste"] },
+                    currency: { type: "string", enum: ["BRL", "USD"] },
+                    recurring: { type: "boolean" },
+                    success_url: { type: "string", format: "uri" },
+                    cancel_url: { type: "string", format: "uri" },
+                    cpf: { type: "string", description: "Obrigatório para BRL." },
+                    phone: { type: "string", description: "Obrigatório para BRL." },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            "200": envelopeResponse("Checkout criado (URL Stripe ou Pix)"),
+            ...commonErrors,
+          },
+        },
+      },
       "/blogger/status": {
         get: {
           summary: "Status da integração Blogger",
