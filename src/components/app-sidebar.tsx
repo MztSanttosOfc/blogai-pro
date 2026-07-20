@@ -195,7 +195,10 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-3">
+      <SidebarFooter className="space-y-2 border-t border-sidebar-border p-3">
+        <div className="px-1">
+          <LanguageSwitcher />
+        </div>
         <div className="flex items-center gap-3 px-1">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
             {(profile?.full_name ?? user?.email ?? "U").charAt(0).toUpperCase()}
