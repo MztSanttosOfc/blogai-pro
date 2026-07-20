@@ -542,6 +542,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          locale: string
           plan: Database["public"]["Enums"]["user_plan"]
           updated_at: string
         }
@@ -551,6 +552,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
           updated_at?: string
         }
@@ -560,6 +562,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          locale?: string
           plan?: Database["public"]["Enums"]["user_plan"]
           updated_at?: string
         }
@@ -1020,6 +1023,51 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_smart_profile: {
+        Row: {
+          ai_prefs: Json
+          blogger: Json
+          contacts: Json
+          created_at: string
+          default_links: Json
+          feature_flags: Json
+          personal: Json
+          seo_prefs: Json
+          signature: string | null
+          social_links: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_prefs?: Json
+          blogger?: Json
+          contacts?: Json
+          created_at?: string
+          default_links?: Json
+          feature_flags?: Json
+          personal?: Json
+          seo_prefs?: Json
+          signature?: string | null
+          social_links?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_prefs?: Json
+          blogger?: Json
+          contacts?: Json
+          created_at?: string
+          default_links?: Json
+          feature_flags?: Json
+          personal?: Json
+          seo_prefs?: Json
+          signature?: string | null
+          social_links?: Json
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

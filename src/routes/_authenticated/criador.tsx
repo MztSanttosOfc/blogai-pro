@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/criador")({
       {
         name: "description",
         content:
-          "Conheça Monzart Santtos, criador do BlogAI Pro — blogueiro, especialista em SEO, monetização e desenvolvedor da plataforma.",
+          "Conheça Júnnior Monzart, criador do BlogAI Pro — blogueiro, especialista em SEO, monetização e desenvolvedor da plataforma.",
       },
       { property: "og:title", content: "Conheça o Criador — BlogAI Pro" },
       {
@@ -199,7 +199,7 @@ function CreatorPage() {
               <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-primary/40 blur-lg opacity-70" aria-hidden />
               <img
                 src={creatorPortrait}
-                alt="Foto oficial de Monzart Santtos, criador do BlogAI Pro"
+                alt="Foto oficial de Júnnior Monzart, criador do BlogAI Pro"
                 loading="lazy"
                 decoding="async"
                 width={1135}
@@ -213,7 +213,7 @@ function CreatorPage() {
               <Sparkles className="mr-1 h-3 w-3" /> Criador do BlogAI Pro
             </Badge>
             <h1 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
-              Monzart Santtos
+              Júnnior Monzart
             </h1>
             <p className="text-base text-white/80 md:text-lg">
               Blogueiro, especialista em SEO, monetização e desenvolvedor por trás do BlogAI Pro —

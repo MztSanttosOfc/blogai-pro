@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
 import { Route as AuthenticatedRecompensasRouteImport } from './routes/_authenticated/recompensas'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedPerfilInteligenteRouteImport } from './routes/_authenticated/perfil-inteligente'
 import { Route as AuthenticatedPaginasRouteImport } from './routes/_authenticated/paginas'
 import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenticated/monetizacao'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
@@ -35,6 +36,7 @@ import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
+import { Route as ApiV1SmartProfileIndexRouteImport } from './routes/api/v1/smart-profile/index'
 import { Route as ApiV1SchedulingIndexRouteImport } from './routes/api/v1/scheduling/index'
 import { Route as ApiV1ProfileIndexRouteImport } from './routes/api/v1/profile/index'
 import { Route as ApiV1PlansIndexRouteImport } from './routes/api/v1/plans/index'
@@ -92,6 +94,12 @@ const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPerfilInteligenteRoute =
+  AuthenticatedPerfilInteligenteRouteImport.update({
+    id: '/perfil-inteligente',
+    path: '/perfil-inteligente',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPaginasRoute = AuthenticatedPaginasRouteImport.update({
   id: '/paginas',
   path: '/paginas',
@@ -192,6 +200,11 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiV1SmartProfileIndexRoute = ApiV1SmartProfileIndexRouteImport.update({
+  id: '/api/v1/smart-profile/',
+  path: '/api/v1/smart-profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1SchedulingIndexRoute = ApiV1SchedulingIndexRouteImport.update({
   id: '/api/v1/scheduling/',
   path: '/api/v1/scheduling/',
@@ -315,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
+  '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
@@ -343,6 +357,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
+  '/api/v1/smart-profile/': typeof ApiV1SmartProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -362,6 +377,7 @@ export interface FileRoutesByTo {
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/paginas': typeof AuthenticatedPaginasRoute
+  '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
@@ -390,6 +406,7 @@ export interface FileRoutesByTo {
   '/api/v1/plans': typeof ApiV1PlansIndexRoute
   '/api/v1/profile': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling': typeof ApiV1SchedulingIndexRoute
+  '/api/v1/smart-profile': typeof ApiV1SmartProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -411,6 +428,7 @@ export interface FileRoutesById {
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/monetizacao': typeof AuthenticatedMonetizacaoRoute
   '/_authenticated/paginas': typeof AuthenticatedPaginasRoute
+  '/_authenticated/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
@@ -439,6 +457,7 @@ export interface FileRoutesById {
   '/api/v1/plans/': typeof ApiV1PlansIndexRoute
   '/api/v1/profile/': typeof ApiV1ProfileIndexRoute
   '/api/v1/scheduling/': typeof ApiV1SchedulingIndexRoute
+  '/api/v1/smart-profile/': typeof ApiV1SmartProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -460,6 +479,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/monetizacao'
     | '/paginas'
+    | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
     | '/verificar-blog'
@@ -488,6 +508,7 @@ export interface FileRouteTypes {
     | '/api/v1/plans/'
     | '/api/v1/profile/'
     | '/api/v1/scheduling/'
+    | '/api/v1/smart-profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -507,6 +528,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/monetizacao'
     | '/paginas'
+    | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
     | '/verificar-blog'
@@ -535,6 +557,7 @@ export interface FileRouteTypes {
     | '/api/v1/plans'
     | '/api/v1/profile'
     | '/api/v1/scheduling'
+    | '/api/v1/smart-profile'
   id:
     | '__root__'
     | '/'
@@ -555,6 +578,7 @@ export interface FileRouteTypes {
     | '/_authenticated/library'
     | '/_authenticated/monetizacao'
     | '/_authenticated/paginas'
+    | '/_authenticated/perfil-inteligente'
     | '/_authenticated/pricing'
     | '/_authenticated/recompensas'
     | '/_authenticated/verificar-blog'
@@ -583,6 +607,7 @@ export interface FileRouteTypes {
     | '/api/v1/plans/'
     | '/api/v1/profile/'
     | '/api/v1/scheduling/'
+    | '/api/v1/smart-profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -613,6 +638,7 @@ export interface RootRouteChildren {
   ApiV1PlansIndexRoute: typeof ApiV1PlansIndexRoute
   ApiV1ProfileIndexRoute: typeof ApiV1ProfileIndexRoute
   ApiV1SchedulingIndexRoute: typeof ApiV1SchedulingIndexRoute
+  ApiV1SmartProfileIndexRoute: typeof ApiV1SmartProfileIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -664,6 +690,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof AuthenticatedPricingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/perfil-inteligente': {
+      id: '/_authenticated/perfil-inteligente'
+      path: '/perfil-inteligente'
+      fullPath: '/perfil-inteligente'
+      preLoaderRoute: typeof AuthenticatedPerfilInteligenteRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/paginas': {
@@ -798,6 +831,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blogger/callback'
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/v1/smart-profile/': {
+      id: '/api/v1/smart-profile/'
+      path: '/api/v1/smart-profile'
+      fullPath: '/api/v1/smart-profile/'
+      preLoaderRoute: typeof ApiV1SmartProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/v1/scheduling/': {
       id: '/api/v1/scheduling/'
@@ -968,6 +1008,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMonetizacaoRoute: typeof AuthenticatedMonetizacaoRoute
   AuthenticatedPaginasRoute: typeof AuthenticatedPaginasRoute
+  AuthenticatedPerfilInteligenteRoute: typeof AuthenticatedPerfilInteligenteRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedRecompensasRoute: typeof AuthenticatedRecompensasRoute
   AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
@@ -989,6 +1030,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMonetizacaoRoute: AuthenticatedMonetizacaoRoute,
   AuthenticatedPaginasRoute: AuthenticatedPaginasRoute,
+  AuthenticatedPerfilInteligenteRoute: AuthenticatedPerfilInteligenteRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedRecompensasRoute: AuthenticatedRecompensasRoute,
   AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
@@ -1027,6 +1069,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1PlansIndexRoute: ApiV1PlansIndexRoute,
   ApiV1ProfileIndexRoute: ApiV1ProfileIndexRoute,
   ApiV1SchedulingIndexRoute: ApiV1SchedulingIndexRoute,
+  ApiV1SmartProfileIndexRoute: ApiV1SmartProfileIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
