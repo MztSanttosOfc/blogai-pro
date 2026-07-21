@@ -417,7 +417,7 @@ function LandingPage() {
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
                 {t("hero.trustedBy")}
               </p>
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 opacity-60">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-muted-foreground/80">
                 {["Blogger", "WordPress", "Search Console", "AdSense", "Google AI"].map((n) => (
                   <span key={n} className="font-display text-sm font-bold tracking-tight">
                     {n}
