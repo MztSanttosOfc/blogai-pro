@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "title": "BlogAI Pro — The AI blogging platform for serious creators",
+    "description": "Write, optimize and publish SEO-ready articles to Blogger and WordPress in minutes. State-of-the-art AI, performance dashboard, monetization built-in.",
+    "ogTitle": "BlogAI Pro — AI blogging at a professional scale",
+    "ogDescription": "The complete platform for bloggers: AI generation, technical SEO, one-click publishing and monetization."
+  },
+  "nav": {
+    "features": "Features",
+    "how": "How it works",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "signIn": "Sign in",
+    "getStarted": "Get started free"
+  },
+  "hero": {
+    "badge": "New — BlogAI Pro v1.2 is here",
+    "titlePre": "Modern blogging starts with",
+    "titleAccent": "artificial intelligence",
+    "subtitle": "Create SEO-optimized articles, publish to Blogger and WordPress, and track Google performance — all in one platform built by bloggers, for bloggers.",
+    "primaryCta": "Start for free",
+    "secondaryCta": "Watch demo",
+    "microcopy": "10 free credits • No credit card • Cancel anytime",
+    "trustedBy": "Loved by content creators worldwide"
+  },
+  "demo": {
+    "kicker": "Real interface",
+    "title": "From brief to published article in under 60 seconds",
+    "subtitle": "Watch the workflow that saves hours every week.",
+    "steps": {
+      "s1": "Type the topic",
+      "s2": "AI writes and optimizes",
+      "s3": "Publishes to Blogger"
+    }
+  },
+  "benefits": {
+    "title": "Everything a professional blogger needs",
+    "subtitle": "Integrated tools to scale production, traffic and revenue.",
+    "items": {
+      "ai": {
+        "title": "State-of-the-art AI",
+        "desc": "Generative models producing articles with human-sounding structure, tone and voice."
+      },
+      "seo": {
+        "title": "Automatic technical SEO",
+        "desc": "Titles, meta descriptions, FAQ, headings and schema ready to rank."
+      },
+      "publish": {
+        "title": "One-click publishing",
+        "desc": "Official integration with Blogger and a dedicated WordPress plugin."
+      },
+      "performance": {
+        "title": "SEO performance",
+        "desc": "Native Google Search Console dashboard with real-time metrics."
+      },
+      "monetization": {
+        "title": "Built-in monetization",
+        "desc": "AdSense slots, smart internal links and topic clusters."
+      },
+      "i18n": {
+        "title": "Multilingual",
+        "desc": "Create content in Portuguese, English, Spanish and more with one click."
+      }
+    }
+  },
+  "how": {
+    "title": "How it works",
+    "subtitle": "Three steps to turn an idea into organic traffic.",
+    "steps": {
+      "s1": {
+        "title": "Describe the topic",
+        "desc": "Pick keyword, tone, length and language. AI takes it from there."
+      },
+      "s2": {
+        "title": "Review and optimize",
+        "desc": "Edit in a rich editor with SEO, image and internal-link suggestions."
+      },
+      "s3": {
+        "title": "Publish and monitor",
+        "desc": "Ship to Blogger/WordPress and follow performance on Google."
+      }
+    }
+  },
+  "showcase": {
+    "title": "A product crafted down to the last pixel",
+    "subtitle": "Consistent design system, dark mode, smooth animations and full responsiveness.",
+    "captions": {
+      "dashboard": "Dashboard",
+      "editor": "Article editor",
+      "performance": "SEO performance"
+    }
+  },
+  "pricing": {
+    "title": "Plans for every size",
+    "subtitle": "Start free, grow without friction.",
+    "monthly": "Monthly",
+    "popular": "Most popular",
+    "cta": "Choose plan",
+    "ctaFree": "Start free"
+  },
+  "testimonials": {
+    "title": "Bloggers accelerating with BlogAI Pro",
+    "subtitle": "Testimonials from real creators using the platform every day.",
+    "items": {
+      "t1": {
+        "quote": "We tripled output without losing quality. Automatic SEO ranks better than when I did it by hand.",
+        "author": "Marina Alves",
+        "role": "Personal finance blog"
+      },
+      "t2": {
+        "quote": "Direct publishing to Blogger alone would be worth the subscription. The performance dashboard seals the deal.",
+        "author": "Rafael Mendes",
+        "role": "Tech niches"
+      },
+      "t3": {
+        "quote": "Impeccable interface and responsive support. Went from 3 posts a month to 3 a week.",
+        "author": "Camila Rocha",
+        "role": "Wellness blog"
+      },
+      "t4": {
+        "quote": "The smart internal links boosted my session duration by 40%. Insane.",
+        "author": "Diego Barros",
+        "role": "Travel blog"
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Still have doubts? Get in touch.",
+    "items": {
+      "q1": {
+        "q": "Do I need a credit card to start?",
+        "a": "No. You get 10 credits on signup and can test every core feature for free."
+      },
+      "q2": {
+        "q": "Is the generated content original?",
+        "a": "Yes. Articles are produced with state-of-the-art AI and pass originality checks before delivery."
+      },
+      "q3": {
+        "q": "Does it work with WordPress or Blogger only?",
+        "a": "Both. We ship native Blogger integration and an official WordPress plugin."
+      },
+      "q4": {
+        "q": "Can I cancel anytime?",
+        "a": "Absolutely. No lock-in — cancel in one click and keep access until the end of the paid cycle."
+      },
+      "q5": {
+        "q": "Do you accept international payments?",
+        "a": "Yes. Pix (BRL) via SyncPay and international cards (USD) via Stripe."
+      },
+      "q6": {
+        "q": "How does support work?",
+        "a": "Email support for all plans and priority for Pro and Premium customers."
+      }
+    }
+  },
+  "finalCta": {
+    "title": "Ready to scale your blog?",
+    "subtitle": "Join creators who save hours every day with BlogAI Pro.",
+    "primary": "Create my free account",
+    "secondary": "Talk to the creator"
+  },
+  "footer": {
+    "tagline": "The complete platform for modern bloggers.",
+    "product": "Product",
+    "resources": "Resources",
+    "company": "Company",
+    "legal": "Legal",
+    "rights": "All rights reserved.",
+    "links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "changelog": "Changelog",
+      "blog": "Blog",
+      "help": "Help",
+      "api": "API",
+      "creator": "About the creator",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  }
+}
