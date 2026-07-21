@@ -27,9 +27,10 @@ export interface AdSlotRow {
   updated_at: string;
 }
 
-async function assertOwner(supabase: {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-}, userId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyClient = any;
+
+async function assertOwner(supabase: AnyClient, userId: string) {
   const { data, error } = await supabase.rpc("has_role", {
     _user_id: userId,
     _role: "owner",
@@ -38,7 +39,7 @@ async function assertOwner(supabase: {
 }
 
 async function audit(
-  supabase: MinimalClient,
+  supabase: AnyClient,
   adminId: string,
   action: string,
   oldValue: unknown,
@@ -54,30 +55,11 @@ async function audit(
     action,
     admin_id: adminId,
     admin_email: (p as { email?: string } | null)?.email ?? null,
-    old_value: (oldValue ?? null) as never,
-    new_value: (newValue ?? null) as never,
+    old_value: oldValue ?? null,
+    new_value: newValue ?? null,
     details,
   });
 }
-
-type MinimalClient = {
-  from: (table: string) => {
-    select: (cols?: string) => {
-      eq: (col: string, val: unknown) => {
-        maybeSingle: () => Promise<{ data: unknown }>;
-      };
-      order?: (col: string, opts?: { ascending?: boolean }) => Promise<{ data: unknown; error: unknown }>;
-    };
-    insert: (row: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> | {
-      select: () => { single: () => Promise<{ data: unknown; error: unknown }> };
-    };
-    update: (row: Record<string, unknown>) => {
-      eq: (col: string, val: unknown) => Promise<{ error: unknown }>;
-    };
-    delete: () => { eq: (col: string, val: unknown) => Promise<{ error: unknown }> };
-  };
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-};
 
 export const monetizationGet = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
