@@ -124,6 +124,63 @@
       }
     }
   },
+  "trust": {
+    "articles": "articles generated",
+    "creators": "active creators",
+    "uptime": "uptime",
+    "rating": "average rating"
+  },
+  "video": {
+    "kicker": "Video demo",
+    "title": "See BlogAI Pro in action",
+    "subtitle": "A 90-second tour of the full flow — from idea to published article.",
+    "placeholder": "Video coming soon — click to watch the interactive demo"
+  },
+  "integrations": {
+    "title": "Native integrations",
+    "subtitle": "Plug into the tools you already use every day.",
+    "items": {
+      "blogger": "Blogger",
+      "wordpress": "WordPress",
+      "gsc": "Search Console",
+      "adsense": "AdSense",
+      "analytics": "Analytics",
+      "stripe": "Stripe",
+      "openai": "Google AI",
+      "zapier": "Zapier"
+    }
+  },
+  "compare": {
+    "title": "Compare every feature",
+    "subtitle": "See in detail what each plan includes.",
+    "feature": "Feature",
+    "rows": {
+      "credits": "Credits per month",
+      "seo": "Automatic technical SEO",
+      "publish": "Blogger/WordPress publishing",
+      "images": "AI-generated images",
+      "clusters": "Topic clusters",
+      "scheduler": "Auto scheduling",
+      "monetization": "Monetization tuning",
+      "support": "Support",
+      "api": "REST API access"
+    },
+    "values": {
+      "supportFree": "Email",
+      "supportPro": "Priority",
+      "supportPremium": "Dedicated"
+    }
+  },
+  "newsletter": {
+    "title": "AI blogging tips in your inbox",
+    "subtitle": "A short newsletter with strategies, product updates and real cases.",
+    "placeholder": "you@email.com",
+    "cta": "Subscribe",
+    "success": "Done! Confirm the email we just sent.",
+    "microcopy": "No spam. Unsubscribe anytime."
+  },
+  "floatingCta": "Start for free",
+
   "faq": {
     "title": "Frequently asked questions",
     "subtitle": "Still have doubts? Get in touch.",

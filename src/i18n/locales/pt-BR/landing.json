@@ -124,6 +124,63 @@
       }
     }
   },
+  "trust": {
+    "articles": "artigos gerados",
+    "creators": "criadores ativos",
+    "uptime": "de uptime",
+    "rating": "avaliação média"
+  },
+  "video": {
+    "kicker": "Demonstração em vídeo",
+    "title": "Veja o BlogAI Pro em ação",
+    "subtitle": "Um tour de 90 segundos pelo fluxo completo: da ideia ao artigo publicado.",
+    "placeholder": "Vídeo em produção — clique para assistir à demonstração interativa"
+  },
+  "integrations": {
+    "title": "Integrações nativas",
+    "subtitle": "Conecte-se com as ferramentas que você já usa todos os dias.",
+    "items": {
+      "blogger": "Blogger",
+      "wordpress": "WordPress",
+      "gsc": "Search Console",
+      "adsense": "AdSense",
+      "analytics": "Analytics",
+      "stripe": "Stripe",
+      "openai": "Google AI",
+      "zapier": "Zapier"
+    }
+  },
+  "compare": {
+    "title": "Compare todos os recursos",
+    "subtitle": "Veja em detalhes o que cada plano oferece.",
+    "feature": "Recurso",
+    "rows": {
+      "credits": "Créditos por mês",
+      "seo": "SEO técnico automático",
+      "publish": "Publicação Blogger/WordPress",
+      "images": "Imagens com IA",
+      "clusters": "Clusters temáticos",
+      "scheduler": "Agendamento automático",
+      "monetization": "Otimização de monetização",
+      "support": "Suporte",
+      "api": "Acesso à API REST"
+    },
+    "values": {
+      "supportFree": "E-mail",
+      "supportPro": "Prioritário",
+      "supportPremium": "Dedicado"
+    }
+  },
+  "newsletter": {
+    "title": "Receba dicas de blogging com IA",
+    "subtitle": "Uma newsletter enxuta com estratégias, atualizações do produto e cases reais.",
+    "placeholder": "seu@email.com",
+    "cta": "Inscrever",
+    "success": "Pronto! Confirme o e-mail que enviamos.",
+    "microcopy": "Sem spam. Cancele quando quiser."
+  },
+  "floatingCta": "Começar Gratuitamente",
+
   "faq": {
     "title": "Perguntas frequentes",
     "subtitle": "Se ainda ficou dúvida, fale com a gente.",
