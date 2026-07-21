@@ -1017,3 +1017,71 @@ function MockScreen({ variant }: { variant: "dashboard" | "editor" | "performanc
     </div>
   );
 }
+
+/* ---------- Newsletter form ---------- */
+function NewsletterForm({ t }: { t: (k: string) => string }) {
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    setSent(true);
+    setEmail("");
+  };
+
+  if (sent) {
+    return (
+      <div className="flex items-center gap-3 rounded-xl border border-success/30 bg-success/5 px-4 py-4 text-sm text-success">
+        <Check className="h-5 w-5 shrink-0" />
+        <span>{t("newsletter.success")}</span>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("newsletter.placeholder")}
+          aria-label={t("newsletter.placeholder")}
+          className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+        <Button type="submit" variant="hero" size="lg" className="shrink-0">
+          {t("newsletter.cta")} <ArrowRight className="h-4 w-4" />
+        </Button>
+      </div>
+      <p className="text-xs text-muted-foreground">{t("newsletter.microcopy")}</p>
+    </form>
+  );
+}
+
+/* ---------- Floating CTA ---------- */
+function FloatingCta({ onClick, label }: { onClick: () => void; label: string }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 600);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={cn(
+        "fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant ring-1 ring-primary/40 transition-all duration-300 hover:scale-105 md:bottom-8 md:right-8",
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
+      )}
+    >
+      <Rocket className="h-4 w-4" />
+      {label}
+    </button>
+  );
+}
+
