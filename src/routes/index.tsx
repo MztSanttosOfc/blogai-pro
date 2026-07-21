@@ -1508,7 +1508,7 @@ function FloatingCta({ onClick, label }: { onClick: () => void; label: string })
       onClick={onClick}
       aria-label={label}
       className={cn(
-        "fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant ring-1 ring-primary/40 transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 md:bottom-8 md:right-8",
+        "fixed bottom-6 right-4 z-40 inline-flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant ring-1 ring-primary/40 transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 md:bottom-8 md:right-8",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
