@@ -1323,7 +1323,7 @@ function VersusCard({
               <span
                 className={cn(
                   "leading-relaxed",
-                  isPro ? "text-foreground/90" : "text-muted-foreground line-through/50",
+                  isPro ? "text-foreground/90" : "text-muted-foreground line-through opacity-70",
                 )}
               >
                 {it}
