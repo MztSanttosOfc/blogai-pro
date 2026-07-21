@@ -81,6 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-adsense-account", content: "ca-pub-7734451387580533" },
       { title: "BlogAI Pro — Crie, otimize e publique blogs com IA" },
       {
         name: "description",
@@ -129,6 +130,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        async: true,
+        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7734451387580533",
+        crossOrigin: "anonymous",
       },
     ],
   }),
