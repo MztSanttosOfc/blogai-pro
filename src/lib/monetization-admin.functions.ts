@@ -105,7 +105,7 @@ export const monetizationUpdateSettings = createServerFn({ method: "POST" })
       .eq("id", true);
     if (error) throw new Error("Falha ao salvar configurações.");
     await audit(
-      supabase as unknown as MinimalClient,
+      supabase,
       userId,
       "monetization.settings.update",
       oldRow,
@@ -145,7 +145,7 @@ export const monetizationUpsertSlot = createServerFn({ method: "POST" })
       const { error } = await supabase.from("ad_slots").update(payload).eq("id", data.id);
       if (error) throw new Error("Falha ao atualizar slot.");
       await audit(
-        supabase as unknown as MinimalClient,
+        supabase,
         userId,
         "monetization.slot.update",
         { id: data.id },
@@ -161,7 +161,7 @@ export const monetizationUpsertSlot = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error("Falha ao criar slot.");
     await audit(
-      supabase as unknown as MinimalClient,
+      supabase,
       userId,
       "monetization.slot.create",
       null,
@@ -182,7 +182,7 @@ export const monetizationDeleteSlot = createServerFn({ method: "POST" })
     const { error } = await supabase.from("ad_slots").delete().eq("id", data.id);
     if (error) throw new Error("Falha ao remover slot.");
     await audit(
-      supabase as unknown as MinimalClient,
+      supabase,
       userId,
       "monetization.slot.delete",
       { id: data.id },
