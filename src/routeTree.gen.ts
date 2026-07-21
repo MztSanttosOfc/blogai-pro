@@ -41,7 +41,6 @@ import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
-import { Route as AuthenticatedAdminMonetizacaoRouteImport } from './routes/_authenticated/admin.monetizacao'
 import { Route as AuthenticatedAdminFeedbackRouteImport } from './routes/_authenticated/admin.feedback'
 import { Route as ApiV1SmartProfileIndexRouteImport } from './routes/api/v1/smart-profile/index'
 import { Route as ApiV1SchedulingIndexRouteImport } from './routes/api/v1/scheduling/index'
@@ -236,12 +235,6 @@ const AuthenticatedBloggerCallbackRoute =
     path: '/blogger/callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAdminMonetizacaoRoute =
-  AuthenticatedAdminMonetizacaoRouteImport.update({
-    id: '/monetizacao',
-    path: '/monetizacao',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminFeedbackRoute =
   AuthenticatedAdminFeedbackRouteImport.update({
     id: '/feedback',
@@ -401,7 +394,6 @@ export interface FileRoutesByFullPath {
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
-  '/admin/monetizacao': typeof AuthenticatedAdminMonetizacaoRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -460,7 +452,6 @@ export interface FileRoutesByTo {
   '/recompensas': typeof AuthenticatedRecompensasRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
-  '/admin/monetizacao': typeof AuthenticatedAdminMonetizacaoRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -521,7 +512,6 @@ export interface FileRoutesById {
   '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
-  '/_authenticated/admin/monetizacao': typeof AuthenticatedAdminMonetizacaoRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -582,7 +572,6 @@ export interface FileRouteTypes {
     | '/recompensas'
     | '/verificar-blog'
     | '/admin/feedback'
-    | '/admin/monetizacao'
     | '/blogger/callback'
     | '/library/$id'
     | '/api/v1/health'
@@ -641,7 +630,6 @@ export interface FileRouteTypes {
     | '/recompensas'
     | '/verificar-blog'
     | '/admin/feedback'
-    | '/admin/monetizacao'
     | '/blogger/callback'
     | '/library/$id'
     | '/api/v1/health'
@@ -701,7 +689,6 @@ export interface FileRouteTypes {
     | '/_authenticated/recompensas'
     | '/_authenticated/verificar-blog'
     | '/_authenticated/admin/feedback'
-    | '/_authenticated/admin/monetizacao'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/library/$id'
     | '/api/v1/health'
@@ -993,13 +980,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBloggerCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin/monetizacao': {
-      id: '/_authenticated/admin/monetizacao'
-      path: '/monetizacao'
-      fullPath: '/admin/monetizacao'
-      preLoaderRoute: typeof AuthenticatedAdminMonetizacaoRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/feedback': {
       id: '/_authenticated/admin/feedback'
       path: '/feedback'
@@ -1180,12 +1160,10 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminFeedbackRoute: typeof AuthenticatedAdminFeedbackRoute
-  AuthenticatedAdminMonetizacaoRoute: typeof AuthenticatedAdminMonetizacaoRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminFeedbackRoute: AuthenticatedAdminFeedbackRoute,
-  AuthenticatedAdminMonetizacaoRoute: AuthenticatedAdminMonetizacaoRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =

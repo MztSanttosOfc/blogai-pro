@@ -14,45 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      ad_slots: {
-        Row: {
-          active: boolean
-          created_at: string
-          format: string
-          id: string
-          kind: string
-          name: string
-          notes: string | null
-          position: string
-          slot_code: string | null
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          format?: string
-          id?: string
-          kind?: string
-          name: string
-          notes?: string | null
-          position: string
-          slot_code?: string | null
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          format?: string
-          id?: string
-          kind?: string
-          name?: string
-          notes?: string | null
-          position?: string
-          slot_code?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       admin_audit_logs: {
         Row: {
           action: string
@@ -541,45 +502,6 @@ export type Database = {
           qualified_at?: string | null
           rewarded_at?: string | null
           status?: string
-        }
-        Relationships: []
-      }
-      monetization_settings: {
-        Row: {
-          ads_enabled: boolean
-          ads_txt: string
-          created_at: string
-          disabled_pages: string[]
-          free_only: boolean
-          id: boolean
-          meta_tag: string
-          publisher_id: string
-          script_snippet: string
-          updated_at: string
-        }
-        Insert: {
-          ads_enabled?: boolean
-          ads_txt?: string
-          created_at?: string
-          disabled_pages?: string[]
-          free_only?: boolean
-          id?: boolean
-          meta_tag?: string
-          publisher_id?: string
-          script_snippet?: string
-          updated_at?: string
-        }
-        Update: {
-          ads_enabled?: boolean
-          ads_txt?: string
-          created_at?: string
-          disabled_pages?: string[]
-          free_only?: boolean
-          id?: boolean
-          meta_tag?: string
-          publisher_id?: string
-          script_snippet?: string
-          updated_at?: string
         }
         Relationships: []
       }

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS public.ad_slots CASCADE; DROP TABLE IF EXISTS public.monetization_settings CASCADE;
