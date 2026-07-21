@@ -72,7 +72,7 @@ const premiumItems = [
 
 export function AppSidebar() {
   const navigate = useNavigate();
-  const { profile, user, signOut, isAdmin } = useAuth();
+  const { profile, user, signOut, isAdmin, role } = useAuth();
   const { isMobile, setOpenMobile } = useSidebar();
   const currentPath = useRouterState({ select: (s) => s.location.pathname });
 
@@ -171,6 +171,23 @@ export function AppSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                {role === "owner" && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={currentPath === "/admin/monetizacao"}
+                    >
+                      <Link
+                        to="/admin/monetizacao"
+                        className="flex items-center gap-3"
+                        onClick={closeMobileSidebar}
+                      >
+                        <Coins className="h-4 w-4 text-primary" />
+                        <span>Central de Monetização</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
