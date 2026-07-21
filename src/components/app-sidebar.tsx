@@ -72,7 +72,7 @@ const premiumItems = [
 
 export function AppSidebar() {
   const navigate = useNavigate();
-  const { profile, user, signOut, isAdmin, role } = useAuth();
+  const { profile, user, signOut, isAdmin } = useAuth();
   const { isMobile, setOpenMobile } = useSidebar();
   const currentPath = useRouterState({ select: (s) => s.location.pathname });
 
