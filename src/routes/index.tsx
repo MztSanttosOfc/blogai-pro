@@ -20,7 +20,13 @@ import {
   Rocket,
   Shield,
   MessageSquare,
+  Mail,
+  TrendingUp,
+  Users,
+  Clock,
+  Minus,
 } from "lucide-react";
+
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -158,6 +164,8 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground antialiased">
       <HowItWorksModal open={howOpen} onOpenChange={setHowOpen} />
+      <FloatingCta onClick={handleStart} label={t("floatingCta")} />
+
 
       {/* ==================== NAV ==================== */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/70 backdrop-blur-xl">
@@ -288,6 +296,70 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* ==================== TRUST STATS ==================== */}
+      <section className="border-y border-border bg-secondary/20">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 md:grid-cols-4 md:px-6">
+          {[
+            { icon: FileText, value: "127k+", label: t("trust.articles") },
+            { icon: Users, value: "3.2k+", label: t("trust.creators") },
+            { icon: TrendingUp, value: "99.9%", label: t("trust.uptime") },
+            { icon: Star, value: "4.9/5", label: t("trust.rating") },
+          ].map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="flex items-center gap-3"
+            >
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <s.icon className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="font-display text-xl font-bold md:text-2xl">{s.value}</div>
+                <div className="text-xs text-muted-foreground md:text-sm">{s.label}</div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ==================== VIDEO DEMO ==================== */}
+      <section className="mx-auto max-w-6xl px-4 py-24 md:px-6">
+        <div className="mx-auto mb-10 max-w-2xl text-center">
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+            {t("video.kicker")}
+          </span>
+          <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">{t("video.title")}</h2>
+          <p className="mt-4 text-lg text-muted-foreground">{t("video.subtitle")}</p>
+        </div>
+        <motion.button
+          type="button"
+          onClick={() => setHowOpen(true)}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="group relative block w-full overflow-hidden rounded-3xl border border-border bg-card shadow-elegant"
+        >
+          <div className="absolute -inset-4 rounded-3xl bg-gradient-primary opacity-20 blur-3xl transition-opacity group-hover:opacity-40" aria-hidden />
+          <div className="relative aspect-video w-full bg-gradient-hero">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow ring-8 ring-primary/20 transition-transform group-hover:scale-110">
+                  <Play className="ml-1 h-8 w-8 fill-current" />
+                </div>
+                <p className="max-w-xs text-center text-sm text-sidebar-foreground/80">
+                  {t("video.placeholder")}
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.button>
+      </section>
+
+
       {/* ==================== BENEFITS ==================== */}
       <section id="recursos" className="mx-auto max-w-7xl px-4 py-24 md:px-6">
         <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -389,7 +461,46 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ==================== PRICING ==================== */}
+      {/* ==================== INTEGRATIONS ==================== */}
+      <section className="border-y border-border bg-secondary/30">
+        <div className="mx-auto max-w-7xl px-4 py-20 md:px-6">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="font-display text-3xl font-bold md:text-5xl">
+              {t("integrations.title")}
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">{t("integrations.subtitle")}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            {(
+              [
+                { key: "blogger", icon: FileText },
+                { key: "wordpress", icon: Globe },
+                { key: "gsc", icon: Search },
+                { key: "adsense", icon: DollarSign },
+                { key: "analytics", icon: BarChart3 },
+                { key: "stripe", icon: DollarSign },
+                { key: "openai", icon: Sparkles },
+                { key: "zapier", icon: Zap },
+              ] as const
+            ).map((it, i) => (
+              <motion.div
+                key={it.key}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.04 }}
+                className="flex flex-col items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 shadow-soft transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-elegant"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <it.icon className="h-5 w-5" />
+                </div>
+                <span className="text-xs font-medium">{t(`integrations.items.${it.key}`)}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="planos" className="border-y border-border bg-secondary/30">
         <div className="mx-auto max-w-7xl px-4 py-24 md:px-6">
           <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -444,7 +555,65 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ==================== TESTIMONIALS ==================== */}
+      {/* ==================== COMPARISON TABLE ==================== */}
+      <section className="mx-auto max-w-6xl px-4 py-24 md:px-6">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 className="font-display text-3xl font-bold md:text-5xl">{t("compare.title")}</h2>
+          <p className="mt-4 text-lg text-muted-foreground">{t("compare.subtitle")}</p>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-secondary/40">
+                <tr>
+                  <th className="px-5 py-4 text-left font-semibold">{t("compare.feature")}</th>
+                  <th className="px-5 py-4 text-center font-semibold">Free</th>
+                  <th className="px-5 py-4 text-center font-semibold text-primary">Pro</th>
+                  <th className="px-5 py-4 text-center font-semibold">Premium</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  { k: "credits", v: ["10", "150", "∞"] },
+                  { k: "seo", v: [true, true, true] },
+                  { k: "publish", v: [false, true, true] },
+                  { k: "images", v: [false, true, true] },
+                  { k: "clusters", v: [false, true, true] },
+                  { k: "scheduler", v: [false, false, true] },
+                  { k: "monetization", v: [false, false, true] },
+                  {
+                    k: "support",
+                    v: [
+                      t("compare.values.supportFree"),
+                      t("compare.values.supportPro"),
+                      t("compare.values.supportPremium"),
+                    ],
+                  },
+                  { k: "api", v: [false, true, true] },
+                ].map((row) => (
+                  <tr key={row.k} className="transition-colors hover:bg-secondary/20">
+                    <td className="px-5 py-3.5 font-medium">{t(`compare.rows.${row.k}`)}</td>
+                    {row.v.map((val, i) => (
+                      <td key={i} className="px-5 py-3.5 text-center">
+                        {typeof val === "boolean" ? (
+                          val ? (
+                            <Check className="mx-auto h-4 w-4 text-success" />
+                          ) : (
+                            <Minus className="mx-auto h-4 w-4 text-muted-foreground/50" />
+                          )
+                        ) : (
+                          <span className={cn(i === 1 && "font-semibold text-primary")}>{val}</span>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 py-24 md:px-6">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold md:text-5xl">
@@ -510,7 +679,27 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* ==================== NEWSLETTER ==================== */}
+      <section className="mx-auto max-w-4xl px-4 py-20 md:px-6">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 shadow-elegant md:p-12">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/20 blur-3xl" aria-hidden />
+          <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
+            <div>
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Mail className="h-5 w-5" />
+              </div>
+              <h2 className="font-display text-2xl font-bold md:text-3xl">
+                {t("newsletter.title")}
+              </h2>
+              <p className="mt-2 text-muted-foreground">{t("newsletter.subtitle")}</p>
+            </div>
+            <NewsletterForm t={t} />
+          </div>
+        </div>
+      </section>
+
       {/* ==================== FINAL CTA ==================== */}
+
       <section className="mx-auto max-w-7xl px-4 py-24 md:px-6">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-hero px-6 py-20 text-center shadow-elegant md:px-12">
           <div className="absolute inset-0 bg-gradient-glow" aria-hidden />
