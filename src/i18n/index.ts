@@ -35,7 +35,9 @@ import enUsInvites from "./locales/en-US/invites.json";
 import ptBrProfile from "./locales/pt-BR/profile.json";
 import enUsProfile from "./locales/en-US/profile.json";
 import ptBrLanding from "./locales/pt-BR/landing.json";
+import ptBrLegal from "./locales/pt-BR/legal.json";
 import enUsLanding from "./locales/en-US/landing.json";
+import enUsLegal from "./locales/en-US/legal.json";
 
 export type SupportedLanguage = "pt-BR" | "en-US";
 
@@ -74,6 +76,7 @@ if (!i18n.isInitialized) {
           invites: ptBrInvites,
           profile: ptBrProfile,
           landing: ptBrLanding,
+          legal: ptBrLegal,
         },
         "en-US": {
           common: enUsCommon,
@@ -91,6 +94,7 @@ if (!i18n.isInitialized) {
           invites: enUsInvites,
           profile: enUsProfile,
           landing: enUsLanding,
+          legal: enUsLegal,
         },
       },
       fallbackLng: DEFAULT_LANGUAGE,
@@ -111,6 +115,7 @@ if (!i18n.isInitialized) {
         "invites",
         "profile",
         "landing",
+        "legal",
       ],
       defaultNS: "common",
 
