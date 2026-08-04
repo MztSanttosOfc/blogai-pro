@@ -22,6 +22,7 @@ import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMinhaAtividadeRouteImport } from './routes/_authenticated/minha-atividade'
 import { Route as AuthenticatedMeuPerfilRouteImport } from './routes/_authenticated/meu-perfil'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
+import { Route as AuthenticatedLegalRouteImport } from './routes/_authenticated/legal'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedFeedbackRouteImport } from './routes/_authenticated/feedback'
@@ -134,6 +135,11 @@ const AuthenticatedMeuPerfilRoute = AuthenticatedMeuPerfilRouteImport.update({
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLegalRoute = AuthenticatedLegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGenerateRoute = AuthenticatedGenerateRouteImport.update({
@@ -384,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
+  '/legal': typeof AuthenticatedLegalRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -442,6 +449,7 @@ export interface FileRoutesByTo {
   '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
+  '/legal': typeof AuthenticatedLegalRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -502,6 +510,7 @@ export interface FileRoutesById {
   '/_authenticated/feedback': typeof AuthenticatedFeedbackRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
+  '/_authenticated/legal': typeof AuthenticatedLegalRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/_authenticated/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -562,6 +571,7 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/financeiro'
     | '/generate'
+    | '/legal'
     | '/library'
     | '/meu-perfil'
     | '/minha-atividade'
@@ -620,6 +630,7 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/financeiro'
     | '/generate'
+    | '/legal'
     | '/library'
     | '/meu-perfil'
     | '/minha-atividade'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/_authenticated/feedback'
     | '/_authenticated/financeiro'
     | '/_authenticated/generate'
+    | '/_authenticated/legal'
     | '/_authenticated/library'
     | '/_authenticated/meu-perfil'
     | '/_authenticated/minha-atividade'
@@ -845,6 +857,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof AuthenticatedLibraryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/legal': {
+      id: '/_authenticated/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof AuthenticatedLegalRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/generate': {
@@ -1195,6 +1214,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFeedbackRoute: typeof AuthenticatedFeedbackRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
+  AuthenticatedLegalRoute: typeof AuthenticatedLegalRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMeuPerfilRoute: typeof AuthenticatedMeuPerfilRoute
   AuthenticatedMinhaAtividadeRoute: typeof AuthenticatedMinhaAtividadeRoute
@@ -1222,6 +1242,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFeedbackRoute: AuthenticatedFeedbackRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
+  AuthenticatedLegalRoute: AuthenticatedLegalRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMeuPerfilRoute: AuthenticatedMeuPerfilRoute,
   AuthenticatedMinhaAtividadeRoute: AuthenticatedMinhaAtividadeRoute,
