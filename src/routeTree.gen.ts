@@ -37,10 +37,14 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAjudaRouteImport } from './routes/_authenticated/ajuda'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedLegalIndexRouteImport } from './routes/_authenticated/legal.index'
 import { Route as ApiV1OpenapiDotjsonRouteImport } from './routes/api/v1/openapi[.]json'
 import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
+import { Route as AuthenticatedLegalTermosRouteImport } from './routes/_authenticated/legal.termos'
+import { Route as AuthenticatedLegalPrivacidadeRouteImport } from './routes/_authenticated/legal.privacidade'
+import { Route as AuthenticatedLegalCookiesRouteImport } from './routes/_authenticated/legal.cookies'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 import { Route as AuthenticatedAdminFeedbackRouteImport } from './routes/_authenticated/admin.feedback'
 import { Route as ApiV1SmartProfileIndexRouteImport } from './routes/api/v1/smart-profile/index'
@@ -215,6 +219,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedLegalIndexRoute = AuthenticatedLegalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedLegalRoute,
+} as any)
 const ApiV1OpenapiDotjsonRoute = ApiV1OpenapiDotjsonRouteImport.update({
   id: '/api/v1/openapi.json',
   path: '/api/v1/openapi.json',
@@ -235,6 +244,24 @@ const AuthenticatedLibraryIdRoute = AuthenticatedLibraryIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedLibraryRoute,
 } as any)
+const AuthenticatedLegalTermosRoute =
+  AuthenticatedLegalTermosRouteImport.update({
+    id: '/termos',
+    path: '/termos',
+    getParentRoute: () => AuthenticatedLegalRoute,
+  } as any)
+const AuthenticatedLegalPrivacidadeRoute =
+  AuthenticatedLegalPrivacidadeRouteImport.update({
+    id: '/privacidade',
+    path: '/privacidade',
+    getParentRoute: () => AuthenticatedLegalRoute,
+  } as any)
+const AuthenticatedLegalCookiesRoute =
+  AuthenticatedLegalCookiesRouteImport.update({
+    id: '/cookies',
+    path: '/cookies',
+    getParentRoute: () => AuthenticatedLegalRoute,
+  } as any)
 const AuthenticatedBloggerCallbackRoute =
   AuthenticatedBloggerCallbackRouteImport.update({
     id: '/blogger/callback',
@@ -390,7 +417,7 @@ export interface FileRoutesByFullPath {
   '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
-  '/legal': typeof AuthenticatedLegalRoute
+  '/legal': typeof AuthenticatedLegalRouteWithChildren
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -402,10 +429,14 @@ export interface FileRoutesByFullPath {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
+  '/legal/cookies': typeof AuthenticatedLegalCookiesRoute
+  '/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
+  '/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
+  '/legal/': typeof AuthenticatedLegalIndexRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
@@ -449,7 +480,6 @@ export interface FileRoutesByTo {
   '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
-  '/legal': typeof AuthenticatedLegalRoute
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -461,10 +491,14 @@ export interface FileRoutesByTo {
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
+  '/legal/cookies': typeof AuthenticatedLegalCookiesRoute
+  '/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
+  '/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
+  '/legal': typeof AuthenticatedLegalIndexRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
@@ -510,7 +544,7 @@ export interface FileRoutesById {
   '/_authenticated/feedback': typeof AuthenticatedFeedbackRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
-  '/_authenticated/legal': typeof AuthenticatedLegalRoute
+  '/_authenticated/legal': typeof AuthenticatedLegalRouteWithChildren
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/_authenticated/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -522,10 +556,14 @@ export interface FileRoutesById {
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
+  '/_authenticated/legal/cookies': typeof AuthenticatedLegalCookiesRoute
+  '/_authenticated/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
+  '/_authenticated/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
+  '/_authenticated/legal/': typeof AuthenticatedLegalIndexRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
@@ -583,10 +621,14 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/admin/feedback'
     | '/blogger/callback'
+    | '/legal/cookies'
+    | '/legal/privacidade'
+    | '/legal/termos'
     | '/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
+    | '/legal/'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
@@ -630,7 +672,6 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/financeiro'
     | '/generate'
-    | '/legal'
     | '/library'
     | '/meu-perfil'
     | '/minha-atividade'
@@ -642,10 +683,14 @@ export interface FileRouteTypes {
     | '/verificar-blog'
     | '/admin/feedback'
     | '/blogger/callback'
+    | '/legal/cookies'
+    | '/legal/privacidade'
+    | '/legal/termos'
     | '/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
+    | '/legal'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
@@ -702,10 +747,14 @@ export interface FileRouteTypes {
     | '/_authenticated/verificar-blog'
     | '/_authenticated/admin/feedback'
     | '/_authenticated/blogger/callback'
+    | '/_authenticated/legal/cookies'
+    | '/_authenticated/legal/privacidade'
+    | '/_authenticated/legal/termos'
     | '/_authenticated/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
+    | '/_authenticated/legal/'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
@@ -964,6 +1013,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/legal/': {
+      id: '/_authenticated/legal/'
+      path: '/'
+      fullPath: '/legal/'
+      preLoaderRoute: typeof AuthenticatedLegalIndexRouteImport
+      parentRoute: typeof AuthenticatedLegalRoute
+    }
     '/api/v1/openapi.json': {
       id: '/api/v1/openapi.json'
       path: '/api/v1/openapi.json'
@@ -991,6 +1047,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/library/$id'
       preLoaderRoute: typeof AuthenticatedLibraryIdRouteImport
       parentRoute: typeof AuthenticatedLibraryRoute
+    }
+    '/_authenticated/legal/termos': {
+      id: '/_authenticated/legal/termos'
+      path: '/termos'
+      fullPath: '/legal/termos'
+      preLoaderRoute: typeof AuthenticatedLegalTermosRouteImport
+      parentRoute: typeof AuthenticatedLegalRoute
+    }
+    '/_authenticated/legal/privacidade': {
+      id: '/_authenticated/legal/privacidade'
+      path: '/privacidade'
+      fullPath: '/legal/privacidade'
+      preLoaderRoute: typeof AuthenticatedLegalPrivacidadeRouteImport
+      parentRoute: typeof AuthenticatedLegalRoute
+    }
+    '/_authenticated/legal/cookies': {
+      id: '/_authenticated/legal/cookies'
+      path: '/cookies'
+      fullPath: '/legal/cookies'
+      preLoaderRoute: typeof AuthenticatedLegalCookiesRouteImport
+      parentRoute: typeof AuthenticatedLegalRoute
     }
     '/_authenticated/blogger/callback': {
       id: '/_authenticated/blogger/callback'
@@ -1188,6 +1265,23 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedLegalRouteChildren {
+  AuthenticatedLegalCookiesRoute: typeof AuthenticatedLegalCookiesRoute
+  AuthenticatedLegalPrivacidadeRoute: typeof AuthenticatedLegalPrivacidadeRoute
+  AuthenticatedLegalTermosRoute: typeof AuthenticatedLegalTermosRoute
+  AuthenticatedLegalIndexRoute: typeof AuthenticatedLegalIndexRoute
+}
+
+const AuthenticatedLegalRouteChildren: AuthenticatedLegalRouteChildren = {
+  AuthenticatedLegalCookiesRoute: AuthenticatedLegalCookiesRoute,
+  AuthenticatedLegalPrivacidadeRoute: AuthenticatedLegalPrivacidadeRoute,
+  AuthenticatedLegalTermosRoute: AuthenticatedLegalTermosRoute,
+  AuthenticatedLegalIndexRoute: AuthenticatedLegalIndexRoute,
+}
+
+const AuthenticatedLegalRouteWithChildren =
+  AuthenticatedLegalRoute._addFileChildren(AuthenticatedLegalRouteChildren)
+
 interface AuthenticatedLibraryRouteChildren {
   AuthenticatedLibraryIdRoute: typeof AuthenticatedLibraryIdRoute
 }
@@ -1214,7 +1308,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFeedbackRoute: typeof AuthenticatedFeedbackRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
-  AuthenticatedLegalRoute: typeof AuthenticatedLegalRoute
+  AuthenticatedLegalRoute: typeof AuthenticatedLegalRouteWithChildren
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMeuPerfilRoute: typeof AuthenticatedMeuPerfilRoute
   AuthenticatedMinhaAtividadeRoute: typeof AuthenticatedMinhaAtividadeRoute
@@ -1242,7 +1336,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFeedbackRoute: AuthenticatedFeedbackRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
-  AuthenticatedLegalRoute: AuthenticatedLegalRoute,
+  AuthenticatedLegalRoute: AuthenticatedLegalRouteWithChildren,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMeuPerfilRoute: AuthenticatedMeuPerfilRoute,
   AuthenticatedMinhaAtividadeRoute: AuthenticatedMinhaAtividadeRoute,
