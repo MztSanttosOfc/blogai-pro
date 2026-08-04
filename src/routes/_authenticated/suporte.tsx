@@ -11,7 +11,6 @@ import {
   Lightbulb,
   Activity,
   CheckCircle2,
-  Loader2,
   ArrowRight,
 } from "lucide-react";
 
@@ -223,5 +222,3 @@ function StatusRow({
     </div>
   );
 }
-
-export { Loader2 as _unused };

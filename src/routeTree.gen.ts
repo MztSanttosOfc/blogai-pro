@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
+import { Route as AuthenticatedSuporteRouteImport } from './routes/_authenticated/suporte'
 import { Route as AuthenticatedRecompensasRouteImport } from './routes/_authenticated/recompensas'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
 import { Route as AuthenticatedPerfilInteligenteRouteImport } from './routes/_authenticated/perfil-inteligente'
@@ -99,6 +100,11 @@ const AuthenticatedVerificarBlogRoute =
     path: '/verificar-blog',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedSuporteRoute = AuthenticatedSuporteRouteImport.update({
+  id: '/suporte',
+  path: '/suporte',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedRecompensasRoute =
   AuthenticatedRecompensasRouteImport.update({
     id: '/recompensas',
@@ -439,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
+  '/suporte': typeof AuthenticatedSuporteRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
@@ -503,6 +510,7 @@ export interface FileRoutesByTo {
   '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
+  '/suporte': typeof AuthenticatedSuporteRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
@@ -570,6 +578,7 @@ export interface FileRoutesById {
   '/_authenticated/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
+  '/_authenticated/suporte': typeof AuthenticatedSuporteRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
   '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
@@ -637,6 +646,7 @@ export interface FileRouteTypes {
     | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
+    | '/suporte'
     | '/verificar-blog'
     | '/admin/feedback'
     | '/blogger/callback'
@@ -701,6 +711,7 @@ export interface FileRouteTypes {
     | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
+    | '/suporte'
     | '/verificar-blog'
     | '/admin/feedback'
     | '/blogger/callback'
@@ -767,6 +778,7 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil-inteligente'
     | '/_authenticated/pricing'
     | '/_authenticated/recompensas'
+    | '/_authenticated/suporte'
     | '/_authenticated/verificar-blog'
     | '/_authenticated/admin/feedback'
     | '/_authenticated/blogger/callback'
@@ -875,6 +887,13 @@ declare module '@tanstack/react-router' {
       path: '/verificar-blog'
       fullPath: '/verificar-blog'
       preLoaderRoute: typeof AuthenticatedVerificarBlogRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/suporte': {
+      id: '/_authenticated/suporte'
+      path: '/suporte'
+      fullPath: '/suporte'
+      preLoaderRoute: typeof AuthenticatedSuporteRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/recompensas': {
@@ -1360,6 +1379,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPerfilInteligenteRoute: typeof AuthenticatedPerfilInteligenteRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedRecompensasRoute: typeof AuthenticatedRecompensasRoute
+  AuthenticatedSuporteRoute: typeof AuthenticatedSuporteRoute
   AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
   AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
 }
@@ -1388,6 +1408,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPerfilInteligenteRoute: AuthenticatedPerfilInteligenteRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedRecompensasRoute: AuthenticatedRecompensasRoute,
+  AuthenticatedSuporteRoute: AuthenticatedSuporteRoute,
   AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
   AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
 }
