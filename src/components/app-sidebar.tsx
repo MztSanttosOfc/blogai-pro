@@ -1,5 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
+  Scale,
   LayoutDashboard,
   Sparkles,
   Library,
@@ -58,6 +59,8 @@ const items = [
   { title: "Atualizações Futuras", url: "/atualizacoes", icon: Rocket },
   { title: "Central de Ajuda", url: "/ajuda", icon: LifeBuoy },
   { title: "Meu Perfil", url: "/meu-perfil", icon: UserCircle2 },
+  { title: "Suporte", url: "/suporte", icon: LifeBuoy },
+  { title: "Legal", url: "/legal", icon: Scale },
   { title: "Perfil Inteligente", url: "/perfil-inteligente", icon: SparklesIcon },
   { title: "Conheça o Criador", url: "/criador", icon: UserCircle2 },
   { title: "Central de Feedback", url: "/feedback", icon: MessageSquare },
