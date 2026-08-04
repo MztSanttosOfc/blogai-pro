@@ -43,7 +43,9 @@ import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
 import { Route as AuthenticatedLegalTermosRouteImport } from './routes/_authenticated/legal.termos'
+import { Route as AuthenticatedLegalSobreRouteImport } from './routes/_authenticated/legal.sobre'
 import { Route as AuthenticatedLegalPrivacidadeRouteImport } from './routes/_authenticated/legal.privacidade'
+import { Route as AuthenticatedLegalLicencasRouteImport } from './routes/_authenticated/legal.licencas'
 import { Route as AuthenticatedLegalCookiesRouteImport } from './routes/_authenticated/legal.cookies'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 import { Route as AuthenticatedAdminFeedbackRouteImport } from './routes/_authenticated/admin.feedback'
@@ -250,10 +252,21 @@ const AuthenticatedLegalTermosRoute =
     path: '/termos',
     getParentRoute: () => AuthenticatedLegalRoute,
   } as any)
+const AuthenticatedLegalSobreRoute = AuthenticatedLegalSobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => AuthenticatedLegalRoute,
+} as any)
 const AuthenticatedLegalPrivacidadeRoute =
   AuthenticatedLegalPrivacidadeRouteImport.update({
     id: '/privacidade',
     path: '/privacidade',
+    getParentRoute: () => AuthenticatedLegalRoute,
+  } as any)
+const AuthenticatedLegalLicencasRoute =
+  AuthenticatedLegalLicencasRouteImport.update({
+    id: '/licencas',
+    path: '/licencas',
     getParentRoute: () => AuthenticatedLegalRoute,
   } as any)
 const AuthenticatedLegalCookiesRoute =
@@ -430,7 +443,9 @@ export interface FileRoutesByFullPath {
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/legal/cookies': typeof AuthenticatedLegalCookiesRoute
+  '/legal/licencas': typeof AuthenticatedLegalLicencasRoute
   '/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
+  '/legal/sobre': typeof AuthenticatedLegalSobreRoute
   '/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -492,7 +507,9 @@ export interface FileRoutesByTo {
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/legal/cookies': typeof AuthenticatedLegalCookiesRoute
+  '/legal/licencas': typeof AuthenticatedLegalLicencasRoute
   '/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
+  '/legal/sobre': typeof AuthenticatedLegalSobreRoute
   '/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -557,7 +574,9 @@ export interface FileRoutesById {
   '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
   '/_authenticated/legal/cookies': typeof AuthenticatedLegalCookiesRoute
+  '/_authenticated/legal/licencas': typeof AuthenticatedLegalLicencasRoute
   '/_authenticated/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
+  '/_authenticated/legal/sobre': typeof AuthenticatedLegalSobreRoute
   '/_authenticated/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
@@ -622,7 +641,9 @@ export interface FileRouteTypes {
     | '/admin/feedback'
     | '/blogger/callback'
     | '/legal/cookies'
+    | '/legal/licencas'
     | '/legal/privacidade'
+    | '/legal/sobre'
     | '/legal/termos'
     | '/library/$id'
     | '/api/v1/health'
@@ -684,7 +705,9 @@ export interface FileRouteTypes {
     | '/admin/feedback'
     | '/blogger/callback'
     | '/legal/cookies'
+    | '/legal/licencas'
     | '/legal/privacidade'
+    | '/legal/sobre'
     | '/legal/termos'
     | '/library/$id'
     | '/api/v1/health'
@@ -748,7 +771,9 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/feedback'
     | '/_authenticated/blogger/callback'
     | '/_authenticated/legal/cookies'
+    | '/_authenticated/legal/licencas'
     | '/_authenticated/legal/privacidade'
+    | '/_authenticated/legal/sobre'
     | '/_authenticated/legal/termos'
     | '/_authenticated/library/$id'
     | '/api/v1/health'
@@ -1055,11 +1080,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLegalTermosRouteImport
       parentRoute: typeof AuthenticatedLegalRoute
     }
+    '/_authenticated/legal/sobre': {
+      id: '/_authenticated/legal/sobre'
+      path: '/sobre'
+      fullPath: '/legal/sobre'
+      preLoaderRoute: typeof AuthenticatedLegalSobreRouteImport
+      parentRoute: typeof AuthenticatedLegalRoute
+    }
     '/_authenticated/legal/privacidade': {
       id: '/_authenticated/legal/privacidade'
       path: '/privacidade'
       fullPath: '/legal/privacidade'
       preLoaderRoute: typeof AuthenticatedLegalPrivacidadeRouteImport
+      parentRoute: typeof AuthenticatedLegalRoute
+    }
+    '/_authenticated/legal/licencas': {
+      id: '/_authenticated/legal/licencas'
+      path: '/licencas'
+      fullPath: '/legal/licencas'
+      preLoaderRoute: typeof AuthenticatedLegalLicencasRouteImport
       parentRoute: typeof AuthenticatedLegalRoute
     }
     '/_authenticated/legal/cookies': {
@@ -1267,14 +1306,18 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedLegalRouteChildren {
   AuthenticatedLegalCookiesRoute: typeof AuthenticatedLegalCookiesRoute
+  AuthenticatedLegalLicencasRoute: typeof AuthenticatedLegalLicencasRoute
   AuthenticatedLegalPrivacidadeRoute: typeof AuthenticatedLegalPrivacidadeRoute
+  AuthenticatedLegalSobreRoute: typeof AuthenticatedLegalSobreRoute
   AuthenticatedLegalTermosRoute: typeof AuthenticatedLegalTermosRoute
   AuthenticatedLegalIndexRoute: typeof AuthenticatedLegalIndexRoute
 }
 
 const AuthenticatedLegalRouteChildren: AuthenticatedLegalRouteChildren = {
   AuthenticatedLegalCookiesRoute: AuthenticatedLegalCookiesRoute,
+  AuthenticatedLegalLicencasRoute: AuthenticatedLegalLicencasRoute,
   AuthenticatedLegalPrivacidadeRoute: AuthenticatedLegalPrivacidadeRoute,
+  AuthenticatedLegalSobreRoute: AuthenticatedLegalSobreRoute,
   AuthenticatedLegalTermosRoute: AuthenticatedLegalTermosRoute,
   AuthenticatedLegalIndexRoute: AuthenticatedLegalIndexRoute,
 }
