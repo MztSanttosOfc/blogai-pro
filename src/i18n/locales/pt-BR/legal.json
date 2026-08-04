@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "title": "Legal",
+    "subtitle": "Transparência, privacidade e conformidade do BlogAI Pro.",
+    "privacidade": "Política de Privacidade",
+    "termos": "Termos de Uso",
+    "cookies": "Política de Cookies",
+    "licencas": "Licenças Open Source",
+    "sobre": "Sobre o BlogAI Pro",
+    "back": "Voltar para Legal",
+    "toc": "Nesta página",
+    "updated": "Atualizado em",
+    "print": "Imprimir / salvar PDF"
+  },
+  "hub": {
+    "privacidadeDesc": "Quais dados coletamos, como usamos e como você pode excluí-los.",
+    "termosDesc": "Regras de uso, planos, créditos, pagamentos e responsabilidades.",
+    "cookiesDesc": "Cookies essenciais, autenticação, preferências e analytics.",
+    "licencasDesc": "Tecnologias de código aberto que fazem o BlogAI Pro funcionar.",
+    "sobreDesc": "Versão do aplicativo, desenvolvedor, contato e links oficiais.",
+    "open": "Abrir",
+    "complianceTitle": "Conformidade",
+    "complianceDesc": "Documentos alinhados à LGPD, ao GDPR e às políticas da Google Play."
+  },
+  "licenses": {
+    "title": "Licenças de Código Aberto",
+    "subtitle": "O BlogAI Pro é construído sobre projetos open source. Nossa gratidão a cada comunidade.",
+    "library": "Biblioteca",
+    "license": "Licença",
+    "usage": "Uso no BlogAI Pro",
+    "visit": "Site oficial",
+    "note": "As licenças completas estão disponíveis nos repositórios oficiais de cada projeto."
+  },
+  "about": {
+    "title": "Sobre o BlogAI Pro",
+    "tagline": "Crie, otimize e publique conteúdo com inteligência artificial.",
+    "description": "O BlogAI Pro reúne geração de artigos com IA, otimização para SEO, publicação automática no Blogger, métricas oficiais do Google Search Console e gestão de créditos em um único painel.",
+    "version": "Versão",
+    "channel": "Canal",
+    "package": "Pacote Android",
+    "developer": "Desenvolvido por",
+    "website": "Site oficial",
+    "contact": "Contato",
+    "copyright": "Todos os direitos reservados.",
+    "links": "Links úteis",
+    "support": "Central de Suporte",
+    "creator": "Conheça o criador"
+  },
+  "support": {
+    "title": "Central de Suporte",
+    "subtitle": "Tire dúvidas, relate problemas e acompanhe o estado das integrações.",
+    "faqTitle": "Perguntas frequentes",
+    "contactTitle": "Fale com a gente",
+    "contactDesc": "Respondemos em até 48 horas úteis.",
+    "email": "E-mail de suporte",
+    "copyEmail": "Copiar e-mail",
+    "copied": "E-mail copiado.",
+    "reportTitle": "Reportar um problema",
+    "reportDesc": "Descreva o que aconteceu com o máximo de detalhes possível.",
+    "suggestTitle": "Enviar uma sugestão",
+    "suggestDesc": "Conte o que faria o BlogAI Pro melhor para você.",
+    "openFeedback": "Abrir Central de Feedback",
+    "statusTitle": "Status das integrações",
+    "statusDesc": "Estado atual dos serviços conectados à sua conta.",
+    "operational": "Operacional",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "checking": "Verificando",
+    "helpCenter": "Central de Ajuda do SEO",
+    "faq": [
+      {
+        "q": "Como funcionam os créditos?",
+        "a": "Cada geração de artigo, imagem ou página consome créditos do seu saldo. O consumo aparece em Financeiro e em Minha Atividade."
+      },
+      {
+        "q": "Preciso de cartão de crédito para começar?",
+        "a": "Não. O plano gratuito permite testar a plataforma sem informar dados de pagamento."
+      },
+      {
+        "q": "Como conecto meu blog do Blogger?",
+        "a": "Acesse Blogger no menu lateral e autorize o acesso com sua conta Google. A publicação automática fica disponível em seguida."
+      },
+      {
+        "q": "Por que o Desempenho SEO mostra 'dados indisponíveis'?",
+        "a": "Isso acontece quando a propriedade ainda não está verificada no Google Search Console ou quando ainda não há dados suficientes. A Central de Ajuda do SEO explica cada caso."
+      },
+      {
+        "q": "Quais formas de pagamento são aceitas?",
+        "a": "Pix em reais (SyncPay) e cartão internacional em dólar (Stripe)."
+      },
+      {
+        "q": "Como cancelo minha assinatura?",
+        "a": "Em Assinatura você pode cancelar quando quiser. O acesso continua até o fim do período já pago."
+      },
+      {
+        "q": "O conteúdo gerado é meu?",
+        "a": "Sim. Você mantém a titularidade de todo o conteúdo gerado, conforme os Termos de Uso."
+      },
+      {
+        "q": "Como excluo minha conta e meus dados?",
+        "a": "Em Meu Perfil → Segurança → Excluir minha conta. A exclusão remove seus dados pessoais e conteúdos da plataforma."
+      }
+    ]
+  },
+  "delete": {
+    "title": "Excluir minha conta",
+    "description": "Esta ação é permanente e não pode ser desfeita.",
+    "trigger": "Excluir minha conta",
+    "willRemoveTitle": "O que será removido",
+    "willRemove": [
+      "Perfil, foto, preferências e Perfil Inteligente",
+      "Artigos, páginas, clusters e agendamentos",
+      "Conexões com Blogger e Google Search Console",
+      "Códigos de convite, recompensas e histórico de atividades",
+      "Saldo de créditos e acesso ao plano atual"
+    ],
+    "keepNote": "Registros financeiros exigidos por lei são anonimizados e mantidos apenas pelo prazo legal.",
+    "confirmPasswordLabel": "Confirme sua senha",
+    "confirmPasswordHint": "Contas criadas com Google não precisam de senha.",
+    "confirmTextLabel": "Digite EXCLUIR para confirmar",
+    "confirmWord": "EXCLUIR",
+    "cancel": "Cancelar",
+    "confirm": "Excluir definitivamente",
+    "deleting": "Excluindo...",
+    "success": "Conta excluída. Sentiremos sua falta.",
+    "error": "Não foi possível excluir a conta.",
+    "wrongPassword": "Senha incorreta.",
+    "wrongWord": "Digite a palavra de confirmação corretamente."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "title": "Legal",
+    "subtitle": "Transparency, privacy and compliance for BlogAI Pro.",
+    "privacidade": "Privacy Policy",
+    "termos": "Terms of Use",
+    "cookies": "Cookie Policy",
+    "licencas": "Open Source Licenses",
+    "sobre": "About BlogAI Pro",
+    "back": "Back to Legal",
+    "toc": "On this page",
+    "updated": "Updated on",
+    "print": "Print / save as PDF"
+  },
+  "hub": {
+    "privacidadeDesc": "What we collect, how we use it and how you can delete it.",
+    "termosDesc": "Usage rules, plans, credits, payments and responsibilities.",
+    "cookiesDesc": "Essential, authentication, preference and analytics cookies.",
+    "licencasDesc": "Open source technologies that power BlogAI Pro.",
+    "sobreDesc": "App version, developer, contact and official links.",
+    "open": "Open",
+    "complianceTitle": "Compliance",
+    "complianceDesc": "Documents aligned with GDPR, LGPD and Google Play policies."
+  },
+  "licenses": {
+    "title": "Open Source Licenses",
+    "subtitle": "BlogAI Pro is built on open source projects. Thanks to every community.",
+    "library": "Library",
+    "license": "License",
+    "usage": "Usage in BlogAI Pro",
+    "visit": "Official site",
+    "note": "Full license texts are available in each project's official repository."
+  },
+  "about": {
+    "title": "About BlogAI Pro",
+    "tagline": "Create, optimize and publish content with artificial intelligence.",
+    "description": "BlogAI Pro combines AI article generation, SEO optimization, automatic Blogger publishing, official Google Search Console metrics and credit management in a single dashboard.",
+    "version": "Version",
+    "channel": "Channel",
+    "package": "Android package",
+    "developer": "Developed by",
+    "website": "Official website",
+    "contact": "Contact",
+    "copyright": "All rights reserved.",
+    "links": "Useful links",
+    "support": "Support Center",
+    "creator": "Meet the creator"
+  },
+  "support": {
+    "title": "Support Center",
+    "subtitle": "Get answers, report issues and check integration status.",
+    "faqTitle": "Frequently asked questions",
+    "contactTitle": "Talk to us",
+    "contactDesc": "We reply within 48 business hours.",
+    "email": "Support email",
+    "copyEmail": "Copy email",
+    "copied": "Email copied.",
+    "reportTitle": "Report a problem",
+    "reportDesc": "Describe what happened with as much detail as possible.",
+    "suggestTitle": "Send a suggestion",
+    "suggestDesc": "Tell us what would make BlogAI Pro better for you.",
+    "openFeedback": "Open Feedback Center",
+    "statusTitle": "Integration status",
+    "statusDesc": "Current state of services connected to your account.",
+    "operational": "Operational",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "checking": "Checking",
+    "helpCenter": "SEO Help Center",
+    "faq": [
+      {
+        "q": "How do credits work?",
+        "a": "Each article, image or page generation consumes credits from your balance. Usage is visible under Billing and My Activity."
+      },
+      {
+        "q": "Do I need a credit card to start?",
+        "a": "No. The free plan lets you try the platform without entering payment details."
+      },
+      {
+        "q": "How do I connect my Blogger blog?",
+        "a": "Open Blogger in the sidebar and authorize access with your Google account. Automatic publishing becomes available right after."
+      },
+      {
+        "q": "Why does SEO Performance show 'no data available'?",
+        "a": "That happens when the property is not verified in Google Search Console yet, or when there is not enough data. The SEO Help Center explains each case."
+      },
+      {
+        "q": "Which payment methods are accepted?",
+        "a": "Pix in Brazilian reais (SyncPay) and international cards in US dollars (Stripe)."
+      },
+      {
+        "q": "How do I cancel my subscription?",
+        "a": "Go to Subscription and cancel anytime. Access remains until the end of the paid period."
+      },
+      {
+        "q": "Is the generated content mine?",
+        "a": "Yes. You retain ownership of all generated content, as stated in the Terms of Use."
+      },
+      {
+        "q": "How do I delete my account and data?",
+        "a": "Go to My Profile → Security → Delete my account. Deletion removes your personal data and content from the platform."
+      }
+    ]
+  },
+  "delete": {
+    "title": "Delete my account",
+    "description": "This action is permanent and cannot be undone.",
+    "trigger": "Delete my account",
+    "willRemoveTitle": "What will be removed",
+    "willRemove": [
+      "Profile, photo, preferences and Smart Profile",
+      "Articles, pages, clusters and schedules",
+      "Blogger and Google Search Console connections",
+      "Invite codes, rewards and activity history",
+      "Credit balance and access to your current plan"
+    ],
+    "keepNote": "Financial records required by law are anonymized and kept only for the legal retention period.",
+    "confirmPasswordLabel": "Confirm your password",
+    "confirmPasswordHint": "Accounts created with Google do not need a password.",
+    "confirmTextLabel": "Type DELETE to confirm",
+    "confirmWord": "DELETE",
+    "cancel": "Cancel",
+    "confirm": "Delete permanently",
+    "deleting": "Deleting...",
+    "success": "Account deleted. We will miss you.",
+    "error": "We could not delete the account.",
+    "wrongPassword": "Incorrect password.",
+    "wrongWord": "Type the confirmation word correctly."
+  }
+}

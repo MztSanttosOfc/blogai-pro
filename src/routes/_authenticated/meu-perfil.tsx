@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
+import { DeleteAccountCard } from "@/components/account/DeleteAccountCard";
 import { supabase } from "@/integrations/supabase/client";
 import { SUPPORTED_LANGUAGES, setLanguage } from "@/i18n";
 import { PLAN_LABELS } from "@/lib/constants";
@@ -582,6 +583,8 @@ function MyProfilePage() {
             </div>
           </Card>
         </TabsContent>
+
+          <DeleteAccountCard email={profile?.email ?? user?.email ?? null} />
 
         {/* Integrations tab */}
         <TabsContent value="integrations" className="space-y-6">
