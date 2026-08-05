@@ -1,18 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
-import { Navbar } from "@/components/landing/Navbar";
-import { Hero } from "@/components/landing/Hero";
-import { StatsSection } from "@/components/landing/StatsSection";
-import { FeatureGrid } from "@/components/landing/FeatureGrid";
-import { Comparison } from "@/components/landing/Comparison";
-import { InteractiveDemo } from "@/components/landing/InteractiveDemo";
-import { Pricing } from "@/components/landing/Pricing";
-import { FAQSection } from "@/components/landing/FAQSection";
-import { Testimonials } from "@/components/landing/Testimonials";
-import { ScreenshotsCarousel } from "@/components/landing/ScreenshotsCarousel";
-import { FinalCta } from "@/components/landing/FinalCta";
-import { Footer } from "@/components/landing/Footer";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 const SITE_URL = "https://monzart.com.br";
 
@@ -22,81 +10,50 @@ export const Route = createFileRoute("/")({
       { title: "BlogAI Pro — IA Premium para Blogueiros Profissionais" },
       {
         name: "description",
-        content: "Transforme ideias em tráfego orgânico com a inteligência artificial mais avançada do mercado. SEO automático, publicação em 1 clique e dashboard real do Search Console.",
+        content: "Transforme ideias em tráfego orgânico com a inteligência artificial mais avançada do mercado.",
       },
-      { property: "og:title", content: "BlogAI Pro — A Revolução da IA no Blogger" },
-      {
-        property: "og:description",
-        content: "Escreva, otimize e publique em segundos. Economize 96% do seu tempo com IA de nível enterprise.",
-      },
+      { property: "og:title", content: "BlogAI Pro" },
+      { property: "og:description", content: "IA Premium para blogueiros profissionais." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:image", content: `${SITE_URL}/og-image.jpg` },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "BlogAI Pro — A Revolução da IA no Blogger" },
-      {
-        name: "twitter:description",
-        content: "Escreva, otimize e publique em segundos. Economize 96% do seu tempo com IA de nível enterprise.",
-      },
-      { name: "twitter:image", content: `${SITE_URL}/og-image.jpg` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          "name": "BlogAI Pro",
-          "applicationCategory": "BusinessApplication",
-          "operatingSystem": "Web, Android",
-          "description": "IA Premium para blogueiros profissionais: gere, otimize e publique artigos com SEO automático.",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "BRL"
-          }
-        }),
-      },
-    ],
   }),
-  component: LandingPage,
+  component: TemporaryLandingPage,
 });
 
-function LandingPage() {
-  useSmoothScroll();
+function TemporaryLandingPage() {
+  const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
-      <Navbar />
-      
-      <main>
-        <Hero />
-        <StatsSection />
-        
-        <div id="features">
-          <FeatureGrid />
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-4">
+      <div className="max-w-md w-full text-center space-y-8">
+        <div className="space-y-4">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-primary-foreground text-3xl font-bold italic">B</span>
+            </div>
+          </div>
+          <h1 className="text-4xl font-display font-bold tracking-tight">BlogAI Pro</h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            IA Premium para blogueiros profissionais: gere, otimize e publique artigos com SEO automático.
+          </p>
         </div>
-        
-        <ScreenshotsCarousel />
-        <Comparison />
-        
-        <div id="how">
-          <InteractiveDemo />
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button asChild size="lg" className="w-full sm:w-auto">
+            <Link to="/auth">{t("auth.login", "Entrar")}</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+            <Link to="/auth" search={{ mode: "signup" }}>{t("auth.signup", "Criar Conta")}</Link>
+          </Button>
         </div>
-        
-        <Testimonials />
-        <Pricing />
-        <FAQSection />
-        <FinalCta />
-      </main>
 
-      <Footer />
-
-      {/* Global Background Overlays */}
-      <div className="fixed inset-0 pointer-events-none -z-50">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_50%_0%,rgba(16,185,129,0.05)_0%,transparent_50%)]" />
-        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(circle_at_100%_100%,rgba(59,130,246,0.05)_0%,transparent_50%)]" />
+        <div className="pt-8 border-t border-border/50 text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Júnnior Monzart. Todos os direitos reservados.
+        </div>
       </div>
     </div>
   );
