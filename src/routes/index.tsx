@@ -67,7 +67,7 @@ function LandingPage() {
   useSmoothScroll();
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-emerald-500/30 selection:text-emerald-400">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
       <Navbar />
       
       <main>
