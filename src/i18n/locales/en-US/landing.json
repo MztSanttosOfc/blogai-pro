@@ -1,425 +1,113 @@
 {
   "meta": {
-    "title": "BlogAI Pro — Write, optimize and publish blogs with AI",
-    "description": "Create SEO-ready articles with cutting-edge AI and publish to Blogger and WordPress in minutes. Search Console dashboard, built-in monetization and official API.",
-    "ogTitle": "BlogAI Pro — The AI blogging platform",
-    "ogDescription": "AI generation, automatic technical SEO, one-click publishing, native Search Console dashboard and built-in monetization."
+    "title": "BlogAI Pro — Premium AI for Professional Bloggers",
+    "description": "Turn ideas into organic traffic with the most advanced AI on the market. Auto SEO, 1-click publishing and real Search Console dashboard.",
+    "ogTitle": "BlogAI Pro — The AI Revolution for Blogger",
+    "ogDescription": "Write, optimize and publish in seconds. Save 96% of your time with enterprise-grade AI."
   },
   "nav": {
     "features": "Features",
-    "how": "How it works",
+    "how": "Workflow",
     "pricing": "Pricing",
-    "faq": "FAQ",
-    "signIn": "Sign in",
-    "getStarted": "Get started free"
+    "faq": "Help",
+    "signIn": "Login",
+    "getStarted": "Start Free"
   },
   "hero": {
-    "badge": "New — AI for Blogger",
-    "titlePre": "Modern blogging starts with",
-    "titleAccent": "artificial intelligence",
-    "subtitle": "Create SEO-optimized articles, publish to Blogger and WordPress, and track Google performance — all in one platform built by bloggers, for bloggers.",
-    "primaryCta": "Start Free",
-    "secondaryCta": "Watch demo",
-    "microcopy": "10 free credits • No credit card • Cancel anytime",
-    "trustedBy": "Integrated with the platforms that matter",
+    "badge": "Official Launch v1.2",
+    "titlePre": "Build legendary blogs with",
+    "titleAccent": "Artificial Intelligence",
+    "subtitle": "The ultimate platform for bloggers seeking real organic traffic. Generate high-quality articles, optimize technical SEO, and publish to Blogger and WordPress instantly.",
+    "primaryCta": "Start for Free",
+    "secondaryCta": "Watch Demo",
+    "microcopy": "10 free credits • No card required • Cancel anytime",
     "stats": {
-      "users": "Active users",
-      "articles": "Articles generated",
-      "blogs": "Blogs connected",
+      "users": "Active Users",
+      "articles": "Articles Generated",
+      "blogs": "Blogs Connected",
       "uptime": "Uptime"
     }
   },
-  "socialProof": {
-    "title": "End-to-end trust",
-    "items": {
-      "bloggers": "Built for bloggers",
-      "seo": "SEO-optimized",
-      "gsc": "Google Search Console",
-      "blogger": "Official Blogger",
-      "stripe": "Stripe verified",
-      "syncpay": "SyncPay Pix"
-    }
+  "stats": {
+    "articles": "Articles Published",
+    "users": "Active Creators",
+    "words": "Words Generated",
+    "satisfaction": "Satisfaction Rate"
   },
-  "demo": {
-    "kicker": "Real interface",
-    "title": "From brief to published article in under 60 seconds",
-    "subtitle": "Watch the workflow that saves hours every week.",
-    "steps": {
-      "s1": "Type the topic",
-      "s2": "AI writes and optimizes",
-      "s3": "Publishes to Blogger"
-    }
-  },
-  "video": {
-    "kicker": "Full demo",
-    "title": "See BlogAI Pro in action",
-    "subtitle": "A tour through article generation, SEO, Blogger publishing and the Search Console dashboard.",
-    "placeholder": "The official walkthrough is coming soon. Tap to preview the interactive workflow.",
-    "watch": "Watch now",
-    "duration": "3 min"
-  },
-  "screenshots": {
-    "kicker": "Real interface",
-    "title": "Get to know every screen",
-    "subtitle": "Crafted down to the pixel, with native dark mode and full responsiveness.",
-    "prev": "Previous",
-    "next": "Next",
-    "items": {
-      "dashboard": {
-        "title": "Dashboard",
-        "desc": "Consolidated view of credits, articles, integrations and performance."
-      },
-      "generator": {
-        "title": "AI Generator",
-        "desc": "Pick topic, tone, language and image style — AI handles the rest."
-      },
-      "smart": {
-        "title": "Smart Profile",
-        "desc": "AI learns your niche, voice and audience automatically."
-      },
-      "library": {
-        "title": "Library",
-        "desc": "All your articles in one place with search, filters and history."
-      },
-      "analytics": {
-        "title": "Analytics",
-        "desc": "Real-time Google Search Console metrics with country and device filters."
-      },
-      "finance": {
-        "title": "Billing",
-        "desc": "Track subscriptions, invoices, credits and payment receipts."
-      },
-      "profile": {
-        "title": "My Profile",
-        "desc": "Photo, personal info, language, timezone, security and integrations."
-      },
-      "invites": {
-        "title": "Refer & Earn",
-        "desc": "Invite creators and earn 30 credits per qualified referral."
+  "versus": {
+    "manual": {
+      "items": {
+        "0": "Exhaustive keyword research",
+        "1": "Manual writing for 4+ hours per post",
+        "2": "Complex and time-consuming technical SEO",
+        "3": "Manual search for non-copyrighted images",
+        "4": "Slow publishing on Blogger/WordPress",
+        "5": "Manual tracking of Google rankings",
+        "6": "Lack of consistency in production"
+      }
+    },
+    "pro": {
+      "items": {
+        "0": "AI identifies best SEO opportunities",
+        "1": "Full article in less than 2 minutes",
+        "2": "Auto technical SEO (Meta, H1-H3, FAQ)",
+        "3": "High-definition AI-generated images",
+        "4": "Direct 1-click instant publishing",
+        "5": "Real Search Console metrics integrated",
+        "6": "Scheduling and clusters for fast growth"
       }
     }
   },
   "benefits": {
-    "title": "Everything a professional blogger needs",
-    "subtitle": "Integrated tools to scale production, traffic and revenue.",
     "items": {
       "ai": {
-        "title": "State-of-the-art AI",
-        "desc": "Generative models producing articles with human-sounding structure, tone and voice."
+        "title": "Human-Like AI Writing",
+        "desc": "Models trained to write with soul, avoiding AI detection and focusing on the reader."
       },
       "seo": {
-        "title": "Automatic technical SEO",
-        "desc": "Titles, meta descriptions, FAQ, headings and schema ready to rank."
+        "title": "Invisible and Powerful SEO",
+        "desc": "Title, Meta Description, Tags and Schema Markup generated automatically to rank on Google."
       },
       "publish": {
-        "title": "One-click publishing",
-        "desc": "Official Blogger integration and a dedicated WordPress plugin."
+        "title": "Publishing Ecosystem",
+        "desc": "Native Blogger integration and official WordPress Plugin. Publish anywhere, anytime."
       },
       "performance": {
-        "title": "SEO performance",
-        "desc": "Native Google Search Console dashboard with real-time metrics."
+        "title": "Real Dashboard",
+        "desc": "Connect your Search Console and see clicks, impressions and CTR without leaving BlogAI Pro."
       },
       "monetization": {
-        "title": "Built-in monetization",
-        "desc": "AdSense slots, smart internal links and topic clusters."
+        "title": "Revenue Focused",
+        "desc": "Auto AdSense optimization and smart internal links that boost your RPM."
       },
       "i18n": {
-        "title": "Multilingual",
-        "desc": "Create content in Portuguese, English, Spanish and more with one click."
+        "title": "Global Reach",
+        "desc": "Create content in 30+ languages and dominate international niches with one click."
       }
     }
-  },
-  "benefits2": {
-    "title": "Built to scale your blog",
-    "subtitle": "Features that save time and grow your organic revenue.",
-    "items": {
-      "time": {
-        "title": "Time savings",
-        "desc": "Cut article time from hours to minutes."
-      },
-      "seo": {
-        "title": "Automatic SEO",
-        "desc": "Technical optimization applied effortlessly to every article."
-      },
-      "publish": {
-        "title": "Auto publishing",
-        "desc": "Send directly to Blogger or WordPress in one click."
-      },
-      "ai": {
-        "title": "Trained AI",
-        "desc": "Generative models tuned to your voice, audience and niche."
-      },
-      "analytics": {
-        "title": "Analytics",
-        "desc": "Real-time Search Console metrics without leaving the app."
-      },
-      "money": {
-        "title": "Monetization",
-        "desc": "AdSense, smart links and topic clusters ready to scale revenue."
-      }
-    }
-  },
-  "how": {
-    "title": "How it works",
-    "subtitle": "Three steps to turn an idea into organic traffic.",
-    "steps": {
-      "s1": {
-        "title": "Describe the topic",
-        "desc": "Pick keyword, tone, length and language. AI takes it from there."
-      },
-      "s2": {
-        "title": "Review and optimize",
-        "desc": "Edit in a rich editor with SEO, image and internal-link suggestions."
-      },
-      "s3": {
-        "title": "Publish and monitor",
-        "desc": "Ship to Blogger/WordPress and follow performance on Google."
-      }
-    }
-  },
-  "showcase": {
-    "title": "A product crafted down to the last pixel",
-    "subtitle": "Consistent design system, dark mode, smooth animations and full responsiveness.",
-    "captions": {
-      "dashboard": "Dashboard",
-      "editor": "Article editor",
-      "performance": "SEO performance"
-    }
-  },
-  "integrations": {
-    "title": "Integrated with what matters",
-    "subtitle": "Connect your favorite tools and work without friction.",
-    "items": {
-      "blogger": "Blogger",
-      "wordpress": "WordPress",
-      "gsc": "Search Console",
-      "adsense": "AdSense",
-      "analytics": "Analytics",
-      "stripe": "Stripe",
-      "openai": "OpenAI",
-      "zapier": "Zapier"
-    }
-  },
-  "versus": {
-    "title": "Writing manually vs. using BlogAI Pro",
-    "subtitle": "See how much time you save on every published article.",
-    "manual": {
-      "title": "Writing manually",
-      "time": "≈ 4 hours",
-      "badge": "Traditional method",
-      "items": [
-        "Research keywords",
-        "Structure title and headings",
-        "Write 1,500+ words",
-        "Optimize SEO manually",
-        "Source images and alt text",
-        "Publish and format on Blogger",
-        "Configure meta tags and schema"
-      ]
-    },
-    "pro": {
-      "title": "Using BlogAI Pro",
-      "time": "≈ 2 minutes",
-      "badge": "AI-powered method",
-      "items": [
-        "Enter the topic",
-        "AI generates the full article",
-        "Automatic SEO (Title, Meta, FAQ, Schema)",
-        "Auto images and internal links",
-        "One-click direct publishing",
-        "Search Console metrics integrated",
-        "Scheduling and clusters included"
-      ]
-    },
-    "savingsLabel": "Average savings",
-    "savingsValue": "96% of the time per article"
   },
   "pricing": {
-    "title": "Plans for every size",
-    "subtitle": "Start free, grow without friction.",
+    "title": "The right plan for your journey",
+    "subtitle": "From beginners to content empires.",
     "monthly": "Monthly",
-    "popular": "Most popular",
-    "cta": "Choose plan",
-    "ctaFree": "Start free"
-  },
-  "compare": {
-    "title": "Compare plans in detail",
-    "subtitle": "Pick the plan that scales with your blog.",
-    "feature": "Feature",
-    "rows": {
-      "credits": "Credits per month",
-      "seo": "Automatic SEO",
-      "publish": "One-click publish",
-      "images": "Image generation",
-      "clusters": "Clusters & internal links",
-      "scheduler": "Auto scheduling",
-      "monetization": "Monetization tuning",
-      "support": "Support",
-      "api": "Official API access"
-    },
-    "values": {
-      "supportFree": "Email",
-      "supportPro": "Priority",
-      "supportPremium": "Dedicated"
-    }
-  },
-  "testimonials": {
-    "title": "Bloggers accelerating with BlogAI Pro",
-    "subtitle": "Testimonials from real creators using the platform every day.",
-    "items": {
-      "t1": {
-        "quote": "We tripled output without losing quality. Automatic SEO ranks better than when I did it by hand.",
-        "author": "Marina Alves",
-        "role": "Personal finance blog"
-      },
-      "t2": {
-        "quote": "Direct publishing to Blogger alone would be worth the subscription. The performance dashboard seals the deal.",
-        "author": "Rafael Mendes",
-        "role": "Tech niches"
-      },
-      "t3": {
-        "quote": "Impeccable interface and responsive support. Went from 3 posts a month to 3 a week.",
-        "author": "Camila Rocha",
-        "role": "Wellness blog"
-      },
-      "t4": {
-        "quote": "The smart internal links boosted my session duration by 40%. Insane.",
-        "author": "Diego Barros",
-        "role": "Travel blog"
-      }
-    }
-  },
-  "faq": {
-    "title": "Frequently asked questions",
-    "subtitle": "Everything you need to know before getting started.",
-    "items": {
-      "q1": {
-        "q": "How does payment work?",
-        "a": "We accept Pix (BRL) via SyncPay and international cards (USD) via Stripe. All processing happens through the official gateways, fully encrypted."
-      },
-      "q2": {
-        "q": "How do credits work?",
-        "a": "Each article consumes credits. The free plan includes 10 credits per month. Paid plans include 150 credits (Pro) or unlimited credits (Premium)."
-      },
-      "q3": {
-        "q": "Which AI generates the articles?",
-        "a": "We use state-of-the-art generative models with optimized prompts and an originality layer. Every article is unique and verified."
-      },
-      "q4": {
-        "q": "Do you integrate with Google Search Console?",
-        "a": "Yes. Connect your Google account and BlogAI Pro shows real-time metrics: clicks, impressions, CTR and average position per URL."
-      },
-      "q5": {
-        "q": "How does the Blogger integration work?",
-        "a": "Authorize through the official Google OAuth flow and publish in one click. We support drafts, scheduling, images and native HTML formatting."
-      },
-      "q6": {
-        "q": "Is Stripe secure?",
-        "a": "Yes. All checkout runs inside Stripe (PCI DSS Level 1). We never store card data on our servers."
-      },
-      "q7": {
-        "q": "How does SyncPay Pix work?",
-        "a": "BRL payments are processed through SyncPay with a Pix QR Code. Credits unlock automatically as soon as payment is confirmed."
-      },
-      "q8": {
-        "q": "How do you protect my data?",
-        "a": "Row-Level Security on the database, TLS 1.3 in transit, JWT tokens, granular per-user policies and full auditing. Aligned with LGPD and GDPR."
-      },
-      "q9": {
-        "q": "Can I cancel anytime?",
-        "a": "Yes. No lock-in — cancel in one click and keep access until the end of the paid cycle. No fees, no bureaucracy."
-      },
-      "q10": {
-        "q": "What plans do you offer?",
-        "a": "Free (10 credits/month), Pro (150 credits + publishing + priority support) and Premium (unlimited credits + scheduling + monetization)."
-      },
-      "q11": {
-        "q": "Is there an official API?",
-        "a": "Yes. REST API v1 documented in OpenAPI 3.1, with API Key authentication, per-plan rate limits and idempotency support."
-      },
-      "q12": {
-        "q": "Does it work with WordPress?",
-        "a": "Yes. On top of Blogger, we ship an official WordPress plugin that publishes in one click straight from your dashboard."
-      },
-      "q13": {
-        "q": "Is there an Android app?",
-        "a": "Yes. BlogAI Pro has a native Android app (Capacitor) that embeds the full platform for a mobile-first experience."
-      },
-      "q14": {
-        "q": "What happens to my data if I cancel?",
-        "a": "You can export your articles anytime. After cancellation, your data remains available for 30 days before removal, in line with LGPD/GDPR."
-      },
-      "q15": {
-        "q": "How does support work?",
-        "a": "Email support within 24h for every plan. Pro and Premium customers get priority handling; Premium includes a dedicated account manager."
-      }
-    }
-  },
-  "newsletter": {
-    "title": "Get SEO and AI tips by email",
-    "subtitle": "Practical content every week, zero spam.",
-    "placeholder": "you@email.com",
-    "cta": "Subscribe",
-    "microcopy": "You can unsubscribe at any time.",
-    "success": "You're in — check your inbox to confirm."
+    "popular": "Most Popular",
+    "cta": "Subscribe Now",
+    "ctaFree": "Start Free"
   },
   "finalCta": {
-    "title": "Ready to scale your blog?",
-    "subtitle": "Join creators who save hours every day with BlogAI Pro.",
-    "primary": "Start Free",
-    "secondary": "Talk to the creator",
-    "microcopy1": "No credit card required.",
-    "microcopy2": "Free plan available forever."
+    "title": "The future of your blog starts today.",
+    "subtitle": "Stop wasting time with manual tasks. Let AI handle the heavy lifting while you scale your content empire.",
+    "primary": "Start for Free",
+    "secondary": "Talk to support",
+    "microcopy1": "Free forever. Upgrade when you need."
   },
-  "guarantees": {
-    "title": "Why trust BlogAI Pro",
-    "subtitle": "A platform built to last — secure, modern and available on every device.",
-    "items": {
-      "secure": {
-        "title": "Data security",
-        "desc": "TLS 1.3 encryption, database RLS and LGPD/GDPR compliance."
-      },
-      "updates": {
-        "title": "Constant updates",
-        "desc": "New features shipped regularly at no extra cost."
-      },
-      "support": {
-        "title": "Human support",
-        "desc": "Real people replying within 24h — no generic chatbot."
-      },
-      "noInstall": {
-        "title": "No installation",
-        "desc": "Nothing to download — access and start creating."
-      },
-      "browser": {
-        "title": "Runs in the browser",
-        "desc": "Works on any modern browser, with native dark mode."
-      },
-      "devices": {
-        "title": "Desktop and Android",
-        "desc": "Official Android app available — the same experience on any screen."
-      }
-    }
-  },
-  "floatingCta": "Start Free",
+  "floatingCta": "Create Free Account",
   "footer": {
-    "tagline": "The complete platform for modern bloggers.",
-    "product": "Product",
+    "tagline": "The ultimate AI platform for Blogger and WordPress bloggers.",
+    "product": "Platform",
     "resources": "Resources",
-    "company": "Company",
+    "company": "BlogAI Pro",
     "legal": "Legal",
-    "rights": "All rights reserved.",
-    "links": {
-      "features": "Features",
-      "pricing": "Pricing",
-      "changelog": "Changelog",
-      "blog": "Blog",
-      "help": "Help",
-      "api": "API",
-      "creator": "About the creator",
-      "contact": "Contact",
-      "privacy": "Privacy",
-      "terms": "Terms"
-    }
+    "rights": "Monzart Digital. All rights reserved."
   }
 }
