@@ -1,6 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Sparkles, ArrowRight, Play, Check, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LiveAiDemo } from "./LiveAiDemo";
@@ -9,21 +8,12 @@ import { useRef } from "react";
 export function Hero() {
   const { t } = useTranslation("landing");
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 20]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
-
+  
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-20 pb-20"
+      className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-20 pb-20 bg-background"
     >
-      <div className="absolute inset-0 z-0 bg-background" />
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-20%,oklch(0.68_0.21_300/0.05),transparent_60%)]" />
 
       <div className="container relative z-10 mx-auto px-4 text-center mb-20">
@@ -70,6 +60,7 @@ export function Hero() {
             <LiveAiDemo />
           </div>
         </div>
+      </motion.div>
     </section>
   );
 }
