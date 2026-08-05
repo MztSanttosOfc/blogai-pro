@@ -1,4 +1,4 @@
-import { createFileRoute, useTranslation } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { LegalDocument } from "@/components/legal/LegalDocument";
 import { getLegalDoc } from "@/lib/legal-content";
 import { useTranslation as useI18n } from "react-i18next";
