@@ -93,10 +93,10 @@ function ProfessionalLandingPage() {
         <BrandLogo className="scale-110" />
         <div className="flex items-center gap-4">
           <Button variant="ghost" asChild className="hidden sm:inline-flex hover:bg-emerald-500/5 transition-colors">
-            <Link to="/auth">{t("auth.login", "Entrar")}</Link>
+            <Link to="/login">{t("auth.login", "Entrar")}</Link>
           </Button>
           <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95">
-            <Link to="/auth" search={{ mode: "signup" }}>Começar Gratuitamente</Link>
+            <Link to="/signup">Começar Gratuitamente</Link>
           </Button>
         </div>
       </header>
@@ -140,12 +140,12 @@ function ProfessionalLandingPage() {
             className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
           >
             <Button asChild size="xl" className="h-14 px-10 text-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95">
-              <Link to="/auth" search={{ mode: "signup" }}>
+              <Link to="/signup">
                 Começar Gratuitamente <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="xl" className="h-14 px-10 text-lg border-2 hover:bg-emerald-500/5 transition-all active:scale-95">
-              <Link to="/auth">Entrar na Plataforma</Link>
+              <Link to="/login">Entrar na Plataforma</Link>
             </Button>
           </motion.div>
         </div>
@@ -224,11 +224,11 @@ function ProfessionalLandingPage() {
             </div>
             
             <nav className="flex flex-wrap justify-center gap-x-8 gap-y-4">
-              <Link to="/_authenticated/legal/privacidade" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Privacidade</Link>
-              <Link to="/_authenticated/legal/termos" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Termos</Link>
-              <Link to="/_authenticated/legal/cookies" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Cookies</Link>
-              <Link to="/_authenticated/legal/sobre" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Sobre</Link>
-              <Link to="/_authenticated/suporte" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Suporte</Link>
+              <Link to="/legal/privacidade" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Privacidade</Link>
+              <Link to="/legal/termos" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Termos</Link>
+              <Link to="/legal/cookies" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Cookies</Link>
+              <Link to="/legal/sobre" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Sobre</Link>
+              <Link to="/suporte" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Suporte</Link>
             </nav>
           </div>
           
