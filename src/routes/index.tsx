@@ -9,6 +9,8 @@ import { Comparison } from "@/components/landing/Comparison";
 import { InteractiveDemo } from "@/components/landing/InteractiveDemo";
 import { Pricing } from "@/components/landing/Pricing";
 import { FAQSection } from "@/components/landing/FAQSection";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { ScreenshotsCarousel } from "@/components/landing/ScreenshotsCarousel";
 import { FinalCta } from "@/components/landing/FinalCta";
 import { Footer } from "@/components/landing/Footer";
 
@@ -76,12 +78,14 @@ function LandingPage() {
           <FeatureGrid />
         </div>
         
+        <ScreenshotsCarousel />
         <Comparison />
         
         <div id="how">
           <InteractiveDemo />
         </div>
         
+        <Testimonials />
         <Pricing />
         <FAQSection />
         <FinalCta />
