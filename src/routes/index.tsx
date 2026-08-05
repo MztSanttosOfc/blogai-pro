@@ -112,7 +112,7 @@ function ProfessionalLandingPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-semibold"
           >
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Versão 1.2 Enterprise Ready</span>
+            <span>Versão 1.2.0 Enterprise Ready</span>
           </motion.div>
 
           <motion.h1 
