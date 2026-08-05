@@ -9,12 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LegalTermosRouteImport } from './routes/legal.termos'
+import { Route as LegalSobreRouteImport } from './routes/legal.sobre'
+import { Route as LegalPrivacidadeRouteImport } from './routes/legal.privacidade'
+import { Route as LegalCookiesRouteImport } from './routes/legal.cookies'
 import { Route as AuthenticatedVerificarBlogRouteImport } from './routes/_authenticated/verificar-blog'
-import { Route as AuthenticatedSuporteRouteImport } from './routes/_authenticated/suporte'
 import { Route as AuthenticatedRecompensasRouteImport } from './routes/_authenticated/recompensas'
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
 import { Route as AuthenticatedPerfilInteligenteRouteImport } from './routes/_authenticated/perfil-inteligente'
@@ -23,7 +28,6 @@ import { Route as AuthenticatedMonetizacaoRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMinhaAtividadeRouteImport } from './routes/_authenticated/minha-atividade'
 import { Route as AuthenticatedMeuPerfilRouteImport } from './routes/_authenticated/meu-perfil'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
-import { Route as AuthenticatedLegalRouteImport } from './routes/_authenticated/legal'
 import { Route as AuthenticatedGenerateRouteImport } from './routes/_authenticated/generate'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedFeedbackRouteImport } from './routes/_authenticated/feedback'
@@ -38,16 +42,10 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAjudaRouteImport } from './routes/_authenticated/ajuda'
 import { Route as AuthenticatedAgendamentosRouteImport } from './routes/_authenticated/agendamentos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedLegalIndexRouteImport } from './routes/_authenticated/legal.index'
 import { Route as ApiV1OpenapiDotjsonRouteImport } from './routes/api/v1/openapi[.]json'
 import { Route as ApiV1LogsRouteImport } from './routes/api/v1/logs'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as AuthenticatedLibraryIdRouteImport } from './routes/_authenticated/library.$id'
-import { Route as AuthenticatedLegalTermosRouteImport } from './routes/_authenticated/legal.termos'
-import { Route as AuthenticatedLegalSobreRouteImport } from './routes/_authenticated/legal.sobre'
-import { Route as AuthenticatedLegalPrivacidadeRouteImport } from './routes/_authenticated/legal.privacidade'
-import { Route as AuthenticatedLegalLicencasRouteImport } from './routes/_authenticated/legal.licencas'
-import { Route as AuthenticatedLegalCookiesRouteImport } from './routes/_authenticated/legal.cookies'
 import { Route as AuthenticatedBloggerCallbackRouteImport } from './routes/_authenticated/blogger.callback'
 import { Route as AuthenticatedAdminFeedbackRouteImport } from './routes/_authenticated/admin.feedback'
 import { Route as ApiV1SmartProfileIndexRouteImport } from './routes/api/v1/smart-profile/index'
@@ -75,6 +73,11 @@ import { Route as ApiPublicWebhooksSyncpayRouteImport } from './routes/api/publi
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicHooksPublishScheduledRouteImport } from './routes/api/public/hooks/publish-scheduled'
 
+const SuporteRoute = SuporteRouteImport.update({
+  id: '/suporte',
+  path: '/suporte',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -83,6 +86,11 @@ const SignupRoute = SignupRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -94,17 +102,32 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalTermosRoute = LegalTermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalSobreRoute = LegalSobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalPrivacidadeRoute = LegalPrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => LegalRoute,
+} as any)
+const LegalCookiesRoute = LegalCookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => LegalRoute,
+} as any)
 const AuthenticatedVerificarBlogRoute =
   AuthenticatedVerificarBlogRouteImport.update({
     id: '/verificar-blog',
     path: '/verificar-blog',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedSuporteRoute = AuthenticatedSuporteRouteImport.update({
-  id: '/suporte',
-  path: '/suporte',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedRecompensasRoute =
   AuthenticatedRecompensasRouteImport.update({
     id: '/recompensas',
@@ -147,11 +170,6 @@ const AuthenticatedMeuPerfilRoute = AuthenticatedMeuPerfilRouteImport.update({
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedLegalRoute = AuthenticatedLegalRouteImport.update({
-  id: '/legal',
-  path: '/legal',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGenerateRoute = AuthenticatedGenerateRouteImport.update({
@@ -227,11 +245,6 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedLegalIndexRoute = AuthenticatedLegalIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedLegalRoute,
-} as any)
 const ApiV1OpenapiDotjsonRoute = ApiV1OpenapiDotjsonRouteImport.update({
   id: '/api/v1/openapi.json',
   path: '/api/v1/openapi.json',
@@ -252,35 +265,6 @@ const AuthenticatedLibraryIdRoute = AuthenticatedLibraryIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedLibraryRoute,
 } as any)
-const AuthenticatedLegalTermosRoute =
-  AuthenticatedLegalTermosRouteImport.update({
-    id: '/termos',
-    path: '/termos',
-    getParentRoute: () => AuthenticatedLegalRoute,
-  } as any)
-const AuthenticatedLegalSobreRoute = AuthenticatedLegalSobreRouteImport.update({
-  id: '/sobre',
-  path: '/sobre',
-  getParentRoute: () => AuthenticatedLegalRoute,
-} as any)
-const AuthenticatedLegalPrivacidadeRoute =
-  AuthenticatedLegalPrivacidadeRouteImport.update({
-    id: '/privacidade',
-    path: '/privacidade',
-    getParentRoute: () => AuthenticatedLegalRoute,
-  } as any)
-const AuthenticatedLegalLicencasRoute =
-  AuthenticatedLegalLicencasRouteImport.update({
-    id: '/licencas',
-    path: '/licencas',
-    getParentRoute: () => AuthenticatedLegalRoute,
-  } as any)
-const AuthenticatedLegalCookiesRoute =
-  AuthenticatedLegalCookiesRouteImport.update({
-    id: '/cookies',
-    path: '/cookies',
-    getParentRoute: () => AuthenticatedLegalRoute,
-  } as any)
 const AuthenticatedBloggerCallbackRoute =
   AuthenticatedBloggerCallbackRouteImport.update({
     id: '/blogger/callback',
@@ -420,8 +404,10 @@ const ApiPublicHooksPublishScheduledRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/legal': typeof LegalRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/suporte': typeof SuporteRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/ajuda': typeof AuthenticatedAjudaRoute
@@ -436,7 +422,6 @@ export interface FileRoutesByFullPath {
   '/feedback': typeof AuthenticatedFeedbackRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/generate': typeof AuthenticatedGenerateRoute
-  '/legal': typeof AuthenticatedLegalRouteWithChildren
   '/library': typeof AuthenticatedLibraryRouteWithChildren
   '/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -445,20 +430,17 @@ export interface FileRoutesByFullPath {
   '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
-  '/suporte': typeof AuthenticatedSuporteRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacidade': typeof LegalPrivacidadeRoute
+  '/legal/sobre': typeof LegalSobreRoute
+  '/legal/termos': typeof LegalTermosRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
-  '/legal/cookies': typeof AuthenticatedLegalCookiesRoute
-  '/legal/licencas': typeof AuthenticatedLegalLicencasRoute
-  '/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
-  '/legal/sobre': typeof AuthenticatedLegalSobreRoute
-  '/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
-  '/legal/': typeof AuthenticatedLegalIndexRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
@@ -486,8 +468,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/legal': typeof LegalRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/suporte': typeof SuporteRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/ajuda': typeof AuthenticatedAjudaRoute
@@ -510,20 +494,17 @@ export interface FileRoutesByTo {
   '/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/recompensas': typeof AuthenticatedRecompensasRoute
-  '/suporte': typeof AuthenticatedSuporteRoute
   '/verificar-blog': typeof AuthenticatedVerificarBlogRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacidade': typeof LegalPrivacidadeRoute
+  '/legal/sobre': typeof LegalSobreRoute
+  '/legal/termos': typeof LegalTermosRoute
   '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
-  '/legal/cookies': typeof AuthenticatedLegalCookiesRoute
-  '/legal/licencas': typeof AuthenticatedLegalLicencasRoute
-  '/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
-  '/legal/sobre': typeof AuthenticatedLegalSobreRoute
-  '/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
-  '/legal': typeof AuthenticatedLegalIndexRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
@@ -553,8 +534,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/legal': typeof LegalRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/suporte': typeof SuporteRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamentos': typeof AuthenticatedAgendamentosRoute
   '/_authenticated/ajuda': typeof AuthenticatedAjudaRoute
@@ -569,7 +552,6 @@ export interface FileRoutesById {
   '/_authenticated/feedback': typeof AuthenticatedFeedbackRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/generate': typeof AuthenticatedGenerateRoute
-  '/_authenticated/legal': typeof AuthenticatedLegalRouteWithChildren
   '/_authenticated/library': typeof AuthenticatedLibraryRouteWithChildren
   '/_authenticated/meu-perfil': typeof AuthenticatedMeuPerfilRoute
   '/_authenticated/minha-atividade': typeof AuthenticatedMinhaAtividadeRoute
@@ -578,20 +560,17 @@ export interface FileRoutesById {
   '/_authenticated/perfil-inteligente': typeof AuthenticatedPerfilInteligenteRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/recompensas': typeof AuthenticatedRecompensasRoute
-  '/_authenticated/suporte': typeof AuthenticatedSuporteRoute
   '/_authenticated/verificar-blog': typeof AuthenticatedVerificarBlogRoute
+  '/legal/cookies': typeof LegalCookiesRoute
+  '/legal/privacidade': typeof LegalPrivacidadeRoute
+  '/legal/sobre': typeof LegalSobreRoute
+  '/legal/termos': typeof LegalTermosRoute
   '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/_authenticated/blogger/callback': typeof AuthenticatedBloggerCallbackRoute
-  '/_authenticated/legal/cookies': typeof AuthenticatedLegalCookiesRoute
-  '/_authenticated/legal/licencas': typeof AuthenticatedLegalLicencasRoute
-  '/_authenticated/legal/privacidade': typeof AuthenticatedLegalPrivacidadeRoute
-  '/_authenticated/legal/sobre': typeof AuthenticatedLegalSobreRoute
-  '/_authenticated/legal/termos': typeof AuthenticatedLegalTermosRoute
   '/_authenticated/library/$id': typeof AuthenticatedLibraryIdRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/logs': typeof ApiV1LogsRoute
   '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
-  '/_authenticated/legal/': typeof AuthenticatedLegalIndexRoute
   '/api/public/hooks/publish-scheduled': typeof ApiPublicHooksPublishScheduledRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/webhooks/syncpay': typeof ApiPublicWebhooksSyncpayRoute
@@ -621,8 +600,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/legal'
     | '/login'
     | '/signup'
+    | '/suporte'
     | '/admin'
     | '/agendamentos'
     | '/ajuda'
@@ -637,7 +618,6 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/financeiro'
     | '/generate'
-    | '/legal'
     | '/library'
     | '/meu-perfil'
     | '/minha-atividade'
@@ -646,20 +626,17 @@ export interface FileRouteTypes {
     | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
-    | '/suporte'
     | '/verificar-blog'
-    | '/admin/feedback'
-    | '/blogger/callback'
     | '/legal/cookies'
-    | '/legal/licencas'
     | '/legal/privacidade'
     | '/legal/sobre'
     | '/legal/termos'
+    | '/admin/feedback'
+    | '/blogger/callback'
     | '/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
-    | '/legal/'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
@@ -687,8 +664,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/legal'
     | '/login'
     | '/signup'
+    | '/suporte'
     | '/admin'
     | '/agendamentos'
     | '/ajuda'
@@ -711,20 +690,17 @@ export interface FileRouteTypes {
     | '/perfil-inteligente'
     | '/pricing'
     | '/recompensas'
-    | '/suporte'
     | '/verificar-blog'
-    | '/admin/feedback'
-    | '/blogger/callback'
     | '/legal/cookies'
-    | '/legal/licencas'
     | '/legal/privacidade'
     | '/legal/sobre'
     | '/legal/termos'
+    | '/admin/feedback'
+    | '/blogger/callback'
     | '/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
-    | '/legal'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
@@ -753,8 +729,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/legal'
     | '/login'
     | '/signup'
+    | '/suporte'
     | '/_authenticated/admin'
     | '/_authenticated/agendamentos'
     | '/_authenticated/ajuda'
@@ -769,7 +747,6 @@ export interface FileRouteTypes {
     | '/_authenticated/feedback'
     | '/_authenticated/financeiro'
     | '/_authenticated/generate'
-    | '/_authenticated/legal'
     | '/_authenticated/library'
     | '/_authenticated/meu-perfil'
     | '/_authenticated/minha-atividade'
@@ -778,20 +755,17 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil-inteligente'
     | '/_authenticated/pricing'
     | '/_authenticated/recompensas'
-    | '/_authenticated/suporte'
     | '/_authenticated/verificar-blog'
+    | '/legal/cookies'
+    | '/legal/privacidade'
+    | '/legal/sobre'
+    | '/legal/termos'
     | '/_authenticated/admin/feedback'
     | '/_authenticated/blogger/callback'
-    | '/_authenticated/legal/cookies'
-    | '/_authenticated/legal/licencas'
-    | '/_authenticated/legal/privacidade'
-    | '/_authenticated/legal/sobre'
-    | '/_authenticated/legal/termos'
     | '/_authenticated/library/$id'
     | '/api/v1/health'
     | '/api/v1/logs'
     | '/api/v1/openapi.json'
-    | '/_authenticated/legal/'
     | '/api/public/hooks/publish-scheduled'
     | '/api/public/webhooks/stripe'
     | '/api/public/webhooks/syncpay'
@@ -821,8 +795,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  LegalRoute: typeof LegalRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  SuporteRoute: typeof SuporteRoute
   ApiV1HealthRoute: typeof ApiV1HealthRoute
   ApiV1LogsRoute: typeof ApiV1LogsRoute
   ApiV1OpenapiDotjsonRoute: typeof ApiV1OpenapiDotjsonRoute
@@ -854,6 +830,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/suporte': {
+      id: '/suporte'
+      path: '/suporte'
+      fullPath: '/suporte'
+      preLoaderRoute: typeof SuporteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -866,6 +849,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -882,18 +872,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legal/termos': {
+      id: '/legal/termos'
+      path: '/termos'
+      fullPath: '/legal/termos'
+      preLoaderRoute: typeof LegalTermosRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/sobre': {
+      id: '/legal/sobre'
+      path: '/sobre'
+      fullPath: '/legal/sobre'
+      preLoaderRoute: typeof LegalSobreRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/privacidade': {
+      id: '/legal/privacidade'
+      path: '/privacidade'
+      fullPath: '/legal/privacidade'
+      preLoaderRoute: typeof LegalPrivacidadeRouteImport
+      parentRoute: typeof LegalRoute
+    }
+    '/legal/cookies': {
+      id: '/legal/cookies'
+      path: '/cookies'
+      fullPath: '/legal/cookies'
+      preLoaderRoute: typeof LegalCookiesRouteImport
+      parentRoute: typeof LegalRoute
+    }
     '/_authenticated/verificar-blog': {
       id: '/_authenticated/verificar-blog'
       path: '/verificar-blog'
       fullPath: '/verificar-blog'
       preLoaderRoute: typeof AuthenticatedVerificarBlogRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/suporte': {
-      id: '/_authenticated/suporte'
-      path: '/suporte'
-      fullPath: '/suporte'
-      preLoaderRoute: typeof AuthenticatedSuporteRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/recompensas': {
@@ -950,13 +961,6 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof AuthenticatedLibraryRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/legal': {
-      id: '/_authenticated/legal'
-      path: '/legal'
-      fullPath: '/legal'
-      preLoaderRoute: typeof AuthenticatedLegalRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/generate': {
@@ -1057,13 +1061,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/legal/': {
-      id: '/_authenticated/legal/'
-      path: '/'
-      fullPath: '/legal/'
-      preLoaderRoute: typeof AuthenticatedLegalIndexRouteImport
-      parentRoute: typeof AuthenticatedLegalRoute
-    }
     '/api/v1/openapi.json': {
       id: '/api/v1/openapi.json'
       path: '/api/v1/openapi.json'
@@ -1091,41 +1088,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/library/$id'
       preLoaderRoute: typeof AuthenticatedLibraryIdRouteImport
       parentRoute: typeof AuthenticatedLibraryRoute
-    }
-    '/_authenticated/legal/termos': {
-      id: '/_authenticated/legal/termos'
-      path: '/termos'
-      fullPath: '/legal/termos'
-      preLoaderRoute: typeof AuthenticatedLegalTermosRouteImport
-      parentRoute: typeof AuthenticatedLegalRoute
-    }
-    '/_authenticated/legal/sobre': {
-      id: '/_authenticated/legal/sobre'
-      path: '/sobre'
-      fullPath: '/legal/sobre'
-      preLoaderRoute: typeof AuthenticatedLegalSobreRouteImport
-      parentRoute: typeof AuthenticatedLegalRoute
-    }
-    '/_authenticated/legal/privacidade': {
-      id: '/_authenticated/legal/privacidade'
-      path: '/privacidade'
-      fullPath: '/legal/privacidade'
-      preLoaderRoute: typeof AuthenticatedLegalPrivacidadeRouteImport
-      parentRoute: typeof AuthenticatedLegalRoute
-    }
-    '/_authenticated/legal/licencas': {
-      id: '/_authenticated/legal/licencas'
-      path: '/licencas'
-      fullPath: '/legal/licencas'
-      preLoaderRoute: typeof AuthenticatedLegalLicencasRouteImport
-      parentRoute: typeof AuthenticatedLegalRoute
-    }
-    '/_authenticated/legal/cookies': {
-      id: '/_authenticated/legal/cookies'
-      path: '/cookies'
-      fullPath: '/legal/cookies'
-      preLoaderRoute: typeof AuthenticatedLegalCookiesRouteImport
-      parentRoute: typeof AuthenticatedLegalRoute
     }
     '/_authenticated/blogger/callback': {
       id: '/_authenticated/blogger/callback'
@@ -1323,27 +1285,6 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
-interface AuthenticatedLegalRouteChildren {
-  AuthenticatedLegalCookiesRoute: typeof AuthenticatedLegalCookiesRoute
-  AuthenticatedLegalLicencasRoute: typeof AuthenticatedLegalLicencasRoute
-  AuthenticatedLegalPrivacidadeRoute: typeof AuthenticatedLegalPrivacidadeRoute
-  AuthenticatedLegalSobreRoute: typeof AuthenticatedLegalSobreRoute
-  AuthenticatedLegalTermosRoute: typeof AuthenticatedLegalTermosRoute
-  AuthenticatedLegalIndexRoute: typeof AuthenticatedLegalIndexRoute
-}
-
-const AuthenticatedLegalRouteChildren: AuthenticatedLegalRouteChildren = {
-  AuthenticatedLegalCookiesRoute: AuthenticatedLegalCookiesRoute,
-  AuthenticatedLegalLicencasRoute: AuthenticatedLegalLicencasRoute,
-  AuthenticatedLegalPrivacidadeRoute: AuthenticatedLegalPrivacidadeRoute,
-  AuthenticatedLegalSobreRoute: AuthenticatedLegalSobreRoute,
-  AuthenticatedLegalTermosRoute: AuthenticatedLegalTermosRoute,
-  AuthenticatedLegalIndexRoute: AuthenticatedLegalIndexRoute,
-}
-
-const AuthenticatedLegalRouteWithChildren =
-  AuthenticatedLegalRoute._addFileChildren(AuthenticatedLegalRouteChildren)
-
 interface AuthenticatedLibraryRouteChildren {
   AuthenticatedLibraryIdRoute: typeof AuthenticatedLibraryIdRoute
 }
@@ -1370,7 +1311,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFeedbackRoute: typeof AuthenticatedFeedbackRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGenerateRoute: typeof AuthenticatedGenerateRoute
-  AuthenticatedLegalRoute: typeof AuthenticatedLegalRouteWithChildren
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRouteWithChildren
   AuthenticatedMeuPerfilRoute: typeof AuthenticatedMeuPerfilRoute
   AuthenticatedMinhaAtividadeRoute: typeof AuthenticatedMinhaAtividadeRoute
@@ -1379,7 +1319,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPerfilInteligenteRoute: typeof AuthenticatedPerfilInteligenteRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedRecompensasRoute: typeof AuthenticatedRecompensasRoute
-  AuthenticatedSuporteRoute: typeof AuthenticatedSuporteRoute
   AuthenticatedVerificarBlogRoute: typeof AuthenticatedVerificarBlogRoute
   AuthenticatedBloggerCallbackRoute: typeof AuthenticatedBloggerCallbackRoute
 }
@@ -1399,7 +1338,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFeedbackRoute: AuthenticatedFeedbackRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGenerateRoute: AuthenticatedGenerateRoute,
-  AuthenticatedLegalRoute: AuthenticatedLegalRouteWithChildren,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRouteWithChildren,
   AuthenticatedMeuPerfilRoute: AuthenticatedMeuPerfilRoute,
   AuthenticatedMinhaAtividadeRoute: AuthenticatedMinhaAtividadeRoute,
@@ -1408,7 +1346,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPerfilInteligenteRoute: AuthenticatedPerfilInteligenteRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedRecompensasRoute: AuthenticatedRecompensasRoute,
-  AuthenticatedSuporteRoute: AuthenticatedSuporteRoute,
   AuthenticatedVerificarBlogRoute: AuthenticatedVerificarBlogRoute,
   AuthenticatedBloggerCallbackRoute: AuthenticatedBloggerCallbackRoute,
 }
@@ -1417,11 +1354,29 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface LegalRouteChildren {
+  LegalCookiesRoute: typeof LegalCookiesRoute
+  LegalPrivacidadeRoute: typeof LegalPrivacidadeRoute
+  LegalSobreRoute: typeof LegalSobreRoute
+  LegalTermosRoute: typeof LegalTermosRoute
+}
+
+const LegalRouteChildren: LegalRouteChildren = {
+  LegalCookiesRoute: LegalCookiesRoute,
+  LegalPrivacidadeRoute: LegalPrivacidadeRoute,
+  LegalSobreRoute: LegalSobreRoute,
+  LegalTermosRoute: LegalTermosRoute,
+}
+
+const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  LegalRoute: LegalRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  SuporteRoute: SuporteRoute,
   ApiV1HealthRoute: ApiV1HealthRoute,
   ApiV1LogsRoute: ApiV1LogsRoute,
   ApiV1OpenapiDotjsonRoute: ApiV1OpenapiDotjsonRoute,
