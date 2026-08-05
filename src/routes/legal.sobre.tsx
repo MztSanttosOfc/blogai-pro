@@ -9,5 +9,5 @@ export const Route = createFileRoute("/legal/sobre")({
 
 function AboutPage() {
   const { i18n } = useI18n("legal");
-  return <LegalDocument doc={getLegalDoc(i18n.language, "sobre")} />;
+  return <LegalDocument doc={getLegalDoc(i18n.language, "sobre" as any)} />;
 }
