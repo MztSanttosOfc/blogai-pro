@@ -224,11 +224,11 @@ function ProfessionalLandingPage() {
             </div>
             
             <nav className="flex flex-wrap justify-center gap-x-8 gap-y-4">
-              <Link to="/_authenticated/legal/privacidade" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Privacidade</Link>
-              <Link to="/_authenticated/legal/termos" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Termos</Link>
-              <Link to="/_authenticated/legal/cookies" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Cookies</Link>
-              <Link to="/_authenticated/legal/sobre" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Sobre</Link>
-              <Link to="/_authenticated/suporte" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Suporte</Link>
+              <Link to="/legal/privacidade" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Privacidade</Link>
+              <Link to="/legal/termos" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Termos</Link>
+              <Link to="/legal/cookies" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Cookies</Link>
+              <Link to="/legal/sobre" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Sobre</Link>
+              <Link to="/suporte" className="text-sm text-muted-foreground hover:text-emerald-600 transition-colors">Suporte</Link>
             </nav>
           </div>
           
