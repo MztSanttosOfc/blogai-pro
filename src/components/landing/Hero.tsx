@@ -28,99 +28,48 @@ export function Hero() {
 
       <div className="container relative z-10 mx-auto px-4 text-center mb-20">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <Badge 
             variant="outline" 
-            className="mb-8 px-4 py-1.5 border-emerald-500/20 bg-emerald-500/5 text-emerald-400 backdrop-blur-sm"
+            className="mb-6 px-3 py-1 border-border bg-secondary/50 text-foreground/70"
           >
-            <Sparkles className="mr-2 h-3.5 w-3.5 fill-emerald-400" />
             {t("hero.badge")}
           </Badge>
 
-          <h1 className="max-w-4xl mx-auto font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] mb-8">
-            <span className="inline-block text-foreground drop-shadow-sm">{t("hero.titlePre")}</span>{" "}
-            <span className="relative inline-block">
-              <span className="relative z-10 bg-gradient-to-r from-emerald-400 via-teal-400 to-blue-500 bg-clip-text text-transparent">
-                {t("hero.titleAccent")}
-              </span>
-              <motion.div 
-                className="absolute -bottom-2 left-0 w-full h-1.5 bg-emerald-500/20 rounded-full blur-sm"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 0.8, duration: 1 }}
-              />
-            </span>
+          <h1 className="max-w-3xl mx-auto font-display text-5xl md:text-6xl font-bold tracking-tight mb-6">
+            <span className="text-foreground">{t("hero.titlePre")} </span>
+            <span className="text-primary">{t("hero.titleAccent")}</span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground/70 mb-12 leading-relaxed">
+          <p className="max-w-xl mx-auto text-lg text-muted-foreground mb-10">
             {t("hero.subtitle")}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Button size="xl" className="group relative overflow-hidden bg-emerald-500 hover:bg-emerald-600 text-white border-none shadow-[0_0_30px_rgba(16,185,129,0.4)] px-8 font-bold text-lg">
-              <span className="relative z-10 flex items-center gap-2">
-                {t("hero.primaryCta")} <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+            <Button size="xl" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8">
+              {t("hero.primaryCta")}
             </Button>
-            <Button size="xl" variant="outline" className="border-emerald-500/20 hover:bg-emerald-500/5 backdrop-blur-sm px-8 text-lg font-medium group">
-              <Play className="mr-2 h-5 w-5 fill-foreground group-hover:scale-110 transition-transform" /> {t("hero.secondaryCta")}
+            <Button size="xl" variant="ghost" className="text-foreground hover:bg-secondary">
+              {t("hero.secondaryCta")}
             </Button>
-          </div>
-
-          {/* Social Proof Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="w-8 h-8 rounded-full border-2 border-black bg-emerald-900 overflow-hidden">
-                    <img src={`https://i.pravatar.cc/100?u=blogai${i}`} alt="user" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-              <div className="text-left text-xs">
-                <div className="flex text-yellow-500">
-                  {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 fill-current" />)}
-                </div>
-                <div className="text-white font-bold">+3.2k usuários felizes</div>
-              </div>
-            </div>
-            <div className="text-xs font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
-              <Zap className="w-4 h-4 fill-emerald-400" /> 96% mais rápido
-            </div>
-            <div className="text-xs font-bold uppercase tracking-widest text-blue-400 flex items-center gap-2">
-              <Check className="w-4 h-4" /> SEO 100% Otimizado
-            </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Floating Notebook Mockup */}
       <motion.div
-        style={{ y, rotateX, scale }}
-        className="relative w-full max-w-6xl mx-auto px-4 perspective-[2000px]"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+        className="relative w-full max-w-5xl mx-auto px-4"
       >
-        <div className="relative rounded-t-[2.5rem] rounded-b-[1rem] border-[12px] border-[#1a191f] bg-[#1a191f] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] overflow-hidden">
-          {/* Laptop Lid Inner */}
-          <div className="relative aspect-video bg-[#0b0a14] rounded-[1.5rem] overflow-hidden border border-white/5">
+        <div className="relative rounded-2xl border border-border bg-card p-2 shadow-elegant">
+          <div className="relative aspect-video bg-background rounded-xl overflow-hidden border border-border/50">
             <LiveAiDemo />
-            
-            {/* Screen Reflections */}
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/5 to-white/10" />
           </div>
         </div>
-        
-        {/* Laptop Base */}
-        <div className="relative h-4 w-full bg-[#1a191f] rounded-b-[2rem] shadow-2xl overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-black/40 rounded-b-xl" />
-        </div>
-
-        {/* Shadow under laptop */}
-        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[90%] h-20 bg-emerald-500/10 blur-[60px] rounded-full opacity-50" />
-      </motion.div>
     </section>
   );
 }
