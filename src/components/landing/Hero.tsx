@@ -21,31 +21,10 @@ export function Hero() {
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-[120vh] flex flex-col items-center justify-start overflow-hidden pt-32 pb-20"
+      className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden pt-20 pb-20"
     >
-      {/* Background Dynamics */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_0%,oklch(0.62_0.15_155/0.15)_0%,transparent_50%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.55_0.05_295/0.03)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.55_0.05_295/0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-        
-        {/* Animated Glows */}
-        <motion.div 
-          animate={{ 
-            opacity: [0.3, 0.5, 0.3],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] rounded-full" 
-        />
-        <motion.div 
-          animate={{ 
-            opacity: [0.2, 0.4, 0.2],
-            scale: [1.2, 1, 1.2],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full" 
-        />
-      </div>
+      <div className="absolute inset-0 z-0 bg-background" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_-20%,oklch(0.68_0.21_300/0.05),transparent_60%)]" />
 
       <div className="container relative z-10 mx-auto px-4 text-center mb-20">
         <motion.div
